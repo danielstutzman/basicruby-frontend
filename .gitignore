@@ -4,3 +4,5 @@
 .DS_Store
 /build
 /.sass-cache
+/test/browserified-coverage.js
+.*.swp
