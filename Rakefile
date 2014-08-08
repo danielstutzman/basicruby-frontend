@@ -66,7 +66,16 @@ file 'test/browserified-coverage.js' =>
     open http://localhost:8000/test/index.html?coverage=true"
 end
 
+file 'build/stylesheets/app.css' => Dir.glob('app/stylesheets/*.*css') do |task|
+  mkdir_p 'build/stylesheets'
+  command = %W[
+    cat #{task.prerequisites.join(' ')} | sass --scss
+  ].join(' ')
+  create_with_sh command, task.name
+end
+
 task :default => %W[
   build/browserified.js
+  build/stylesheets/app.css
   test/browserified-coverage.js
 ]

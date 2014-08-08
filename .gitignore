@@ -3,3 +3,4 @@
 /test/lcov-report
 .DS_Store
 /build
+/.sass-cache
