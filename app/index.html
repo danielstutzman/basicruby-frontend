@@ -1,0 +1,25 @@
+<html>
+  <body>
+    <script src="../bower_components/react/react.js"></script>
+    <script src="../bower_components/underscore/underscore.js"></script>
+    <script src="../bower_components/reqwest/reqwest.js"></script>
+    <script src='../bower_components/basicruby-interpreter/opal.js'></script>
+    <script src='../bower_components/basicruby-interpreter/basicruby-interpreter.js'></script>
+    <script src='../build/browserified.js'></script>
+
+    <div id='menu'></div>
+
+    <script>
+      var MenuComponent = require('./app/MenuComponent.coffee');
+      var props = {};
+
+      window.reqwest('http://localhost:9292/api/menu.json', function(props) {
+        React.renderComponent(MenuComponent(props), document.querySelector('#menu'));
+      })
+
+      window.onload = function() {
+        React.renderComponent(MenuComponent(props), document.querySelector('#menu'));
+      };
+    </script>
+  </body>
+</html>
