@@ -1,5 +1,5 @@
-ValueComponent = require '../app-istanbul/ValueComponent.js'
-helper         = require '../test/helper.coffee'
+ValueComponent = require '../app/ValueComponent'
+helper         = require './helper'
 
 describe 'ValueComponent', ->
   it 'renders integers', (done) ->

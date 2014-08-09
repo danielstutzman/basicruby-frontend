@@ -1,4 +1,4 @@
-Lexer                 = require './Lexer.coffee'
+Lexer                 = require './Lexer'
 
 class RubyCodeHighlighter
 

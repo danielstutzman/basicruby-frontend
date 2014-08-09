@@ -31,10 +31,14 @@
               var hostname = window.location.hostname || 'localhost';
               var url = 'http://' + hostname + ':3030';
               $.support.cors = true; // for IE8
+              if (typeof(__coverage__) == 'undefined') {
+                alert("__coverage__ is undefined");
+              }
               $.post(url, JSON.stringify(__coverage__), function() {
-                  window.open(window.location.href.replace("test/index.html", "test/lcov-report/app-compiled/index.html"));
+                  window.open(window.location.href.replace("test/index.html", "test/lcov-report/app/index.html"));
                 }
               ).fail(function(error) {
+            alert(3);
                 alert("Couldn't contact cov_server.js at " + url + ": " +
                   JSON.stringify(error));
               })
@@ -85,7 +89,7 @@
         <script src="../bower_components/underscore/underscore.js"></script>
         <script src="../bower_components/basicruby-interpreter/opal.js"></script>
         <script src="../bower_components/basicruby-interpreter/basicruby-interpreter.js"></script>
-        <script src="browserified-coverage.js"></script>
+        <script src="../build/browserified-coverage.js"></script>
         <!--<script src="jsreporter_jasmine2.js"></script>-->
 
     </body>

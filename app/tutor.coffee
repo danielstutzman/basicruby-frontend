@@ -1,6 +1,6 @@
-AstToBytecodeCompiler = require './AstToBytecodeCompiler.coffee'
-BytecodeInterpreter   = require './BytecodeInterpreter.coffee'
-BytecodeSpool         = require './BytecodeSpool.coffee'
+AstToBytecodeCompiler = require './AstToBytecodeCompiler'
+BytecodeInterpreter   = require './BytecodeInterpreter'
+BytecodeSpool         = require './BytecodeSpool'
 
 # Overwrite assert so we get a stack trace not just a message
 window.assert = (cond) ->
@@ -336,32 +336,33 @@ post_to_database = (button, code) ->
     window.alert "Failed #{button}: #{data.status} #{data.statusText}"
   promise
 
-$(document).ready ->
+if typeof(window) is 'object' && window.location.pathname.indexOf('/tutor') == 0
+  $(document).ready ->
 
-  textarea = $('#user_code_textarea')[0]
-  codeMirror = CodeMirror.fromTextArea(textarea,
-    mode: 'ruby'
-    lineNumbers: true
-    tabSize: 2
-    indentUnit: 2
-    extraKeys: # convert tab into two spaces:
-      Tab: (cm) ->
-        cm.replaceSelection '  ', 'end'
-    autofocus: true
-  )
+    textarea = $('#user_code_textarea')[0]
+    codeMirror = CodeMirror.fromTextArea(textarea,
+      mode: 'ruby'
+      lineNumbers: true
+      tabSize: 2
+      indentUnit: 2
+      extraKeys: # convert tab into two spaces:
+        Tab: (cm) ->
+          cm.replaceSelection '  ', 'end'
+      autofocus: true
+    )
 
-  compile_to_traces codeMirror.getValue()
-  render_traces()
-
-  $('#restore-button').click (e) ->
-    if confirm('Are you sure you want to discard your current code?')
-      promise = post_to_database 'restore', null
-      promise.done ->
-        window.location.reload()
-    e.preventDefault()
-
-  $('#save-button').click (e) ->
     compile_to_traces codeMirror.getValue()
     render_traces()
-    post_to_database 'save', codeMirror.getValue()
-    e.preventDefault()
+
+    $('#restore-button').click (e) ->
+      if confirm('Are you sure you want to discard your current code?')
+        promise = post_to_database 'restore', null
+        promise.done ->
+          window.location.reload()
+      e.preventDefault()
+
+    $('#save-button').click (e) ->
+      compile_to_traces codeMirror.getValue()
+      render_traces()
+      post_to_database 'save', codeMirror.getValue()
+      e.preventDefault()

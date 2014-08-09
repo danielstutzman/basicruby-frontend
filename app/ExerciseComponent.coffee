@@ -1,4 +1,4 @@
-CasesComponent = require './CasesComponent.coffee'
+CasesComponent = require './CasesComponent'
 
 type        = React.PropTypes
 RELOAD_ICON = "\u27f3"

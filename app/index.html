@@ -1,5 +1,10 @@
 <html>
-  <body>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../build/stylesheets/debugger.css" />
+    <link rel="stylesheet" type="text/css" href="../build/stylesheets/exercise.css" />
+    <link rel="stylesheet" type="text/css" href="../build/stylesheets/menu.css" />
+  </head>
+  <body class='menu'>
     <script src="../bower_components/react/react.js"></script>
     <script src="../bower_components/underscore/underscore.js"></script>
     <script src="../bower_components/reqwest/reqwest.js"></script>
@@ -10,7 +15,7 @@
     <div id='menu'></div>
 
     <script>
-      var MenuComponent = require('./app/MenuComponent.coffee');
+      var MenuComponent = REQUIRE['app/MenuComponent'];
       var props = {};
 
       window.reqwest('http://localhost:9292/api/menu.json', function(props) {

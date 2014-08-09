@@ -1,7 +1,6 @@
 {
   "name": "basicruby-frontend",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "browserify": "~> 3.33",
     "exorcist": "~0.1.6",
@@ -9,7 +8,9 @@
     "uglifyify": "~2.1.1",
     "istanbul": "~0.2.4",
     "phantomjs": "~1.9.7-15",
-    "html": "0.0.7"
+    "html": "0.0.7",
+    "livereload": "~0.3.4",
+    "watchify": "~1.0.1"
   },
   "browser": {
     "react": "./app/shims/react.js",

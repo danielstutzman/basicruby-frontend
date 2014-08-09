@@ -1,5 +1,5 @@
-DebuggerController = require '../app-istanbul/DebuggerController.js'
-helper             = require '../test/helper.coffee'
+DebuggerController = require '../app/DebuggerController'
+helper             = require './helper'
 
 { click } = helper
 

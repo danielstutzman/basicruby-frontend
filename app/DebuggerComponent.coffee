@@ -1,8 +1,8 @@
-ConsoleComponent      = require './ConsoleComponent.coffee'
-HeapComponent         = require './HeapComponent.coffee'
-InstructionsComponent = require './InstructionsComponent.coffee'
-VariablesComponent    = require './VariablesComponent.coffee'
-PartialCallsComponent = require './PartialCallsComponent.coffee'
+ConsoleComponent      = require './ConsoleComponent'
+HeapComponent         = require './HeapComponent'
+InstructionsComponent = require './InstructionsComponent'
+VariablesComponent    = require './VariablesComponent'
+PartialCallsComponent = require './PartialCallsComponent'
 
 POWER_SYMBOL   = '\u233d'
 RIGHT_TRIANGLE = '\u25b6'

@@ -1,4 +1,4 @@
-ValueComponent = require './ValueComponent.coffee'
+ValueComponent = require './ValueComponent'
 
 type           = React.PropTypes
 

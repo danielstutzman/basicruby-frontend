@@ -1,8 +1,8 @@
-AstToBytecodeCompiler = require './AstToBytecodeCompiler.coffee'
-BytecodeInterpreter   = require './BytecodeInterpreter.coffee'
-BytecodeSpool         = require './BytecodeSpool.coffee'
-DebuggerComponent     = require './DebuggerComponent.coffee'
-RubyCodeHighlighter   = require './RubyCodeHighlighter.coffee'
+AstToBytecodeCompiler = require './AstToBytecodeCompiler'
+BytecodeInterpreter   = require './BytecodeInterpreter'
+BytecodeSpool         = require './BytecodeSpool'
+DebuggerComponent     = require './DebuggerComponent'
+RubyCodeHighlighter   = require './RubyCodeHighlighter'
 
 MILLIS_FOR_OUTPUT_CHAR         = 10
 MILLIS_FOR_SCROLL_INSTRUCTIONS = 10

@@ -1,4 +1,4 @@
-RubyCodeHighlighter = require '../app-istanbul/RubyCodeHighlighter.js'
+RubyCodeHighlighter = require '../app/RubyCodeHighlighter'
 
 describe 'RubyCodeHighlighter', ->
 

@@ -15,67 +15,80 @@ end
 
 file 'build/browserified.js' => Dir.glob('app/*.coffee') do |task|
   mkdir_p 'build'
-  dash_r_paths = task.prerequisites.map { |path|
-    ['-r', "./#{path}"]
-  }.flatten.join(' ')
+
+  sh 'coffee -bc -o build/coffee/app app'
+
+  paths = task.prerequisites.map { |path|
+    path.gsub(%r[^app/(.*)\.coffee$], 'app/\1.js')
+  }.join(' ')
   command = %W[
-    node_modules/.bin/browserify
-      -t coffeeify
+    cd build/coffee &&
+    ../../node_modules/.bin/browserify
       #{ENV['RAILS_ENV'] == 'assets' ? '-t uglifyify' : ''}
       --insert-global-vars ''
       -d
-      #{dash_r_paths}
+      #{paths}
   ].join(' ')
-  create_with_sh command, task.name
+  create_with_sh command, "../../#{task.name}"
 end
 
-file 'test/browserified-coverage.js' =>
-  Dir.glob(['app/*.coffee', 'test/*.coffee']) do |task|
-  dash_r_paths = task.prerequisites.map { |path|
-    if path.start_with?('app/')
-      path = path.gsub(%r[^app/], 'app-istanbul/')
-      path = path.gsub(%r[\.coffee$], '.js')
-      ['-r', "./#{path}"]
-    end
-  }.compact.flatten.join(' ')
-  non_dash_r_paths = task.prerequisites.select { |path|
-    path.start_with?('test/')
+file 'build/browserified-coverage.js' =>
+    Dir.glob(['app/*.coffee', 'test/*.coffee']) do |task|
+  sh 'coffee -bc -o build/coffee/app app'
+
+  paths = task.prerequisites.map { |path|
+    path.gsub %r[\.coffee$], '.js'
   }.join(' ')
   command = %W[
-     rm -rf app-compiled app-istanbul
-  && cp -R app app-compiled
-  && node_modules/coffeeify/node_modules/coffee-script/bin/coffee
-     -c app-compiled/*.coffee
-  && rm app-compiled/*.coffee
-  && perl -pi -w -e 's/\.coffee/\.js/g;' app-compiled/*.js
-  && node_modules/.bin/istanbul
-       instrument app-compiled
+     coffee -c -o build/coffee/test test
+  && cd build/coffee
+  && ../../node_modules/.bin/istanbul
+       instrument .
        --no-compact --embed-source --preserve-comments
-       -o app-istanbul
-  && node_modules/.bin/browserify
-     --insert-global-vars '' -t coffeeify -d
-    #{dash_r_paths}
-    #{non_dash_r_paths}
+       -o ../../build/istanbul
+  && cd ../../build/istanbul
+  && ../../node_modules/.bin/browserify
+       --insert-global-vars ''
+       -d
+      #{paths}
   ].join(' ')
-  create_with_sh command, task.name
-
-  command = %W[rm -rf app-compiled app-istanbul].join(' ')
-  sh command
+  create_with_sh command, "../../#{task.name}"
 
   puts "To run tests: python -m SimpleHTTPServer; cd test; node cov_server.js;
     open http://localhost:8000/test/index.html?coverage=true"
 end
 
-file 'build/stylesheets/app.css' => Dir.glob('app/stylesheets/*.*css') do |task|
-  mkdir_p 'build/stylesheets'
-  command = %W[
-    cat #{task.prerequisites.join(' ')} | sass --scss
-  ].join(' ')
-  create_with_sh command, task.name
+file 'build/stylesheets' => Dir.glob('app/stylesheets/*.*css') do |task|
+  sh 'sass --update app/stylesheets:build/stylesheets'
 end
 
 task :default => %W[
   build/browserified.js
-  build/stylesheets/app.css
-  test/browserified-coverage.js
+  build/stylesheets
+  build/browserified-coverage.js
 ]
+
+task :watch do
+  sh 'sass --watch app/stylesheets:build/stylesheets &'
+
+  sh 'coffee -bcw -o build/coffee/app app &'
+
+  sleep 1 # give time for coffee to run
+  paths = Dir.glob('app/*.coffee').map { |path|
+    path.gsub! /\.coffee$/, '.js'
+  }.join(' ')
+  command = %W[
+    cd build/coffee &&
+    ../../node_modules/.bin/watchify
+      #{ENV['RAILS_ENV'] == 'assets' ? '-t uglifyify' : ''}
+      --insert-global-vars ''
+      -d
+      -o ../../build/browserified.js
+      #{paths}
+      --verbose
+      &
+  ].join(' ')
+  sh command
+
+  sh 'node_modules/.bin/livereload build &'
+end

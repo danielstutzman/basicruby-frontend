@@ -1,8 +1,8 @@
-AstToBytecodeCompiler = require './AstToBytecodeCompiler.coffee'
-BytecodeInterpreter   = require './BytecodeInterpreter.coffee'
-BytecodeSpool         = require './BytecodeSpool.coffee'
-DebuggerController    = require './DebuggerController.coffee'
-ExerciseComponent     = require './ExerciseComponent.coffee'
+AstToBytecodeCompiler = require './AstToBytecodeCompiler'
+BytecodeInterpreter   = require './BytecodeInterpreter'
+BytecodeSpool         = require './BytecodeSpool'
+DebuggerController    = require './DebuggerController'
+ExerciseComponent     = require './ExerciseComponent'
 
 class ExerciseController
   constructor: ($div, featuresJson, exerciseId, exerciseJson, exerciseColor,
