@@ -16,7 +16,7 @@ body.menu {
   h1.basic-ruby {
     font-size: 60pt;
     margin: 36px 0 0 0;
-    background-image: image-url("basic_ruby_green_x7.png");
+    background-image: url("/images/basic_ruby_green_x7.png");
     background-repeat: no-repeat;
     width: 518px;
     height: 63px;
@@ -27,7 +27,7 @@ body.menu {
   .learn-programming {
     font-size: 30pt;
 
-    background-image: image-url("daily_easy_x3.png");
+    background-image: url("/images/daily_easy_x3.png");
     background-repeat: no-repeat;
     width: 360px;
     height: 57px;
@@ -49,7 +49,7 @@ body.menu {
     margin-top: 10px;
     float: right;
     border-bottom: 4px #4b8ece solid;
-    background-image: image-url("main_menu8.png");
+    background-image: url("/images/main_menu8.png");
     background-repeat: no-repeat;
     width: 688px;
     height: 56px;
