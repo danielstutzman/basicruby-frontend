@@ -13,8 +13,8 @@ if defined?(before)
   end
 end
 
-file 'build/browserified.js' => Dir.glob('app/*.coffee') do |task|
-  mkdir_p 'build'
+file 'build/javascripts/browserified.js' => Dir.glob('app/*.coffee') do |task|
+  mkdir_p 'build/javascripts'
 
   sh 'coffee -bc -o build/coffee/app app'
 
@@ -32,8 +32,9 @@ file 'build/browserified.js' => Dir.glob('app/*.coffee') do |task|
   create_with_sh command, "../../#{task.name}"
 end
 
-file 'build/browserified-coverage.js' =>
+file 'build/javascripts/browserified-coverage.js' =>
     Dir.glob(['app/*.coffee', 'test/*.coffee']) do |task|
+  mkdir_p 'build/javascripts'
   sh 'coffee -bc -o build/coffee/app app'
 
   paths = task.prerequisites.map { |path|
@@ -63,9 +64,9 @@ file 'build/stylesheets' => Dir.glob('app/stylesheets/*.*css') do |task|
 end
 
 task :default => %W[
-  build/browserified.js
+  build/javascripts/browserified.js
   build/stylesheets
-  build/browserified-coverage.js
+  build/javascripts/browserified-coverage.js
 ]
 
 task :watch do
@@ -83,12 +84,12 @@ task :watch do
       #{ENV['RAILS_ENV'] == 'assets' ? '-t uglifyify' : ''}
       --insert-global-vars ''
       -d
-      -o ../../build/browserified.js
+      -o ../../build/javascripts/browserified.js
       #{paths}
       --verbose
       &
   ].join(' ')
   sh command
 
-  sh 'node_modules/.bin/livereload build &'
+  sh 'node_modules/.bin/livereload build/javascripts -i 500 &'
 end
