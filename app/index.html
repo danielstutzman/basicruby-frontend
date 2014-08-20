@@ -24,6 +24,8 @@
 
       window.onload = function() {
         React.renderComponent(MenuComponent(props), document.querySelector('#menu'));
+
+        REQUIRE['app/AstToBytecodeCompiler'].initCache();
       };
     </script>
   </body>
