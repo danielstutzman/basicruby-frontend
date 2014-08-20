@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css"
       href="/bower_components/codemirror/lib/codemirror.css" />
   </head>
-  <body class='menu'>
+  <body class='exercise'>
     <script>
       var oldDebug = window.console.debug;
       window.console.debug = function() {
@@ -24,17 +24,46 @@
     <script src='/javascripts/browserified.js'></script>
 
     <div id='menu'></div>
+    <div class='exercise'></div>
 
     <script>
       var MenuComponent = REQUIRE['app/MenuComponent'];
       var props = {};
 
+      /*
       window.reqwest('http://localhost:9292/api/menu.json', function(props) {
         React.renderComponent(MenuComponent(props), document.querySelector('#menu'));
       })
+      */
+
+      featuresJson = ['run', 'step', 'instructions', 'console', 'vars']
+      exerciseId = null;
+      exerciseJson = {};
+      exerciseColor = 'yellow';
+      pathForNextExercise = '/path';
+      pathForNextRep = '/path';
 
       window.onload = function() {
+        /*
+        props = {
+          learner_id: 1,
+          topics: [{
+            num:         1,
+            nickname:   'nickname1',
+            title:      'title1',
+            title_html: 'title1',
+            level:      'beginner',
+            under_construction: false,
+            completed: {
+              purple: {
+                num: 0,
+                next: '/1P',
+              },
+            },
+          }],
+        }
         React.renderComponent(MenuComponent(props), document.querySelector('#menu'));
+        */
 
         REQUIRE['app/AstToBytecodeCompiler'].initCache();
       };
