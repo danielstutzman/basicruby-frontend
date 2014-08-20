@@ -5,10 +5,9 @@ DebuggerController    = require './DebuggerController'
 ExerciseComponent     = require './ExerciseComponent'
 
 class ExerciseController
-  constructor: ($div, featuresJson, exerciseId, exerciseJson, exerciseColor,
-      pathForNextExercise, pathForNextRep) ->
+  constructor: ($div, model) ->
     @$div = $div
-    exists = (feature) -> feature in featuresJson
+    exists = (feature) -> feature in model.features
     @features =
       showStepButton:   exists 'step'
       showRunButton:    exists 'run'
@@ -18,11 +17,11 @@ class ExerciseController
       showInstructions: exists 'instructions'
       showConsole:      exists 'console'
       highlightTokens:  exists 'tokens'
-    @exerciseId          = exerciseId
-    @json                = exerciseJson
-    @color               = exerciseColor
-    @pathForNextExercise = pathForNextExercise
-    @pathForNextRep      = pathForNextRep
+    @exerciseId          = model.exercise_id
+    @json                = model.json
+    @color               = model.color
+    @pathForNextExercise = model.paths.next_exercise
+    @pathForNextRep      = model.paths.next_rep
     @cases               = @json.cases || [{}]
     @actualOutput        = if @color == 'green' then [] else null
     @retrieveNewCode     = null

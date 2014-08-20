@@ -36,14 +36,7 @@
       })
       */
 
-      featuresJson = ['run', 'step', 'instructions', 'console', 'vars']
-      exerciseId = null;
-      exerciseJson = {};
-      exerciseColor = 'yellow';
-      pathForNextExercise = '/path';
-      pathForNextRep = '/path';
-
-      window.onload = function() {
+      document.addEventListener('DOMContentLoaded', function() {
         /*
         props = {
           learner_id: 1,
@@ -66,7 +59,7 @@
         */
 
         REQUIRE['app/AstToBytecodeCompiler'].initCache();
-      };
+      });
     </script>
   </body>
 </html>
