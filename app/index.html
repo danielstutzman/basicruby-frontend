@@ -7,6 +7,13 @@
       href="/bower_components/codemirror/lib/codemirror.css" />
   </head>
   <body class='menu'>
+    <script>
+      var oldDebug = window.console.debug;
+      window.console.debug = function() {
+        if (arguments[0] === 'Download the React DevTools for a better development experience: http://fb.me/react-devtools') { return; }
+        oldDebug.apply(window.console, arguments);
+      };
+    </script>
     <script src="/bower_components/react/react.js"></script>
     <script src="/bower_components/underscore/underscore.js"></script>
     <script src="/bower_components/reqwest/reqwest.js"></script>
