@@ -1,6 +1,7 @@
 DebuggerController = require './DebuggerController'
 ExerciseController = require './ExerciseController'
 ExerciseComponent  = require './ExerciseComponent'
+ExerciseService    = require './ExerciseService'
 SetupResizeHandler = require('./setup_resize_handler')
 
 $one = (selector) -> document.querySelector(selector)
@@ -12,9 +13,9 @@ if window.location.hostname == 'localhost'
 
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.exercise') && !$one('div.exercise.purple')
-    reqwest 'http://localhost:9292/api/exercise/1Y.json', (model) ->
-      controller = new ExerciseController($one('div.exercise'), model)
-      controller.setup()
+    service = new ExerciseService('http://localhost:9292')
+    controller = new ExerciseController($one('div.exercise'), service)
+    controller.setup()
 
   # Fix bug where Mobile Safari landscape mode scrolls too far down the page
   window.addEventListener 'orientationchange', ->

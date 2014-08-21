@@ -5,8 +5,19 @@ DebuggerController    = require './DebuggerController'
 ExerciseComponent     = require './ExerciseComponent'
 
 class ExerciseController
-  constructor: ($div, model) ->
-    @$div = $div
+  constructor: ($div, service) ->
+    @$div            = $div
+    @service         = service
+    @retrieveNewCode = null
+    @popup           = null
+
+  setup: =>
+    @service.getModel (model) =>
+      @_setupInstanceVarsFromModel model
+      @render @_setupCodeMirrorAfterRender
+
+  _setupInstanceVarsFromModel: (model) =>
+    @model = model
     exists = (feature) -> feature in model.features
     @features =
       showStepButton:   exists 'step'
@@ -17,48 +28,38 @@ class ExerciseController
       showInstructions: exists 'instructions'
       showConsole:      exists 'console'
       highlightTokens:  exists 'tokens'
-    @exerciseId          = model.exercise_id
-    @json                = model.json
-    @color               = model.color
-    @pathForNextExercise = model.paths.next_exercise
-    @pathForNextRep      = model.paths.next_rep
-    @cases               = @json.cases || [{}]
-    @actualOutput        = if @color == 'green' then [] else null
-    @retrieveNewCode     = null
-    @popup               = null
+    @cases               = @model.json.cases || [{}]
 
-  setup: ->
-    callback = =>
-      options =
-        mode: 'ruby'
-        lineNumbers: true
-        autofocus: true
-        readOnly: false
-      textarea = @$div.querySelector('textarea.code')
-      isMobileSafari = ->
-         navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-         navigator.userAgent.match(/AppleWebKit/)
-      if isMobileSafari()
-        @retrieveNewCode = -> textarea.value
-      else
-        codeMirror = CodeMirror.fromTextArea textarea, options
-        makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
-        @retrieveNewCode = makeRetriever codeMirror
+  _setupCodeMirrorAfterRender: =>
+    options =
+      mode: 'ruby'
+      lineNumbers: true
+      autofocus: true
+      readOnly: false
+    textarea = @$div.querySelector('textarea.code')
+    isMobileSafari = ->
+       navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+       navigator.userAgent.match(/AppleWebKit/)
+    if isMobileSafari()
+      @retrieveNewCode = -> textarea.value
+    else
+      codeMirror = CodeMirror.fromTextArea textarea, options
+      makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
+      @retrieveNewCode = makeRetriever codeMirror
 
-      if @cases && @cases[0] && @cases[0].code
-        for textareaTests in @$div.querySelectorAll('textarea.expected')
-          options =
-            mode: 'ruby'
-            lineNumbers: true
-            readOnly: 'nocursor'
-            lineWrapping: true
-          CodeMirror.fromTextArea textareaTests, options
-    @render callback
+    if @cases && @cases[0] && @cases[0].code
+      for textareaTests in @$div.querySelectorAll('textarea.expected')
+        options =
+          mode: 'ruby'
+          lineNumbers: true
+          readOnly: 'nocursor'
+          lineWrapping: true
+        CodeMirror.fromTextArea textareaTests, options
 
   render: (callback) ->
     props =
-      code: @json.code || ''
-      color: @color
+      code: @model.json.code || ''
+      color: @model.color
       cases: @cases
       popup: @popup
       doCommand:
@@ -67,15 +68,15 @@ class ExerciseController
           @checkForPassingTests()
         debug: => @handleDebug()
         allTestsPassed: => window.setTimeout (=> @handleAllTestsPassed()), 100
-        next: if @pathForNextExercise == '' then null else (e) =>
+        next: if @model.paths.next_exercise == '' then null else (e) =>
           e.target.disabled = true
-          @_sendPostMarkComplete @pathForNextExercise
-        nextRep: if @pathForNextRep == '' then null else (e, success) =>
+          @_sendPostMarkComplete @model.paths.next_exercise
+        nextRep: if @model.paths.next_rep == '' then null else (e, success) =>
           e.target.disabled = true
           if success
-            @_sendPostMarkComplete @pathForNextRep
+            @_sendPostMarkComplete @model.paths.next_rep
           else
-            window.location.href = @pathForNextRep
+            window.location.href = @model.paths.next_rep
         showSolution: => @handleShowSolution()
         closePopup: => @popup = null; @render()
         setPredictedOutput: (caseNum, newText) =>
@@ -147,22 +148,23 @@ class ExerciseController
   handleShowSolution: ->
     features = _.extend @features,
       showNextExercise: false
-      showNextRep: @pathForNextRep != ''
+      showNextRep: @model.paths.next_rep != ''
       showingSolution: true
     doCommand =
       nextExercise: (e) =>
         e.target.disabled = true
-        window.location.href = @pathForNextExercise
+        window.location.href = @model.paths.next_exercise
       nextRep: (e) =>
         e.target.disabled = true
-        window.location.href = @pathForNextRep
-    @_popupDebugger @json.solution, features, doCommand
+        window.location.href = @model.paths.next_rep
+    @_popupDebugger @model.json.solution, features, doCommand
 
   _popupDebugger: (code, features, doCommand) ->
     newDiv = document.createElement('div')
     newDiv.className = 'debugger'
     document.body.appendChild newDiv
-    new DebuggerController(code, newDiv, features, @json, doCommand).setup()
+    new DebuggerController(code, newDiv, features, @model.json, doCommand \
+      ).setup()
 
   checkForPassingTests: ->
     rtrim = (s) -> if s then s.replace(/\s+$/, '') else s
@@ -170,9 +172,9 @@ class ExerciseController
       _.map(outputs, ((output) -> output[1])).join('')
     for case_, case_num in @cases
       case_.passed =
-        if @color == 'blue'
+        if @model.color == 'blue'
           rtrim(join(case_.actual_output)) == rtrim(case_.predicted_output)
-        else if @color == 'red' || @color == 'green'
+        else if @model.color == 'red' || @model.color == 'green'
           if case_.expected_output
             rtrim(join(case_.actual_output)) ==
               rtrim(case_.expected_output.toString())
@@ -190,13 +192,13 @@ class ExerciseController
         @render()
     if passed
       changeBackground 5, '.passed', 'PASSED'
-    else if !passed && @color == 'blue'
+    else if !passed && @model.color == 'blue'
       changeBackground 5, '.failed', 'FAILED'
 
   _sendPostMarkComplete: (nextUrl) ->
     document.body.innerHTML += "
       <form id='fake-form' method='post' action='/post/mark_complete'>
-        <input type='hidden' name='exercise_id' value='#{@exerciseId}'>
+        <input type='hidden' name='exercise_id' value='#{@model.exerciseId}'>
         <input type='hidden' name='next_url' value='#{nextUrl}'>
       </form>"
     document.getElementById('fake-form').submit()
