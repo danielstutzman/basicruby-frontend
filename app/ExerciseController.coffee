@@ -12,9 +12,10 @@ class ExerciseController
     @popup           = null
 
   setup: =>
-    @service.getModel (model) =>
+    success = (model) =>
       @_setupInstanceVarsFromModel model
       @render @_setupCodeMirrorAfterRender
+    @service.getModel().then success, @_handleAjaxError
 
   _setupInstanceVarsFromModel: (model) =>
     @model = model
@@ -195,12 +196,12 @@ class ExerciseController
     else if !passed && @model.color == 'blue'
       changeBackground 5, '.failed', 'FAILED'
 
-  _sendPostMarkComplete: (nextUrl) ->
-    document.body.innerHTML += "
-      <form id='fake-form' method='post' action='/post/mark_complete'>
-        <input type='hidden' name='exercise_id' value='#{@model.exerciseId}'>
-        <input type='hidden' name='next_url' value='#{nextUrl}'>
-      </form>"
-    document.getElementById('fake-form').submit()
+  _sendPostMarkComplete: (nextUrl) =>
+    promise = @service.markComplete @model.exercise_id
+    promise.then (-> window.location.href = nextUrl), @_handleAjaxError
+
+  _handleAjaxError: (request) ->
+    console.error JSON.parse(request.responseText)
+    window.alert "#{request.status} #{request.statusText}"
 
 module.exports = ExerciseController
