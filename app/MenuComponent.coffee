@@ -96,7 +96,11 @@ MenuComponent = React.createClass
           trs.push tr { key: "#{topic.level}-#{topic.num}" },
             th
               className: 'title'
-              dangerouslySetInnerHTML: { __html: topic.title_html }
+              if topic.under_construction
+                @imageTag 'under_construction.png', style: { float: 'left' },
+                  title: 'Under construction'
+              span { dangerouslySetInnerHTML: { __html: topic.title_html } }
+
             _.map ['purple', 'yellow', 'blue', 'red', 'green'], (color) =>
               td { className: color, key: color },
                 if topic.completed[color]
