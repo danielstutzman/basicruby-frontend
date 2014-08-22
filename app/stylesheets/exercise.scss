@@ -7,7 +7,7 @@ $code-font-size: 30pt;
   box-sizing: border-box;
 }
 
-body.exercise {
+body {
   margin: 0;
   font-family: sans-serif;
 
@@ -47,22 +47,23 @@ body.exercise {
     overflow: scroll;
   }
 }
-div.exercise {
+
+.ExerciseComponent {
   width: 840px;
 
-  .purple { background-color: #709; }
-  .yellow { background-color: #a94; }
-  .blue   { background-color: #55a; }
-  .red    { background-color: #600; }
-  .green  { background-color: #484; }
-  .orange { background-color: #a60; }
+  &.purple { background-color: #709; }
+  &.yellow { background-color: #a94; }
+  &.blue   { background-color: #55a; }
+  &.red    { background-color: #600; }
+  &.green  { background-color: #484; }
+  &.orange { background-color: #a60; }
 
-  .purple { .CodeMirror-linenumbers { background-color: #709; } }
-  .yellow { .CodeMirror-linenumbers { background-color: #a94; } }
-  .blue   { .CodeMirror-linenumbers { background-color: #55a; } }
-  .red    { .CodeMirror-linenumbers { background-color: #600; } }
-  .green  { .CodeMirror-linenumbers { background-color: #484; } }
-  .orange { .CodeMirror-linenumbers { background-color: #a60; } }
+  &.purple { .CodeMirror-linenumbers { background-color: #709; } }
+  &.yellow { .CodeMirror-linenumbers { background-color: #a94; } }
+  &.blue   { .CodeMirror-linenumbers { background-color: #55a; } }
+  &.red    { .CodeMirror-linenumbers { background-color: #600; } }
+  &.green  { .CodeMirror-linenumbers { background-color: #484; } }
+  &.orange { .CodeMirror-linenumbers { background-color: #a60; } }
 
   .banner {
     font-size: 44pt;

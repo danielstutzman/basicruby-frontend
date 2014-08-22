@@ -21,7 +21,7 @@ ExerciseComponent = React.createClass
   render: ->
     { a, br, button, div, h1, input, label, p, span, textarea } = React.DOM
 
-    div { className: @props.color },
+    div { className: "ExerciseComponent #{@props.color}" },
 
       div { className: 'buttons-above' },
         if @props.color == 'yellow' || @props.color == 'blue'

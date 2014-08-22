@@ -1,10 +1,11 @@
 class ExerciseService
 
-  constructor: (baseUrl) ->
+  constructor: (baseUrl, path) ->
     @baseUrl = baseUrl
+    @path = path
 
   getModel: =>
-    window.reqwest "#{@baseUrl}/api/exercise/1Y.json"
+    window.reqwest "#{@baseUrl}/api/exercise#{@path}.json"
 
   markComplete: (exerciseId) =>
     window.reqwest

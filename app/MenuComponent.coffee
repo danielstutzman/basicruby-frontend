@@ -49,7 +49,7 @@ MenuComponent = React.createClass
   doneIndicator: (topic, color) ->
     { a, div } = React.DOM
     completed = topic.completed[color]
-    a { className: 'done-indicator', href: completed.next },
+    a { className: 'done-indicator', href: '#' + completed.next },
       if color == 'purple'
         if completed.num > 0
           CHECKED_BOX
@@ -62,7 +62,7 @@ MenuComponent = React.createClass
            UNCHECKED_BOX
 
   render: ->
-    { br, div, h1, h2, table, tbody, td, th, tr } = React.DOM
+    { br, div, h1, h2, span, table, tbody, td, th, tr } = React.DOM
 
     trs = []
     trs.push tr { key: 'first' },
@@ -106,14 +106,10 @@ MenuComponent = React.createClass
                 if topic.completed[color]
                   @doneIndicator topic, color
 
-            if topic.under_construction
-              @imageTag 'under_construction.png', style: { float: 'left' },
-                title: 'Under construction'
-
         _.map ['purple', 'yellow', 'blue', 'red', 'green'], (color) =>
           td { className: color }
 
-    div {},
+    div { className: 'MenuComponent' },
       h1 { className: 'basic-ruby' }, 'Basic Ruby'
       div { className: 'learn-programming' },
         'daily workouts until programming is easy'

@@ -6,7 +6,9 @@
     <link rel="stylesheet" type="text/css"
       href="/bower_components/codemirror/lib/codemirror.css" />
   </head>
-  <body class='exercise'>
+  <body>
+    <div id='screen'></div>
+
     <script>
       var oldDebug = window.console.debug;
       window.console.debug = function() {
@@ -19,47 +21,10 @@
     <script src="/bower_components/reqwest/reqwest.js"></script>
     <script src="/bower_components/codemirror/lib/codemirror.js"></script>
     <script src="/bower_components/codemirror/mode/ruby/ruby.js"></script>
-    <script src='/bower_components/basicruby-interpreter/opal.js'></script>
-    <script src='/bower_components/basicruby-interpreter/basicruby-interpreter.js'></script>
+    <script src='/bower_components/js-signals/dist/signals.js'></script>
+    <script src='/bower_components/hasher/dist/js/hasher.js'></script>
+    <script src='/bower_components/basicruby-interpreter/dist/opal.js'></script>
+    <script src='/bower_components/basicruby-interpreter/dist/basicruby-interpreter.js'></script>
     <script src='/javascripts/browserified.js'></script>
-
-    <div id='menu'></div>
-    <div class='exercise'></div>
-
-    <script>
-      var MenuComponent = REQUIRE['app/MenuComponent'];
-      var props = {};
-
-      /*
-      window.reqwest('http://localhost:9292/api/menu.json', function(props) {
-        React.renderComponent(MenuComponent(props), document.querySelector('#menu'));
-      })
-      */
-
-      document.addEventListener('DOMContentLoaded', function() {
-        /*
-        props = {
-          learner_id: 1,
-          topics: [{
-            num:         1,
-            nickname:   'nickname1',
-            title:      'title1',
-            title_html: 'title1',
-            level:      'beginner',
-            under_construction: false,
-            completed: {
-              purple: {
-                num: 0,
-                next: '/1P',
-              },
-            },
-          }],
-        }
-        React.renderComponent(MenuComponent(props), document.querySelector('#menu'));
-        */
-
-        REQUIRE['app/AstToBytecodeCompiler'].initCache();
-      });
-    </script>
   </body>
 </html>

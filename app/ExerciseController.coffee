@@ -77,7 +77,7 @@ class ExerciseController
           if success
             @_sendPostMarkComplete @model.paths.next_rep
           else
-            window.location.href = @model.paths.next_rep
+            window.location.href = '#' + @model.paths.next_rep
         showSolution: => @handleShowSolution()
         closePopup: => @popup = null; @render()
         setPredictedOutput: (caseNum, newText) =>
@@ -154,10 +154,10 @@ class ExerciseController
     doCommand =
       nextExercise: (e) =>
         e.target.disabled = true
-        window.location.href = @model.paths.next_exercise
+        window.location.href = '#' + @model.paths.next_exercise
       nextRep: (e) =>
         e.target.disabled = true
-        window.location.href = @model.paths.next_rep
+        window.location.href = '#' + @model.paths.next_rep
     @_popupDebugger @model.json.solution, features, doCommand
 
   _popupDebugger: (code, features, doCommand) ->
@@ -198,7 +198,7 @@ class ExerciseController
 
   _sendPostMarkComplete: (nextUrl) =>
     promise = @service.markComplete @model.exercise_id
-    promise.then (-> window.location.href = nextUrl), @_handleAjaxError
+    promise.then (-> window.location.href = '#' + nextUrl), @_handleAjaxError
 
   _handleAjaxError: (request) ->
     console.error JSON.parse(request.responseText)
