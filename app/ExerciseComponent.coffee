@@ -18,6 +18,36 @@ ExerciseComponent = React.createClass
     popup:     type.string
     doCommand: type.object.isRequired
 
+  getInitialState: ->
+    retrieveNewCode: (->) # since it's a required property
+
+  componentDidMount: ->
+    # setup CodeMirror
+    options =
+      mode: 'ruby'
+      lineNumbers: true
+      autofocus: true
+      readOnly: false
+    textarea = @refs.code.getDOMNode()
+    isMobileSafari = ->
+       navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+       navigator.userAgent.match(/AppleWebKit/)
+    if isMobileSafari()
+      @setState retrieveNewCode: (-> textarea.value)
+    else
+      codeMirror = CodeMirror.fromTextArea textarea, options
+      makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
+      @setState retrieveNewCode: makeRetriever(codeMirror)
+
+    if @cases && @cases[0] && @cases[0].code
+      for textareaTests in @$div.querySelectorAll('textarea.expected')
+        options =
+          mode: 'ruby'
+          lineNumbers: true
+          readOnly: 'nocursor'
+          lineWrapping: true
+        CodeMirror.fromTextArea textareaTests, options
+
   render: ->
     { a, br, button, div, h1, input, label, p, span, textarea } = React.DOM
 
@@ -82,10 +112,11 @@ ExerciseComponent = React.createClass
             when 'green'  then 'Write code here'
             when 'orange' then 'Code to simplify'
         textarea
+          ref: 'code'
           className: 'code'
           defaultValue: @props.code
 
-      CasesComponent @props
+      CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)
 
       if @props.popup == 'PASSED'
         div

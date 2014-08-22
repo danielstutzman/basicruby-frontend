@@ -7,9 +7,10 @@ CasesComponent = React.createClass
   displayName: 'CasesComponent'
 
   propTypes:
-    color:     type.string.isRequired
-    cases:     type.array.isRequired
-    doCommand: type.object.isRequired
+    color:           type.string.isRequired
+    cases:           type.array.isRequired
+    doCommand:       type.object.isRequired
+    retrieveNewCode: type.func.isRequired
 
   componentDidMount: ->
     if @props.color == 'blue'
@@ -158,7 +159,7 @@ CasesComponent = React.createClass
       div { className: 'buttons-under' },
         button
           className: 'debug'
-          onClick: => @props.doCommand.debug()
+          onClick: => @props.doCommand.debug @props.retrieveNewCode()
           'Debug'
         button
           className: 'run'
@@ -169,7 +170,7 @@ CasesComponent = React.createClass
               else
                 window.alert "You haven't predicted output for all the inputs yet."
             else
-              @props.doCommand.run()
+              @props.doCommand.run @props.retrieveNewCode()
           if @props.cases == null || @props.cases.length == 1
             'Run'
           else

@@ -8,13 +8,12 @@ class ExerciseController
   constructor: ($div, service) ->
     @$div            = $div
     @service         = service
-    @retrieveNewCode = null
     @popup           = null
 
   setup: =>
     success = (model) =>
       @_setupInstanceVarsFromModel model
-      @render @_setupCodeMirrorAfterRender
+      @render()
     @service.getModel().then success, @_handleAjaxError
 
   _setupInstanceVarsFromModel: (model) =>
@@ -31,32 +30,6 @@ class ExerciseController
       highlightTokens:  exists 'tokens'
     @cases               = @model.json.cases || [{}]
 
-  _setupCodeMirrorAfterRender: =>
-    options =
-      mode: 'ruby'
-      lineNumbers: true
-      autofocus: true
-      readOnly: false
-    textarea = @$div.querySelector('textarea.code')
-    isMobileSafari = ->
-       navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-       navigator.userAgent.match(/AppleWebKit/)
-    if isMobileSafari()
-      @retrieveNewCode = -> textarea.value
-    else
-      codeMirror = CodeMirror.fromTextArea textarea, options
-      makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
-      @retrieveNewCode = makeRetriever codeMirror
-
-    if @cases && @cases[0] && @cases[0].code
-      for textareaTests in @$div.querySelectorAll('textarea.expected')
-        options =
-          mode: 'ruby'
-          lineNumbers: true
-          readOnly: 'nocursor'
-          lineWrapping: true
-        CodeMirror.fromTextArea textareaTests, options
-
   render: (callback) ->
     props =
       code: @model.json.code || ''
@@ -64,10 +37,10 @@ class ExerciseController
       cases: @cases
       popup: @popup
       doCommand:
-        run: =>
-          @handleRun()
+        run: (code) =>
+          @handleRun code
           @checkForPassingTests()
-        debug: => @handleDebug()
+        debug: (code) => @handleDebug code
         allTestsPassed: => window.setTimeout (=> @handleAllTestsPassed()), 100
         next: if @model.paths.next_exercise == '' then null else (e) =>
           e.target.disabled = true
@@ -89,8 +62,7 @@ class ExerciseController
             @checkForPassingTests()
     React.renderComponent ExerciseComponent(props), @$div, callback
 
-  handleRun: ->
-    code = @retrieveNewCode()
+  handleRun: (code) ->
     allTestCode = _.map(@cases, (case_) -> case_.code || '').join('')
     for case_ in @cases
       case_.inputLineNum = 0
@@ -141,10 +113,10 @@ class ExerciseController
         case_.actual_output = @interpreter.getStdoutAndStderr()
     @render()
 
-  handleDebug: ->
+  handleDebug: (code) ->
     features = _.extend @features, showNextExercise: false, showNextRep: false,
       showingSolution: false
-    @_popupDebugger @retrieveNewCode(), features, {}
+    @_popupDebugger code, features, {}
 
   handleShowSolution: ->
     features = _.extend @features,
