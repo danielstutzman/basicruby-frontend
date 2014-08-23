@@ -34,6 +34,8 @@ class ExerciseController
     props =
       code: @model.json.code || ''
       color: @model.color
+      topicNum: @model.topic.num
+      topicTitle: @model.topic.title
       cases: @cases
       popup: @popup
       doCommand:

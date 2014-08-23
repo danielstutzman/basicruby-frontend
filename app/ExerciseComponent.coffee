@@ -6,17 +6,19 @@ RIGHT_ARROW = "\u279c"
 EM_DASH     = "\u2014"
 SOUTH_EAST  = "\u2198"
 X_FOR_CLOSE = "\u00d7"
+EM_DASH     = "\u2014"
 
 ExerciseComponent = React.createClass
 
   displayName: 'ExerciseComponent'
 
   propTypes:
-    color:     type.string.isRequired
-    code:      type.string.isRequired
-    cases:     type.array.isRequired
-    popup:     type.string
-    doCommand: type.object.isRequired
+    color:      type.string.isRequired
+    code:       type.string.isRequired
+    cases:      type.array.isRequired
+    popup:      type.string
+    topicTitle: type.string
+    doCommand:  type.object.isRequired
 
   getInitialState: ->
     retrieveNewCode: (->) # since it's a required property
@@ -52,6 +54,11 @@ ExerciseComponent = React.createClass
     { a, br, button, div, h1, input, label, p, span, textarea } = React.DOM
 
     div { className: "ExerciseComponent #{@props.color}" },
+
+      div { className: 'title' },
+        a { className: 'logo-link', href: '#/' }
+        EM_DASH
+        "#{@props.topicNum}. #{@props.topicTitle}"
 
       div { className: 'buttons-above' },
         if @props.color == 'yellow' || @props.color == 'blue'

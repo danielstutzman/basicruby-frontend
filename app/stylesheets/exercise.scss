@@ -11,31 +11,6 @@ body {
   margin: 0;
   font-family: sans-serif;
 
-  .title {
-    color: white;
-    letter-spacing: 3px;
-    padding-left: 60px;
-    width: 840px;
-
-    &.purple { background-color: #305; }
-    &.yellow { background-color: #873; }
-    &.blue   { background-color: #004; }
-    &.red    { background-color: #400; }
-    &.green  { background-color: #050; }
-    &.orange { background-color: #640; }
-
-    a.logo-link {
-      display: block;
-      text-decoration: none;
-      width: 142px;
-      height: 18px;
-      background-image: image-url('basic_ruby_white_x2.png');
-      background-repeat: no-repeat;
-      margin-right: 10px;
-      float: left;
-    }
-  }
-
   .video-script {
     position: absolute;
     top: 600px;
@@ -64,6 +39,31 @@ body {
   &.red    { .CodeMirror-linenumbers { background-color: #600; } }
   &.green  { .CodeMirror-linenumbers { background-color: #484; } }
   &.orange { .CodeMirror-linenumbers { background-color: #a60; } }
+
+  .title {
+    color: white;
+    letter-spacing: 3px;
+    padding-left: 60px;
+    width: 840px;
+
+    &.purple { background-color: #305; }
+    &.yellow { background-color: #873; }
+    &.blue   { background-color: #004; }
+    &.red    { background-color: #400; }
+    &.green  { background-color: #050; }
+    &.orange { background-color: #640; }
+
+    a.logo-link {
+      display: block;
+      text-decoration: none;
+      width: 142px;
+      height: 18px;
+      background-image: url('/images/basic_ruby_white_x2.png');
+      background-repeat: no-repeat;
+      margin-right: 10px;
+      float: left;
+    }
+  }
 
   .banner {
     font-size: 44pt;
