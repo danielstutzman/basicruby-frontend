@@ -47,7 +47,7 @@ MenuComponent = React.createClass
       line2
 
   doneIndicator: (topic, color) ->
-    { a, div } = React.DOM
+    { a, div, span } = React.DOM
     completed = topic.completed[color]
     a { className: 'done-indicator', href: '#' + completed.next },
       if color == 'purple'
@@ -57,9 +57,10 @@ MenuComponent = React.createClass
           UNCHECKED_BOX
       else
         if completed.num > 0
-          [UNCHECKED_BOX, div { className: 'num-completions' }, completed.num]
+          [UNCHECKED_BOX,
+            div({ key: 1, className: 'num-completions' }, completed.num)]
         else
-           UNCHECKED_BOX
+          UNCHECKED_BOX
 
   render: ->
     { br, div, h1, h2, span, table, tbody, td, th, tr } = React.DOM
