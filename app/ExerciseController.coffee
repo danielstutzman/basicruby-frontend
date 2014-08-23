@@ -11,10 +11,9 @@ class ExerciseController
     @popup           = null
 
   setup: =>
-    success = (model) =>
+    @service.getModel (model) =>
       @_setupInstanceVarsFromModel model
       @render()
-    @service.getModel().then success, @_handleAjaxError
 
   _setupInstanceVarsFromModel: (model) =>
     @model = model
@@ -171,11 +170,7 @@ class ExerciseController
       changeBackground 5, '.failed', 'FAILED'
 
   _sendPostMarkComplete: (nextUrl) =>
-    promise = @service.markComplete @model.exercise_id
-    promise.then (-> window.location.href = '#' + nextUrl), @_handleAjaxError
-
-  _handleAjaxError: (request) ->
-    console.error JSON.parse(request.responseText)
-    window.alert "#{request.status} #{request.statusText}"
+    @service.markComplete @model.exercise_id, ->
+      window.location.href = '#' + nextUrl
 
 module.exports = ExerciseController

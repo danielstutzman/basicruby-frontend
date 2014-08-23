@@ -12,14 +12,18 @@ if window.location.hostname == 'localhost'
   window.onerror = (message, url, lineNumber) ->
     window.alert "See console: #{message} at #{url}:#{lineNumber}"
 
+rpc = new easyXDM.Rpc({ remote: 'http://localhost:9292/easyxdm.html' },
+  { remote: { request: {} } })
+
 pathChanged = (path, oldPath) ->
 
   if path == '/'
-    window.reqwest 'http://localhost:9292/api/menu.json', (props) ->
-      React.renderComponent MenuComponent(props), $one('#screen')
+    rpc.request method: 'GET', url: '/api/menu.json', (result) ->
+      data = JSON.parse(result.data)
+      React.renderComponent MenuComponent(data), $one('#screen')
 
   else if match = /^\/([0-9]+)([PYBRGO])$/.exec(path)
-    service = new ExerciseService('http://localhost:9292', path)
+    service = new ExerciseService(rpc, path)
     controller = new ExerciseController($one('#screen'), service)
     controller.setup()
 

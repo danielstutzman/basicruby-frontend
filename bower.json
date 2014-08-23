@@ -7,8 +7,8 @@
     "jquery": "~1.8.2",
     "underscore": "~1.6.0",
     "codemirror": "~4.4.0",
-    "reqwest": "~1.1.2",
-    "hasher": "~1.2.0"
+    "hasher": "~1.2.0",
+    "easyxdm": "https://github.com/hull/easyXDM.git#2.4.17"
   },
   "devDependencies": {
     "jasmine": "~2.0.0"
