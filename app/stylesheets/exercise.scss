@@ -83,12 +83,12 @@ body {
 
     /* Hide because it looks too much a clickable play button:
       &.purple { background-image:
-      image-url('exercise_icons/play-button-purple-60.png'); } */
-    &.yellow { background-image: image-url('exercise_icons/light_bulb_60.png'); }
-    &.blue   { background-image: image-url('exercise_icons/question_mark_60.png'); }
-    &.red    { background-image: image-url('exercise_icons/red_bug_60.png'); }
-    &.green  { background-image: image-url('exercise_icons/pen-and-paper-60.png'); }
-    &.orange { background-image: image-url('exercise_icons/jack-o-lantern-60.png'); }
+      url('/images/exercise_icons/play-button-purple-60.png'); } */
+    &.yellow { background-image: url('/images/exercise_icons/light_bulb_60.png'); }
+    &.blue   { background-image: url('/images/exercise_icons/question_mark_60.png'); }
+    &.red    { background-image: url('/images/exercise_icons/red_bug_60.png'); }
+    &.green  { background-image: url('/images/exercise_icons/pen-and-paper-60.png'); }
+    &.orange { background-image: url('/images/exercise_icons/jack-o-lantern-60.png'); }
     &.red    { font-size: 32pt; padding-top: 20px; }
     &.green  { font-size: 31pt; padding-top: 20px; }
   }
@@ -112,7 +112,7 @@ body {
         top: 1.5px;
       }
       &.show-solution {
-        background-image: image-url('exercise_icons/light_bulb_60.png');
+        background-image: url('/images/exercise_icons/light_bulb_60.png');
         background-size: 20px 20px;
         background-repeat: no-repeat;
         padding-left: 30px;
@@ -155,7 +155,7 @@ body {
       position: relative;
     }
     .little-video-play-button {
-      background-image: image-url('play-button-overlay.png');
+      background-image: url('/images/play-button-overlay.png');
       position: absolute;
       top: 0;
       left: 0;
@@ -205,7 +205,7 @@ body {
         border-bottom: 1px black solid;
         padding: 0;
         &.hidden {
-          background-image: image-url('black-curtains.jpg');
+          background-image: url('/images/black-curtains.jpg');
           background-size: cover;
           .click-run {
             padding-top: 50px;
