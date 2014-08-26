@@ -22,7 +22,7 @@ pathChanged = (path, oldPath) ->
       data = JSON.parse(result.data)
       React.renderComponent MenuComponent(data), $one('#screen')
 
-  else if match = /^\/([0-9]+)([PYBRGO])$/.exec(path)
+  else if match = /^\/([0-9]+)([PYBRGO])(\/([0-9]+))?$/.exec(path)
     service = new ExerciseService(rpc, path)
     controller = new ExerciseController($one('#screen'), service)
     controller.setup()
