@@ -13,15 +13,17 @@ ExerciseComponent = React.createClass
   displayName: 'ExerciseComponent'
 
   propTypes:
-    color:      type.string.isRequired
-    code:       type.string.isRequired
-    cases:      type.array.isRequired
-    popup:      type.string
-    topicTitle: type.string
-    doCommand:  type.object.isRequired
+    color:       type.string.isRequired
+    initialCode: type.string.isRequired
+    cases:       type.array.isRequired
+    popup:       type.string
+    topicTitle:  type.string
+    doCommand:   type.object.isRequired
 
   getInitialState: ->
+    codeMirror: null
     retrieveNewCode: (->) # since it's a required property
+    initialCode: @props.initialCode
 
   componentDidMount: ->
     # setup CodeMirror
@@ -35,11 +37,13 @@ ExerciseComponent = React.createClass
        navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
        navigator.userAgent.match(/AppleWebKit/)
     if isMobileSafari()
-      @setState retrieveNewCode: (-> textarea.value)
+      @setState codeMirror: null, retrieveNewCode: (-> textarea.value)
     else
       codeMirror = CodeMirror.fromTextArea textarea, options
       makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
-      @setState retrieveNewCode: makeRetriever(codeMirror)
+      @setState
+        codeMirror: codeMirror
+        retrieveNewCode: makeRetriever(codeMirror)
 
     if @cases && @cases[0] && @cases[0].code
       for textareaTests in @$div.querySelectorAll('textarea.expected')
@@ -49,6 +53,12 @@ ExerciseComponent = React.createClass
           readOnly: 'nocursor'
           lineWrapping: true
         CodeMirror.fromTextArea textareaTests, options
+
+  componentDidUpdate: (prevProps, prevState) ->
+    if @state.codeMirror && @props.initialCode != prevProps.initialCode
+      @refs.code.getDOMNode().value = @props.initialCode
+      @state.codeMirror.setValue @props.initialCode
+      @setState initialCode: @props.initialCode
 
   render: ->
     { a, br, button, div, h1, input, label, p, span, textarea } = React.DOM
@@ -121,7 +131,7 @@ ExerciseComponent = React.createClass
         textarea
           ref: 'code'
           className: 'code'
-          defaultValue: @props.code
+          defaultValue: @props.initialCode
 
       CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)
 

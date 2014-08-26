@@ -31,7 +31,7 @@ class ExerciseController
 
   render: (callback) ->
     props =
-      code: @model.json.code || ''
+      initialCode: @model.json.code
       color: @model.color
       topicNum: @model.topic.num
       topicTitle: @model.topic.title
