@@ -13,12 +13,13 @@ ExerciseComponent = React.createClass
   displayName: 'ExerciseComponent'
 
   propTypes:
-    color:       type.string.isRequired
-    initialCode: type.string.isRequired
-    cases:       type.array.isRequired
-    popup:       type.string
-    topicTitle:  type.string
-    doCommand:   type.object.isRequired
+    color:        type.string.isRequired
+    initialCode:  type.string.isRequired
+    cases:        type.array.isRequired
+    popup:        type.string
+    topicTitle:   type.string
+    showThrobber: type.bool.isRequired
+    doCommand:    type.object.isRequired
 
   getInitialState: ->
     codeMirror: null
@@ -64,6 +65,9 @@ ExerciseComponent = React.createClass
     { a, br, button, div, h1, input, label, p, span, textarea } = React.DOM
 
     div { className: "ExerciseComponent #{@props.color}" },
+
+      if @props.showThrobber
+        div { className: 'throbber' }
 
       div { className: 'title' },
         a { className: 'logo-link', href: '#/' }

@@ -9,9 +9,11 @@ class ExerciseController
     @$div            = $div
     @service         = service
     @popup           = null
+    @waitingForAjax  = true
 
   setup: =>
     @service.getModel (model) =>
+      @waitingForAjax = false
       @_setupInstanceVarsFromModel model
       @render()
 
@@ -35,6 +37,7 @@ class ExerciseController
       color: @model.color
       topicNum: @model.topic.num
       topicTitle: @model.topic.title
+      showThrobber: @waitingForAjax
       cases: @cases
       popup: @popup
       doCommand:
@@ -170,7 +173,9 @@ class ExerciseController
       changeBackground 5, '.failed', 'FAILED'
 
   _sendPostMarkComplete: (nextUrl) =>
-    @service.markComplete @model.exercise_id, ->
+    @waitingForAjax = true
+    @render()
+    @service.markComplete @model.exercise_id, =>
       window.location.href = '#' + nextUrl
 
 module.exports = ExerciseController

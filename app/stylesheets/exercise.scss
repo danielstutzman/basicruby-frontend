@@ -23,6 +23,11 @@ body {
   }
 }
 
+@-webkit-keyframes slide {
+  from { transform: translateX(0%) }
+  to { transform: translateX(200%) }
+}
+
 .ExerciseComponent {
   width: 840px;
 
@@ -39,6 +44,21 @@ body {
   &.red    { .CodeMirror-linenumbers { background-color: #600; } }
   &.green  { .CodeMirror-linenumbers { background-color: #484; } }
   &.orange { .CodeMirror-linenumbers { background-color: #a60; } }
+
+  .throbber {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: white;
+    margin-left: -100%;
+    height: 2px;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-name: slide;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+  }
 
   .title {
     color: white;
