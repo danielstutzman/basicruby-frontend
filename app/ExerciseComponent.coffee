@@ -19,6 +19,8 @@ ExerciseComponent = React.createClass
     popup:        type.string
     topicTitle:   type.string
     showThrobber: type.bool.isRequired
+    youtubeId:    type.string
+    videoScript:  type.string
     doCommand:    type.object.isRequired
 
   getInitialState: ->
@@ -27,33 +29,34 @@ ExerciseComponent = React.createClass
     initialCode: @props.initialCode
 
   componentDidMount: ->
-    # setup CodeMirror
-    options =
-      mode: 'ruby'
-      lineNumbers: true
-      autofocus: true
-      readOnly: false
-    textarea = @refs.code.getDOMNode()
-    isMobileSafari = ->
-       navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-       navigator.userAgent.match(/AppleWebKit/)
-    if isMobileSafari()
-      @setState codeMirror: null, retrieveNewCode: (-> textarea.value)
-    else
-      codeMirror = CodeMirror.fromTextArea textarea, options
-      makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
-      @setState
-        codeMirror: codeMirror
-        retrieveNewCode: makeRetriever(codeMirror)
+    unless @props.youtubeId
+      # setup CodeMirror
+      options =
+        mode: 'ruby'
+        lineNumbers: true
+        autofocus: true
+        readOnly: false
+      textarea = @refs.code.getDOMNode()
+      isMobileSafari = ->
+         navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+         navigator.userAgent.match(/AppleWebKit/)
+      if isMobileSafari()
+        @setState codeMirror: null, retrieveNewCode: (-> textarea.value)
+      else
+        codeMirror = CodeMirror.fromTextArea textarea, options
+        makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
+        @setState
+          codeMirror: codeMirror
+          retrieveNewCode: makeRetriever(codeMirror)
 
-    if @cases && @cases[0] && @cases[0].code
-      for textareaTests in @$div.querySelectorAll('textarea.expected')
-        options =
-          mode: 'ruby'
-          lineNumbers: true
-          readOnly: 'nocursor'
-          lineWrapping: true
-        CodeMirror.fromTextArea textareaTests, options
+      if @cases && @cases[0] && @cases[0].code
+        for textareaTests in @$div.querySelectorAll('textarea.expected')
+          options =
+            mode: 'ruby'
+            lineNumbers: true
+            readOnly: 'nocursor'
+            lineWrapping: true
+          CodeMirror.fromTextArea textareaTests, options
 
   componentDidUpdate: (prevProps, prevState) ->
     if @state.codeMirror && @props.initialCode != prevProps.initialCode
@@ -62,9 +65,11 @@ ExerciseComponent = React.createClass
       @setState initialCode: @props.initialCode
 
   render: ->
-    { a, br, button, div, h1, input, label, p, span, textarea } = React.DOM
+    { a, br, button, div, h1, iframe, input, label, p, span, textarea
+      } = React.DOM
 
-    div { className: "ExerciseComponent #{@props.color}" },
+    div { className: ['ExerciseComponent', @props.color,
+        (if @props.videoScript then 'has-video-script' else '')].join(' ') },
 
       if @props.showThrobber
         div { className: 'throbber' }
@@ -83,11 +88,13 @@ ExerciseComponent = React.createClass
             onClick: (e) => @props.doCommand.nextRep e, true
             "#{RELOAD_ICON} See another"
 
-        if @props.color == 'yellow' || @props.color == 'blue'
+        if @props.color == 'yellow' || @props.color == 'blue' ||
+           @props.youtubeId
           button
             className: 'next'
-            disabled: @props.doCommand.next== null ||
-                      @props.cases[0].actual_output == undefined
+            disabled: @props.doCommand.next == null ||
+                      (@props.cases[0].actual_output == undefined &&
+                       @props.youtubeId == null)
             onClick: (e) => @props.doCommand.next e
             "#{RIGHT_ARROW} Go on"
 
@@ -123,21 +130,34 @@ ExerciseComponent = React.createClass
         when 'orange'
           div { className: 'banner green' }, 'Simplification'
 
-      div { className: 'col-1-of-2' },
-        label { className: 'code' },
-          switch @props.color
-            when 'purple' then 'Code to look over'
-            when 'yellow' then 'Code to look over'
-            when 'blue'   then 'Code to look over'
-            when 'red'    then 'Code to edit'
-            when 'green'  then 'Write code here'
-            when 'orange' then 'Code to simplify'
-        textarea
-          ref: 'code'
-          className: 'code'
-          defaultValue: @props.initialCode
+      if @props.youtubeId
+        iframe
+          width: 840
+          height: 480
+          frameBorder: 0
+          allowFullScreen: true
+          src: "//www.youtube.com/embed/#{@props.youtubeId}?rel=0&autoplay=0"
 
-      CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)
+      unless @props.youtubeId
+        div { className: 'col-1-of-2' },
+          label { className: 'code' },
+            switch @props.color
+              when 'purple' then 'Code to look over'
+              when 'yellow' then 'Code to look over'
+              when 'blue'   then 'Code to look over'
+              when 'red'    then 'Code to edit'
+              when 'green'  then 'Write code here'
+              when 'orange' then 'Code to simplify'
+          textarea
+            ref: 'code'
+            className: 'code'
+            defaultValue: @props.initialCode
+
+      unless @props.youtubeId
+        CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)
+
+      div { className: 'video-script' },
+        @props.videoScript
 
       if @props.popup == 'PASSED'
         div

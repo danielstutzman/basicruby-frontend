@@ -10,17 +10,6 @@ $code-font-size: 30pt;
 body {
   margin: 0;
   font-family: sans-serif;
-
-  .video-script {
-    position: absolute;
-    top: 600px;
-    height: 600px;
-    white-space: pre;
-    width: 100%;
-    font-size: 24pt;
-    line-height: 1.5;
-    overflow: scroll;
-  }
 }
 
 @-webkit-keyframes slide {
@@ -44,6 +33,25 @@ body {
   &.red    { .CodeMirror-linenumbers { background-color: #600; } }
   &.green  { .CodeMirror-linenumbers { background-color: #484; } }
   &.orange { .CodeMirror-linenumbers { background-color: #a60; } }
+
+  &.has-video-script {
+    padding-top: 30px;
+    margin-top: 100px;
+    width: 854px;
+    height: 480px;
+
+    .title, .banner { display: none; }
+    .video-script {
+      position: absolute;
+      top: 600px;
+      height: 600px;
+      white-space: pre;
+      width: 100%;
+      font-size: 24pt;
+      line-height: 1.5;
+      overflow: scroll;
+    }
+  }
 
   .throbber {
     position: fixed;

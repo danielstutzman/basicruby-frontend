@@ -33,13 +33,15 @@ class ExerciseController
 
   render: (callback) ->
     props =
-      initialCode: @model.json.code || '' # green exercises don't have code
-      color: @model.color
-      topicNum: @model.topic.num
-      topicTitle: @model.topic.title
+      initialCode:  @model.json.code || '' # green exercises don't have code
+      color:        @model.color
+      topicNum:     @model.topic.num
+      topicTitle:   @model.topic.title
       showThrobber: @waitingForAjax
-      cases: @cases
-      popup: @popup
+      cases:        @cases
+      popup:        @popup
+      youtubeId:    @model.json.youtube_id
+      videoScript:  @model.json.video_script
       doCommand:
         run: (code) =>
           @handleRun code
