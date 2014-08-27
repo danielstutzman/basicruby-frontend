@@ -49,11 +49,13 @@ class ExerciseController
         next: @model.paths.next_exercise && (e) =>
           e.target.disabled = true
           @_sendPostMarkComplete @model.paths.next_exercise
-        nextRep: @model.paths.next_rep && (e, success) =>
+        nextRep: @model.paths.next_rep && (e, solvedExercise) =>
           e.target.disabled = true
-          if success
+          if solvedExercise
+            # mark complete and go on
             @_sendPostMarkComplete @model.paths.next_rep
           else
+            # don't mark complete but still go on
             window.location.href = '#' + @model.paths.next_rep
         showSolution: => @handleShowSolution()
         closePopup: => @popup = null; @render()
