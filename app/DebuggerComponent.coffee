@@ -99,13 +99,17 @@ DebuggerComponent = React.createClass
           button
             className: 'do-another'
             disabled: @props.doCommand.nextRep == null
-            onClick: (e) => @props.doCommand.nextRep e
+            onClick: (e) =>
+              @props.doCommand.close()
+              @props.doCommand.nextRep e
             "#{RELOAD_ICON} Try another one"
         if @props.features.showNextExercise
           button
             className: 'next'
             disabled: @props.doCommand.nextExercise == null
-            onClick: (e) => @props.doCommand.nextExercise e
+            onClick: (e) =>
+              @props.doCommand.close()
+              @props.doCommand.nextExercise e
             "#{RIGHT_ARROW} Go on"
 
 module.exports = DebuggerComponent
