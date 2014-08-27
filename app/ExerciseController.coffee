@@ -46,10 +46,10 @@ class ExerciseController
           @checkForPassingTests()
         debug: (code) => @handleDebug code
         allTestsPassed: => window.setTimeout (=> @handleAllTestsPassed()), 100
-        next: if @model.paths.next_exercise == '' then null else (e) =>
+        next: @model.paths.next_exercise && (e) =>
           e.target.disabled = true
           @_sendPostMarkComplete @model.paths.next_exercise
-        nextRep: if @model.paths.next_rep == '' then null else (e, success) =>
+        nextRep: @model.paths.next_rep && (e, success) =>
           e.target.disabled = true
           if success
             @_sendPostMarkComplete @model.paths.next_rep
@@ -125,7 +125,7 @@ class ExerciseController
   handleShowSolution: ->
     features = _.extend @features,
       showNextExercise: false
-      showNextRep: @model.paths.next_rep != ''
+      showNextRep: @model.paths.next_rep != null
       showingSolution: true
     doCommand =
       nextExercise: (e) =>
