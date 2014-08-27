@@ -33,7 +33,7 @@ class ExerciseController
 
   render: (callback) ->
     props =
-      initialCode: @model.json.code
+      initialCode: @model.json.code || '' # green exercises don't have code
       color: @model.color
       topicNum: @model.topic.num
       topicTitle: @model.topic.title
