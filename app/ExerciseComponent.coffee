@@ -145,14 +145,16 @@ ExerciseComponent = React.createClass
 
       unless @props.youtubeId
         div { className: 'col-1-of-2' },
-          label { className: 'code' },
-            switch @props.color
-              when 'purple' then 'Code to look over'
-              when 'yellow' then 'Code to look over'
-              when 'blue'   then 'Code to look over'
-              when 'red'    then 'Code to edit'
-              when 'green'  then 'Write code here'
-              when 'orange' then 'Code to simplify'
+          div { className: 'code-header' },
+            div { className: 'indent' }
+              label { className: 'code' },
+                switch @props.color
+                  when 'purple' then 'Code to look over'
+                  when 'yellow' then 'Code to look over'
+                  when 'blue'   then 'Code to look over'
+                  when 'red'    then 'Code to edit'
+                  when 'green'  then 'Write code here'
+                  when 'orange' then 'Code to simplify'
           textarea
             ref: 'code'
             className: 'code'
@@ -161,6 +163,8 @@ ExerciseComponent = React.createClass
 
       unless @props.youtubeId
         CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)
+
+      br { style: { clear: 'both' } }
 
       div { className: 'video-script' },
         @props.videoScript
