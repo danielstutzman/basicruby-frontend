@@ -74,13 +74,6 @@ body {
     padding-left: 60px;
     width: 840px;
 
-    &.purple { background-color: #305; }
-    &.yellow { background-color: #873; }
-    &.blue   { background-color: #004; }
-    &.red    { background-color: #400; }
-    &.green  { background-color: #050; }
-    &.orange { background-color: #640; }
-
     a.logo-link {
       display: block;
       text-decoration: none;
@@ -92,6 +85,12 @@ body {
       float: left;
     }
   }
+  &.purple .title { background-color: #305; }
+  &.yellow .title { background-color: #873; }
+  &.blue   .title { background-color: #004; }
+  &.red    .title { background-color: #400; }
+  &.green  .title { background-color: #050; }
+  &.orange .title { background-color: #640; }
 
   .banner {
     font-size: 44pt;
