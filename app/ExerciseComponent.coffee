@@ -172,6 +172,8 @@ ExerciseComponent = React.createClass
       div { className: 'video-script' },
         @props.videoScript
 
+      div { className: 'debugger', style: { display: 'none' } }
+
       if @props.popup == 'PASSED'
         div
           className: 'popup passed'
