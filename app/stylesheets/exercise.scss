@@ -21,18 +21,18 @@ body {
 .ExerciseComponent {
   width: 100%;
 
-  .purple, .purple .CodeMirror-linenumbers,
-    .purple .col-1-of-2 .code-header .indent { background-color: #709; }
-  .yellow, .yellow .CodeMirror-linenumbers,
-    .yellow .col-1-of-2 .code-header .indent { background-color: #a94; }
-  .blue, .blue .CodeMirror-linenumbers,
-    .blue .col-1-of-2 .code-header .indent { background-color: #55a; }
-  .red, .red .CodeMirror-linenumbers,
-    .red .col-1-of-2 .code-header .indent { background-color: #600; }
-  .green, .green .CodeMirror-linenumbers,
-    .green .col-1-of-2 .code-header .indent { background-color: #484; }
-  .orange, .orange .CodeMirror-linenumbers,
-    .orange .col-1-of-2 .code-header .indent { background-color: #a60; }
+  &.purple, &.purple .CodeMirror-linenumbers,
+    &.purple .col-1-of-2 .code-header .indent { background-color: #709; }
+  &.yellow, &.yellow .CodeMirror-linenumbers,
+    &.yellow .col-1-of-2 .code-header .indent { background-color: #a94; }
+  &.blue, &.blue .CodeMirror-linenumbers,
+    &.blue .col-1-of-2 .code-header .indent { background-color: #55a; }
+  &.red, &.red .CodeMirror-linenumbers,
+    &.red .col-1-of-2 .code-header .indent { background-color: #600; }
+  &.green, &.green .CodeMirror-linenumbers,
+    &.green .col-1-of-2 .code-header .indent { background-color: #484; }
+  &.orange, &.orange .CodeMirror-linenumbers,
+    &.orange .col-1-of-2 .code-header .indent { background-color: #a60; }
 
   &.has-video-script {
     padding-top: 30px;
