@@ -146,8 +146,7 @@ class ExerciseController
     @_popupDebugger @model.json.solution, features, doCommand
 
   _popupDebugger: (code, features, doCommand) ->
-    for div in document.querySelectorAll('.debugger')
-      div.style.display = 'block'
+    for div in document.querySelectorAll('.debugger-parent')
       new DebuggerController(code, div, features, @model.json, doCommand).setup()
 
   checkForPassingTests: ->
