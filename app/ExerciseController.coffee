@@ -60,7 +60,7 @@ class ExerciseController
             # don't mark complete but still go on
             window.location.href = '#' + @model.paths.next_rep
         showSolution: => @handleShowSolution()
-        closePopup: => @popup = null; @render()
+        closePopup: => @handleClosePopup()
         setPredictedOutput: (caseNum, newText) =>
           @cases[caseNum].predicted_output = newText
           @render()
@@ -69,6 +69,11 @@ class ExerciseController
           if _.every @cases, isCaseFinished
             @checkForPassingTests()
     React.renderComponent ExerciseComponent(props), @$div, callback
+
+  handleClosePopup: ->
+    if @popup != null
+      @popup = null
+      @render()
 
   handleRun: (code) ->
     allTestCode = _.map(@cases, (case_) -> case_.code || '').join('')

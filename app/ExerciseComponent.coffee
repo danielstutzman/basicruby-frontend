@@ -44,6 +44,7 @@ ExerciseComponent = React.createClass
         @setState codeMirror: null, retrieveNewCode: (-> textarea.value)
       else
         codeMirror = CodeMirror.fromTextArea textarea, options
+        codeMirror.on 'focus', => @props.doCommand.closePopup()
         makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
         @setState
           codeMirror: codeMirror
@@ -56,7 +57,8 @@ ExerciseComponent = React.createClass
             lineNumbers: true
             readOnly: 'nocursor'
             lineWrapping: true
-          CodeMirror.fromTextArea textareaTests, options
+          codeMirror = CodeMirror.fromTextArea textareaTests, options
+          codeMirror.on 'focus', => @props.doCommand.closePopup()
 
   componentDidUpdate: (prevProps, prevState) ->
     if @state.codeMirror && @props.initialCode != prevProps.initialCode
@@ -86,6 +88,7 @@ ExerciseComponent = React.createClass
             disabled: @props.doCommand.nextRep == null ||
                       @props.cases[0].actual_output == undefined
             onClick: (e) => @props.doCommand.nextRep e, true
+            onFocus: => @props.doCommand.closePopup()
             "#{RELOAD_ICON} See another"
 
         if @props.color == 'yellow' || @props.color == 'blue' ||
@@ -96,12 +99,14 @@ ExerciseComponent = React.createClass
                       (@props.cases[0].actual_output == undefined &&
                        @props.youtubeId == null)
             onClick: (e) => @props.doCommand.next e
+            onFocus: => @props.doCommand.closePopup()
             "#{RIGHT_ARROW} Go on"
 
         if @props.color == 'red' || @props.color == 'green'
           button
             className: 'show-solution'
             onClick: => @props.doCommand.showSolution()
+            onFocus: => @props.doCommand.closePopup()
             'Show solution'
 
       switch @props.color
@@ -152,6 +157,7 @@ ExerciseComponent = React.createClass
             ref: 'code'
             className: 'code'
             defaultValue: @props.initialCode
+            onFocus: => @props.doCommand.closePopup()
 
       unless @props.youtubeId
         CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)
