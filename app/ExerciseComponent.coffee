@@ -1,4 +1,5 @@
-CasesComponent = require './CasesComponent'
+CasesComponent     = require './CasesComponent'
+SetupResizeHandler = require './setup_resize_handler'
 
 type        = React.PropTypes
 RELOAD_ICON = "\u27f3"
@@ -39,11 +40,13 @@ ExerciseComponent = React.createClass
       isMobileSafari = ->
          navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
          navigator.userAgent.match(/AppleWebKit/)
+      codeMirrors = []
       if isMobileSafari()
         @setState codeMirror: null, retrieveNewCode: (-> textarea.value)
       else
         codeMirror = CodeMirror.fromTextArea textarea, options
         codeMirror.on 'focus', => @props.doCommand.closePopup()
+        codeMirrors.push codeMirror
         makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
         @setState
           codeMirror: codeMirror
@@ -58,6 +61,10 @@ ExerciseComponent = React.createClass
             lineWrapping: true
           codeMirror = CodeMirror.fromTextArea textareaTests, options
           codeMirror.on 'focus', => @props.doCommand.closePopup()
+          codeMirrors.push codeMirror
+
+      # TODO: destroy old resize handler before setting up a new one
+      SetupResizeHandler.setupResizeHandler codeMirrors
 
   componentDidUpdate: (prevProps, prevState) ->
     if @state.codeMirror && @props.initialCode != prevProps.initialCode
@@ -149,11 +156,11 @@ ExerciseComponent = React.createClass
                     when 'red'    then 'Code to edit'
                     when 'green'  then 'Write code here'
                     when 'orange' then 'Code to simplify'
-            textarea
-              ref: 'code'
-              className: 'code'
-              defaultValue: @props.initialCode
-              onFocus: => @props.doCommand.closePopup()
+            div { className: 'textarea-wrapper' },
+              textarea
+                className: 'code'
+                defaultValue: @props.code
+                onFocus: => @props.doCommand.closePopup()
           div { className: 'margin' } # because %-based margins don't work
 
       unless @props.youtubeId

@@ -2,7 +2,6 @@ DebuggerController = require './DebuggerController'
 ExerciseController = require './ExerciseController'
 ExerciseComponent  = require './ExerciseComponent'
 ExerciseService    = require './ExerciseService'
-SetupResizeHandler = require './setup_resize_handler'
 MenuComponent      = require './MenuComponent'
 
 $one = (selector) -> document.querySelector(selector)
