@@ -36,6 +36,7 @@ ExerciseComponent = React.createClass
         lineNumbers: true
         autofocus: true
         readOnly: false
+        lineWrapping: true
       textarea = @refs.code.getDOMNode()
       isMobileSafari = ->
          navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
@@ -156,12 +157,14 @@ ExerciseComponent = React.createClass
                     when 'red'    then 'Code to edit'
                     when 'green'  then 'Write code here'
                     when 'orange' then 'Code to simplify'
-            div { className: 'textarea-wrapper' },
-              textarea
-                ref: 'code'
-                className: 'code'
-                defaultValue: @props.code
-                onFocus: => @props.doCommand.closePopup()
+            div { className: 'code-wrapper' },
+              div { className: 'code-wrapper2' },
+                div { className: 'code-wrapper3' },
+                  textarea
+                    ref: 'code'
+                    className: 'code'
+                    defaultValue: @props.code
+                    onFocus: => @props.doCommand.closePopup()
           div { className: 'margin' } # because %-based margins don't work
 
       unless @props.youtubeId
@@ -171,8 +174,6 @@ ExerciseComponent = React.createClass
 
       div { className: 'video-script' },
         @props.videoScript
-
-      div { className: 'debugger-parent' }
 
       if @props.popup == 'PASSED'
         div
