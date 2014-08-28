@@ -90,6 +90,4 @@ task :watch do
       &
   ].join(' ')
   sh command
-
-  sh 'node_modules/.bin/livereload build/javascripts -i 500 &'
 end
