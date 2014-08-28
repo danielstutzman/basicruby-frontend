@@ -258,6 +258,7 @@ body {
         //}
         span.stderr {
           color: red;
+          white-space: normal;
         }
         textarea.expected {
           height: 60px;
