@@ -158,6 +158,7 @@ ExerciseComponent = React.createClass
                     when 'orange' then 'Code to simplify'
             div { className: 'textarea-wrapper' },
               textarea
+                ref: 'code'
                 className: 'code'
                 defaultValue: @props.code
                 onFocus: => @props.doCommand.closePopup()
