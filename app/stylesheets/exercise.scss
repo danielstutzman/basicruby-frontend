@@ -79,7 +79,7 @@ body {
       text-decoration: none;
       width: 142px;
       height: 18px;
-      background-image: url('/images/basic_ruby_white_x2.png');
+      background-image: url('../images/basic_ruby_white_x2.png');
       background-repeat: no-repeat;
       margin-right: 10px;
       float: left;
@@ -110,12 +110,12 @@ body {
 
     /* Hide because it looks too much a clickable play button:
       &.purple { background-image:
-      url('/images/exercise_icons/play-button-purple-60.png'); } */
-    &.yellow { background-image: url('/images/exercise_icons/light_bulb_60.png'); }
-    &.blue   { background-image: url('/images/exercise_icons/question_mark_60.png'); }
-    &.red    { background-image: url('/images/exercise_icons/red_bug_60.png'); }
-    &.green  { background-image: url('/images/exercise_icons/pen-and-paper-60.png'); }
-    &.orange { background-image: url('/images/exercise_icons/jack-o-lantern-60.png'); }
+      url('../images/exercise_icons/play-button-purple-60.png'); } */
+    &.yellow { background-image: url('../images/exercise_icons/light_bulb_60.png'); }
+    &.blue   { background-image: url('../images/exercise_icons/question_mark_60.png'); }
+    &.red    { background-image: url('../images/exercise_icons/red_bug_60.png'); }
+    &.green  { background-image: url('../images/exercise_icons/pen-and-paper-60.png'); }
+    &.orange { background-image: url('../images/exercise_icons/jack-o-lantern-60.png'); }
     &.red    { font-size: 32pt; padding-top: 20px; }
     &.green  { font-size: 31pt; padding-top: 20px; }
   }
@@ -138,7 +138,7 @@ body {
         float: left;
       }
       &.show-solution {
-        background-image: url('/images/exercise_icons/light_bulb_60.png');
+        background-image: url('../images/exercise_icons/light_bulb_60.png');
         background-size: 20px 20px;
         background-repeat: no-repeat;
         padding-left: 30px;
@@ -260,7 +260,7 @@ body {
         padding: 0;
 
         &.hidden {
-          background-image: url('/images/black-curtains.jpg');
+          background-image: url('../images/black-curtains.jpg');
           background-size: cover;
           position: relative;
 

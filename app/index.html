@@ -1,10 +1,12 @@
 <html>
   <head>
+    <!-- build:css stylesheets/all.css -->
     <link rel="stylesheet" type="text/css" href="/stylesheets/debugger.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/exercise.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/menu.css" />
     <link rel="stylesheet" type="text/css"
       href="/bower_components/codemirror/lib/codemirror.css" />
+    <!-- endbuild -->
   </head>
   <body>
     <div id='screen'></div>
@@ -17,6 +19,8 @@
         oldDebug.apply(window.console, arguments);
       };
     </script>
+
+    <!-- build:js javascripts/vendor.min.js -->
     <script src="/bower_components/react/react.js"></script>
     <script src="/bower_components/underscore/underscore.js"></script>
     <script src="/bower_components/codemirror/lib/codemirror.js"></script>
@@ -24,8 +28,13 @@
     <script src='/bower_components/js-signals/dist/signals.js'></script>
     <script src='/bower_components/hasher/dist/js/hasher.js'></script>
     <script src='/bower_components/easyxdm/easyXDM.js'></script>
+    <!-- endbuild -->
+    <!-- build:js javascripts/basicruby.min.js -->
     <script src='/bower_components/basicruby-interpreter/dist/opal.js'></script>
     <script src='/bower_components/basicruby-interpreter/dist/basicruby-interpreter.js'></script>
-    <script src='/javascripts/browserified.js'></script>
+    <!-- endbuild -->
+    <!-- build:js javascripts/browserified.min.js -->
+    <script src='javascripts/browserified.js'></script>
+    <!-- endbuild -->
   </body>
 </html>

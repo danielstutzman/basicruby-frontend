@@ -6,3 +6,4 @@
 /.sass-cache
 /test/browserified-coverage.js
 .*.swp
+/dist

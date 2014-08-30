@@ -24,10 +24,30 @@ file 'build/javascripts/browserified.js' => Dir.glob('app/*.coffee') do |task|
   command = %W[
     cd build/coffee &&
     ../../node_modules/.bin/browserify
-      #{ENV['RAILS_ENV'] == 'assets' ? '-t uglifyify' : ''}
       --insert-global-vars ''
       -d
       #{paths}
+  ].join(' ')
+  create_with_sh command, "../../#{task.name}"
+end
+
+file 'build/javascripts/browserified.min.js' => Dir.glob('app/*.coffee') do |task|
+  mkdir_p 'build/javascripts'
+
+  sh 'coffee -bc -o build/coffee/app app'
+
+  paths = task.prerequisites.map { |path|
+    path.gsub(%r[^app/(.*)\.coffee$], 'app/\1.js')
+  }.join(' ')
+  command = %W[
+    cd build/coffee &&
+    ../../node_modules/.bin/browserify
+      --insert-global-vars ''
+      -d
+      #{paths}
+  | node
+      ../../node_modules/exorcist/bin/exorcist.js
+      ../../build/javascripts/browserified.min.js.map
   ].join(' ')
   create_with_sh command, "../../#{task.name}"
 end
@@ -65,6 +85,7 @@ end
 
 task :default => %W[
   build/javascripts/browserified.js
+  build/javascripts/browserified.min.js
   build/stylesheets
   build/javascripts/browserified-coverage.js
 ]
