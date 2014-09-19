@@ -53,8 +53,13 @@ module.exports = function(grunt) {
     cssmin: {
       combine: {
         files: {
-          'dist/stylesheets/all.css': ['build/stylesheets/*.css'],
-          'dist/stylesheets/tutor/tutor.css': ['build/stylesheets/tutor/*.css'],
+          'dist/stylesheets/all.css': [
+            'build/stylesheets/*.css',
+            'bower_components/codemirror/lib/codemirror.css',
+          ],
+          'dist/stylesheets/tutor/tutor.css': [
+            'build/stylesheets/tutor/*.css',
+          ],
         }
       }
     },
