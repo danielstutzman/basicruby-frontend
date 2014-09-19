@@ -118,6 +118,7 @@ module.exports = function(grunt) {
     smartrev: {
       options: {
         cwd: 'dist',
+        baseUrl: '..',
         noRename: ['index.html'],
       },
       dist: {
