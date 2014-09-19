@@ -73,6 +73,7 @@ module.exports = function(grunt) {
         },
         files: {
           'dist/javascripts/basicruby.min.js': [
+            'bower_components/basicruby-interpreter/dist/opal.js',
             'bower_components/basicruby-interpreter/dist/basicruby-interpreter.js',
             'build/javascripts/browserified.min.js',
           ],
