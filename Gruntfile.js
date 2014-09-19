@@ -65,6 +65,9 @@ module.exports = function(grunt) {
     },
     uglify: {
       bower_min: {
+        options: {
+          ASCIIOnly: true, // fixes codemirror bug at https://groups.google.com/forum/#!topic/codemirror/OgTL-Enm3QI
+        },
         files: {
           'bower_components/underscore/underscore.min.js': ['bower_components/underscore/underscore.js'],
           'bower_components/codemirror/lib/codemirror.min.js': ['bower_components/codemirror/lib/codemirror.js'],
