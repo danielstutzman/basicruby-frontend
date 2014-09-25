@@ -24,6 +24,9 @@ class ApiService
   getTutorMenu: (callback) ->
     @_request 'GET', '/api/tutor.json', {}, callback
 
+  getTutorExercise: (taskId, callback) ->
+    @_request 'GET', "/api/tutor/exercise/#{taskId}.json", {}, callback
+
   getExercise: (path, callback) ->
     @_request 'GET', "/api/exercise#{path}.json", {}, callback
 
