@@ -5,14 +5,15 @@ DebuggerController    = require './DebuggerController'
 ExerciseComponent     = require './ExerciseComponent'
 
 class ExerciseController
-  constructor: ($div, service) ->
+  constructor: ($div, service, path) ->
     @$div            = $div
     @service         = service
+    @path            = path
     @popup           = null
     @waitingForAjax  = true
 
   setup: =>
-    @service.getModel (model) =>
+    @service.getExercise @path, (model) =>
       @waitingForAjax = false
       @_setupInstanceVarsFromModel model
       @render()

@@ -1,8 +1,8 @@
-class ExerciseService
+class ApiService
 
-  constructor: (rpc, path) ->
-    @rpc = rpc
-    @path = path
+  constructor: (apiHost) ->
+    @rpc = new easyXDM.Rpc({ remote: "http://#{apiHost}/easyxdm.html" },
+      { remote: { request: {} } })
 
   _request: (method, url, data, callback) ->
     success = (result) ->
@@ -13,11 +13,17 @@ class ExerciseService
       window.alert "#{request.status} #{request.statusText}"
     @rpc.request { method, url, data }, success, error
 
-  getModel: (callback) ->
-    @_request 'GET', "/api/exercise#{@path}.json", {}, callback
+  getMenu: (callback) ->
+    @_request 'GET', '/api/menu.json', {}, callback
+
+  getTutorMenu: (callback) ->
+    @_request 'GET', '/api/tutor.json', {}, callback
+
+  getExercise: (path, callback) ->
+    @_request 'GET', "/api/exercise#{path}.json", {}, callback
 
   markComplete: (exerciseId, callback) =>
     @_request 'POST', "/api/mark_complete.json",
       { exercise_id: exerciseId }, callback
 
-module.exports = ExerciseService
+module.exports = ApiService
