@@ -9,8 +9,13 @@ class ApiService
       data = JSON.parse(result.data)
       callback data
     error = (result) ->
-      console.error JSON.parse(request.responseText)
-      window.alert "#{request.status} #{request.statusText}"
+      console.error result
+      if result.data && result.data.data
+        window.alert result.data.data
+      else if result.data
+        window.alert result.data
+      else
+        window.alert result
     @rpc.request { method, url, data }, success, error
 
   getMenu: (callback) ->
