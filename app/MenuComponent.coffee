@@ -8,39 +8,15 @@ MenuComponent = React.createClass
 
   displayName: 'MenuComponent'
 
-  imageTag: (path, atts) ->
-    React.DOM.img _.extend(atts, { src: "/images/#{path}" })
-
   humanize: (s) ->
     s.replace(/_/g, ' ').replace /(\w+)/g, (match) ->
       match.charAt(0).toUpperCase() + match.slice(1)
 
-  imageTagForExerciseColor: (color, size) ->
-    switch color
-      when 'purple'
-        @imageTag 'exercise_icons/play-button-purple-60.png',
-          width: size, height: size
-      when 'yellow'
-        @imageTag 'exercise_icons/light_bulb_60.png',
-          width: size, height: size
-      when 'red'
-        @imageTag 'exercise_icons/red_bug_60.png',
-          width: size, height: size
-      when 'blue'
-        @imageTag 'exercise_icons/question_mark_60.png',
-          width: size, height: size
-      when 'green'
-        @imageTag 'exercise_icons/pen-and-paper-60.png',
-          width: size, height: size
-      when 'orange'
-        @imageTag 'exercise_icons/jack-o-lantern-60.png',
-          width: size, height: size
-
   thForColor: (color, line1, line2) ->
-    { br, th } = React.DOM
+    { br, th, div } = React.DOM
     th
       className: color
-      @imageTagForExerciseColor color, 60
+      div { className: 'exercise-icon' }
       br {}
       line1
       br {}
@@ -84,8 +60,7 @@ MenuComponent = React.createClass
             br { key: 1 }
             br { key: 2 }
             if level == 'intermediate'
-              @imageTag 'under_construction.png', style: { float: 'right' },
-                title: 'Under construction'
+              div { className: 'under-construction-icon' }
             h2 { key: 3 }, @humanize(level)
             td { className: 'purple', key: 'purple' }
             td { className: 'yellow', key: 'yellow' }
@@ -98,8 +73,7 @@ MenuComponent = React.createClass
             th
               className: 'title'
               if topic.under_construction
-                @imageTag 'under_construction.png', style: { float: 'left' },
-                  title: 'Under construction'
+                div { className: 'under-construction-icon' }
               span { dangerouslySetInnerHTML: { __html: topic.title_html } }
 
             _.map ['purple', 'yellow', 'blue', 'red', 'green'], (color) =>

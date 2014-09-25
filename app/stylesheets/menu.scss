@@ -111,11 +111,19 @@
       padding: 0;
       margin: 0;
     }
+    .exercise-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto;
+    }
   }
   td.purple, th.purple {
     background-color:#cae;
     a.done-indicator {
       color: #508;
+    }
+    .exercise-icon {
+      background-image: url('../images/exercise_icons/play-button-purple-60.png');
     }
   }
   td.yellow, th.yellow {
@@ -123,11 +131,17 @@
     a.done-indicator {
       color: #cb0;
     }
+    .exercise-icon {
+      background-image: url('../images/exercise_icons/light_bulb_60.png');
+    }
   }
   td.blue, th.blue {
     background-color:#acf;
     a.done-indicator {
       color: #44f;
+    }
+    .exercise-icon {
+      background-image: url('../images/exercise_icons/question_mark_60.png');
     }
   }
   td.red, th.red {
@@ -135,11 +149,17 @@
     a.done-indicator {
       color: #f44;
     }
+    .exercise-icon {
+      background-image: url('../images/exercise_icons/red_bug_60.png');
+    }
   }
   td.green, th.green {
     background-color:#afa;
     a.done-indicator {
       color: #0a0;
+    }
+    .exercise-icon {
+      background-image: url('../images/exercise_icons/pen-and-paper-60.png');
     }
   }
   td.orange, th.orange {
@@ -147,8 +167,17 @@
     a.done-indicator {
       color: #e70;
     }
+    .exercise-icon {
+      background-image: url('../images/exercise_icons/jack-o-lantern-60.png');
+    }
   }
   td a.done-indicator:hover {
     color: #fff;
+  }
+  div.under-construction-icon {
+    float: left;
+    width: 48px;
+    height: 48px;
+    background-image: url('../images/under_construction.png');
   }
 }
