@@ -11,7 +11,12 @@ if window.location.hostname == 'localhost'
   window.onerror = (message, url, lineNumber) ->
     window.alert "See console: #{message} at #{url}:#{lineNumber}"
 
-rpc = new easyXDM.Rpc({ remote: 'http://localhost:9292/easyxdm.html' },
+if window.location.hostname == 'localhost'
+  apiHost = 'localhost:9292'
+else
+  apiHost = 'basicruby.danstutzman.com'
+
+rpc = new easyXDM.Rpc({ remote: "http://#{apiHost}/easyxdm.html" },
   { remote: { request: {} } })
 
 pathChanged = (path, oldPath) ->
