@@ -5,7 +5,6 @@
     "browserify": "~> 3.33",
     "exorcist": "~0.1.6",
     "coffeeify": "~0.6.0",
-    "uglifyify": "~2.1.1",
     "istanbul": "~0.2.4",
     "phantomjs": "~1.9.7-15",
     "html": "0.0.7",
@@ -19,7 +18,8 @@
     "grunt-contrib-cssmin": "~0.10.0",
     "grunt-rev": "~0.1.0",
     "grunt-contrib-imagemin": "~0.8.1",
-    "grunt-contrib-clean": "~0.6.0"
+    "grunt-contrib-clean": "~0.6.0",
+    "uglify-js": "~2.4.15"
   },
   "browser": {
     "react": "./app/shims/react.js",

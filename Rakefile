@@ -43,11 +43,8 @@ file 'build/javascripts/browserified.min.js' => Dir.glob('app/*.coffee') do |tas
     cd build/coffee &&
     ../../node_modules/.bin/browserify
       --insert-global-vars ''
-      -d
       #{paths}
-  | node
-      ../../node_modules/exorcist/bin/exorcist.js
-      ../../build/javascripts/browserified.min.js.map
+  | ../../node_modules/uglify-js/bin/uglifyjs -b ascii-only=true
   ].join(' ')
   create_with_sh command, "../../#{task.name}"
 end
