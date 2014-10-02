@@ -57,10 +57,10 @@ TutorExerciseComponent = React.createClass
       div { className: 'footer' },
         'Online Ruby Tutor is (C) 2013 '
         a { href: 'http://www.danielstutzman.com/' }, 'Daniel Stutzman'
-        '.'
+        '. '
         a { href: 'https://github.com/danielstutzman/online-ruby-tutor/issues' },
           'File a bug '
-        'or'
+        'or '
         a { href: 'https://github.com/danielstutzman/online-ruby-tutor' },
           'submit a pull request. '
         'Visualizations drawn by '
