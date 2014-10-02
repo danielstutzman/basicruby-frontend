@@ -78,6 +78,8 @@ end
 
 file 'build/stylesheets' => Dir.glob('app/stylesheets/*.*css') do |task|
   sh 'sass --update app/stylesheets:build/stylesheets'
+  sh 'sass --update bower_components/pytutor-on-bower/css:build/stylesheets'
+  sh 'cp -R bower_components/pytutor-on-bower/css/images/ build/stylesheets/images'
 end
 
 task :default => %W[

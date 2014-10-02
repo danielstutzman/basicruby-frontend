@@ -5,6 +5,7 @@ ExerciseComponent      = require './ExerciseComponent'
 MenuComponent          = require './MenuComponent'
 TutorExerciseComponent = require './TutorExerciseComponent'
 TutorMenuComponent     = require './TutorMenuComponent'
+Tutor                  = require './tutor'
 
 $one = (selector) -> document.querySelector(selector)
 $all = (selector) -> document.querySelectorAll(selector)
@@ -31,8 +32,9 @@ pathChanged = (path, oldPath) ->
 
   else if match = /^\/tutor\/exercise\/([CD][0-9]+)$/.exec(path)
     taskId = match[1]
-    service.getTutorExercise taskId, (data) ->
-      React.renderComponent TutorExerciseComponent(data), $one('#screen')
+    service.getTutorExercise taskId, (exercise) ->
+      React.renderComponent TutorExerciseComponent(exercise), $one('#screen'), ->
+        Tutor.post_render_online_ruby_tutor(exercise)
 
   else if match = /^\/([0-9]+)([PYBRGO])(\/([0-9]+))?$/.exec(path)
     controller = new ExerciseController($one('#screen'), service, path)

@@ -37,6 +37,7 @@ module.exports = function(grunt) {
       options: {
         separator: ';',
       },
+      // Note: make sure to update app/index if there are any changes
       vendor: {
         src: [
           'bower_components/react/react.min.js',
@@ -49,16 +50,27 @@ module.exports = function(grunt) {
         ],
         dest: 'dist/javascripts/vendor.min.js',
       },
+      pytutor: {
+        src: [
+          'bower_components/pytutor-on-bower/js/*.js',
+        ],
+        dest: 'dist/javascripts/pytutor.js',
+      },
     },
     cssmin: {
       combine: {
         files: {
+          // Note: make sure to update app/index if there are any changes
           'dist/stylesheets/all.css': [
             'build/stylesheets/*.css',
             'bower_components/codemirror/lib/codemirror.css',
           ],
           'dist/stylesheets/tutor/tutor.css': [
             'build/stylesheets/tutor/*.css',
+          ],
+          'dist/stylesheets/pytutor.css': [
+            'build/stylesheets/pytutor.css',
+            'build/stylesheets/ui-lightness.css',
           ],
         }
       }
@@ -83,7 +95,6 @@ module.exports = function(grunt) {
           'dist/javascripts/basicruby.min.js': [
             'bower_components/basicruby-interpreter/dist/opal.js',
             'bower_components/basicruby-interpreter/dist/basicruby-interpreter.js',
-            'build/javascripts/browserified.min.js',
           ],
         },
       },
@@ -93,12 +104,20 @@ module.exports = function(grunt) {
         optimizationLevel: 3,
         //use: [mozjpeg()],
       },
-      dynamic: {
+      appImages: {
         files: [{
           expand: true,
           cwd: 'app/images/',
           src: ['**/*.{png,jpg,gif}'],
           dest: 'dist/images',
+        }],
+      },
+      pytutorImages: {
+        files: [{
+          expand: true,
+          cwd: 'bower_components/pytutor-on-bower/css/images',
+          src: ['**/*.{png,jpg,gif}'],
+          dest: 'dist/stylesheets/images',
         }],
       },
     },
@@ -145,8 +164,8 @@ module.exports = function(grunt) {
     'usemin',
     'cssmin',
     'uglify',
-    'concat:vendor',
-    'imagemin:dynamic',
+    'concat',
+    'imagemin',
     'smartrev'
   ]);
 };

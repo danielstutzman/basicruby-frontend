@@ -160,7 +160,7 @@ new_trace_entry = (interpreter, line_num) ->
 
 traces = []
 
-compile_to_traces = (code) ->
+compile_to_traces = (code, exercise) ->
   traces.splice 0 # clear out traces
   for case_ in (exercise['cases'] || [{}])
     given_vars = case_['given'] || {}
@@ -244,7 +244,7 @@ determine_test_status = (trace, case_) ->
     else
       'FAILED'
 
-render_traces = ->
+render_traces = (exercise) ->
   if typeof traces isnt 'undefined'
     html = ''
     for trace, i in traces
@@ -336,33 +336,33 @@ post_to_database = (button, code) ->
     window.alert "Failed #{button}: #{data.status} #{data.statusText}"
   promise
 
-if typeof(window) is 'object' && window.location.pathname.indexOf('/tutor') == 0
-  $(document).ready ->
+post_render_online_ruby_tutor = (exercise) ->
+  textarea = $('#user_code_textarea')[0]
+  codeMirror = CodeMirror.fromTextArea(textarea,
+    mode: 'ruby'
+    lineNumbers: true
+    tabSize: 2
+    indentUnit: 2
+    extraKeys: # convert tab into two spaces:
+      Tab: (cm) ->
+        cm.replaceSelection '  ', 'end'
+    autofocus: true
+  )
 
-    textarea = $('#user_code_textarea')[0]
-    codeMirror = CodeMirror.fromTextArea(textarea,
-      mode: 'ruby'
-      lineNumbers: true
-      tabSize: 2
-      indentUnit: 2
-      extraKeys: # convert tab into two spaces:
-        Tab: (cm) ->
-          cm.replaceSelection '  ', 'end'
-      autofocus: true
-    )
+  compile_to_traces codeMirror.getValue(), exercise
+  render_traces exercise
 
-    compile_to_traces codeMirror.getValue()
+  $('#restore-button').click (e) ->
+    if confirm('Are you sure you want to discard your current code?')
+      promise = post_to_database 'restore', null
+      promise.done ->
+        window.location.reload()
+    e.preventDefault()
+
+  $('#save-button').click (e) ->
+    compile_to_traces codeMirror.getValue(), exercise
     render_traces()
+    post_to_database 'save', codeMirror.getValue()
+    e.preventDefault()
 
-    $('#restore-button').click (e) ->
-      if confirm('Are you sure you want to discard your current code?')
-        promise = post_to_database 'restore', null
-        promise.done ->
-          window.location.reload()
-      e.preventDefault()
-
-    $('#save-button').click (e) ->
-      compile_to_traces codeMirror.getValue()
-      render_traces()
-      post_to_database 'save', codeMirror.getValue()
-      e.preventDefault()
+module.exports = { post_render_online_ruby_tutor }

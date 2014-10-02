@@ -13,6 +13,7 @@ dump = (sexp, level) ->
 
 cache = {}
 initCache = ->
+  return if cache.parser # only one initCache is needed
   parser = Opal.Opal._scope.Parser.$new()
   sexpRuntime = parser.$parse Opal.BytecodeInterpreter.$RUNTIME_PRELUDE()
   compiler = Opal.AstToBytecodeCompiler.$new Opal.top
