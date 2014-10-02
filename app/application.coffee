@@ -3,9 +3,9 @@ DebuggerController     = require './DebuggerController'
 ExerciseController     = require './ExerciseController'
 ExerciseComponent      = require './ExerciseComponent'
 MenuComponent          = require './MenuComponent'
+TutorController        = require './TutorController'
 TutorExerciseComponent = require './TutorExerciseComponent'
 TutorMenuComponent     = require './TutorMenuComponent'
-Tutor                  = require './tutor'
 
 $one = (selector) -> document.querySelector(selector)
 $all = (selector) -> document.querySelectorAll(selector)
@@ -34,7 +34,7 @@ pathChanged = (path, oldPath) ->
     taskId = match[1]
     service.getTutorExercise taskId, (exercise) ->
       React.renderComponent TutorExerciseComponent(exercise), $one('#screen'), ->
-        Tutor.post_render_online_ruby_tutor(exercise)
+        TutorController.post_render_online_ruby_tutor(exercise)
 
   else if match = /^\/([0-9]+)([PYBRGO])(\/([0-9]+))?$/.exec(path)
     controller = new ExerciseController($one('#screen'), service, path)
