@@ -16,7 +16,9 @@ class ApiService
         window.alert result.data
       else
         window.alert result
-    @rpc.request { method, url, data }, success, error
+    headers = { 'Content-Type': 'application/json' }
+    config = { method, url, data: JSON.stringify(data), headers }
+    @rpc.request config, success, error
 
   getMenu: (callback) ->
     @_request 'GET', '/api/menu.json', {}, callback
@@ -33,5 +35,13 @@ class ApiService
   markComplete: (exerciseId, callback) =>
     @_request 'POST', "/api/mark_complete.json",
       { exercise_id: exerciseId }, callback
+
+  saveTutorCode: (taskId, newCode, callback) ->
+    @_request 'POST', '/api/tutor/save_tutor_code.json',
+      { task_id: taskId, user_code_textarea: newCode }, callback
+
+  discardTutorCode: (taskId, callback) ->
+    @_request 'POST', '/api/tutor/discard_tutor_code.json',
+      { task_id: taskId }, callback
 
 module.exports = ApiService

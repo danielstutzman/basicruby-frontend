@@ -49,7 +49,7 @@ TutorExerciseComponent = React.createClass
             name: 'user_code_textarea'
             cols: '40'
             rows: '10'
-            value: @props.starting_code
+            value: @props.user_code
             readOnly: true
 
       div { className: 'case-contents' }
