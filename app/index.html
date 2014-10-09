@@ -30,6 +30,11 @@
         if (arguments[0] === 'Download the React DevTools for a better development experience: http://fb.me/react-devtools') { return; }
         oldDebug.apply(window.console, arguments);
       };
+
+      window.onerror = function(message, url, lineNumber) {
+        window.alert('See console: ' + message + " at " + url +
+          ":" + lineNumber);
+      };
     </script>
 
     <!-- Note: make sure to update Gruntfile.js if there are any changes -->
