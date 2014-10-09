@@ -22,10 +22,6 @@ module.exports = function(grunt) {
         src: 'build/javascripts/browserified.min.js',
         dest: 'dist/javascripts/browserified.min.js',
       },
-      browserified_map: {
-        src: 'build/javascripts/browserified.min.js.map',
-        dest: 'dist/javascripts/browserified.min.js.map',
-      },
     },
     useminPrepare: {
       options: {
@@ -84,8 +80,8 @@ module.exports = function(grunt) {
       },
       basicruby: {
         options: {
-          sourceMap: true,
-          sourceMapIncludeSources: true,
+          sourceMap: false,
+          sourceMapIncludeSources: false,
         },
         files: {
           'dist/javascripts/basicruby.min.js': [
