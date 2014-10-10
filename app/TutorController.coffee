@@ -3,10 +3,11 @@ BytecodeInterpreter    = require './BytecodeInterpreter'
 BytecodeSpool          = require './BytecodeSpool'
 TutorExerciseComponent = require './TutorExerciseComponent'
 
-# Overwrite assert so we get a stack trace not just a message
-window.assert = (cond) ->
-  if not cond
-    throw new Error('Assertion Failure')
+# Overwrite pytutor's assert so we get a stack trace not just a message
+if typeof(window) != 'undefined'
+  window.assert = (cond) ->
+    if not cond
+      throw new Error('Assertion Failure')
 
 class TutorController
 

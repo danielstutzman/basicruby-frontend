@@ -19,7 +19,9 @@
     "grunt-rev": "~0.1.0",
     "grunt-contrib-imagemin": "~0.8.1",
     "grunt-contrib-clean": "~0.6.0",
-    "uglify-js": "~2.4.15"
+    "uglify-js": "~2.4.15",
+    "underscore": "~1.7.0",
+    "html-entities": "~1.1.1"
   },
   "browser": {
     "react": "./app/shims/react.js",

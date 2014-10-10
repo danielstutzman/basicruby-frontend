@@ -1,8 +1,7 @@
 class ApiService
 
-  constructor: (apiHost) ->
-    @rpc = new easyXDM.Rpc({ remote: "http://#{apiHost}/easyxdm.html" },
-      { remote: { request: {} } })
+  constructor: (rpc) ->
+    @rpc = rpc
 
   _request: (method, url, data, callback) ->
     success = (result) ->

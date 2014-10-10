@@ -16,7 +16,7 @@ module.exports = function(grunt) {
     copy: {
       html: {
         src: 'app/index.html',
-        dest: 'dist/index.html',
+        dest: 'dist/index-outer.html',
       },
       browserified: {
         src: 'build/javascripts/browserified.min.js',
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
       options: {
         dest: 'dist',
       },
-      html: 'index.html',
+      html: 'index-outer.html',
     },
     concat: {
       options: {
@@ -131,13 +131,13 @@ module.exports = function(grunt) {
       options: {
         assetsDirs: ['dist']
       },
-      html: 'dist/index.html',
+      html: 'dist/index-outer.html',
     },
     smartrev: {
       options: {
         cwd: 'dist',
         baseUrl: '..',
-        noRename: ['index.html'],
+        noRename: ['index-outer.html'],
       },
       dist: {
         src: ['**/*.{css,jpg,jpeg,gif,png,js,html}'],
