@@ -8,6 +8,7 @@ class ApiService
     success = (result) ->
       data = JSON.parse(result.data)
       callback data
+
     error = (result) ->
       console.error result
       if result.data && result.data.data
@@ -16,8 +17,17 @@ class ApiService
         window.alert result.data
       else
         window.alert result
+
+    if method == 'GET'
+      pairs = []
+      for own key of data
+        pairs.push "#{encodeURIComponent(key)}=#{encodeURIComponent(data[key])}"
+      dataEncoded = pairs.join('&')
+    else if method == 'POST'
+      dataEncoded = JSON.stringify(data)
+
     headers = { 'Content-Type': 'application/json' }
-    config = { method, url, data: JSON.stringify(data), headers }
+    config = { method, url, data: dataEncoded, headers }
     @rpc.request config, success, error
 
   getMenu: (callback) ->
