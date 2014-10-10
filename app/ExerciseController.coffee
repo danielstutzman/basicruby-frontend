@@ -59,7 +59,7 @@ class ExerciseController
             @_sendPostMarkComplete @model.paths.next_rep
           else
             # don't mark complete but still go on
-            window.location.href = '#' + @model.paths.next_rep
+            History.pushState null, null, @model.paths.next_rep
         showSolution: => @handleShowSolution()
         closePopup: => @handleClosePopup()
         setPredictedOutput: (caseNum, newText) =>
@@ -140,10 +140,10 @@ class ExerciseController
     doCommand =
       nextExercise: (e) =>
         e.target.disabled = true
-        window.location.href = '#' + @model.paths.next_exercise
+        History.pushState null, null, @model.paths.next_exercise
       nextRep: (e) =>
         e.target.disabled = true
-        window.location.href = '#' + @model.paths.next_rep
+        History.pushState null, null, @model.paths.next_rep
     @_popupDebugger @model.json.solution, features, doCommand
 
   _popupDebugger: (code, features, doCommand) ->
@@ -182,7 +182,7 @@ class ExerciseController
   _sendPostMarkComplete: (nextUrl) =>
     @waitingForAjax = true
     @render()
-    @service.markComplete @model.exercise_id, =>
-      window.location.href = '#' + nextUrl
+    @service.markComplete @model.exercise_id, ->
+      History.pushState null, null, nextUrl
 
 module.exports = ExerciseController

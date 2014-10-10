@@ -19,7 +19,7 @@ else
   apiHost = 'basicruby.danstutzman.com'
 service = new ApiService(apiHost)
 
-pathChanged = (path, oldPath) ->
+pathChanged = (path) ->
 
   if path == '/'
     service.getMenu (data) ->
@@ -42,12 +42,15 @@ pathChanged = (path, oldPath) ->
     window.alert "Unknown route #{path}"
 
 document.addEventListener 'DOMContentLoaded', ->
-  window.hasher.prependHash = ''
-  if window.location.hash == ''
-    window.hasher.setHash '/'
-  window.hasher.initialized.add pathChanged
-  window.hasher.changed.add pathChanged
-  window.hasher.init()
+  window.History.Adapter.bind window, 'statechange', ->
+    pathChanged History.getState().hash
+  unless window.location.hash
+    pathChanged window.location.pathname
+  window.History.onClick = (e) ->
+    e.preventDefault() # don't re-request page by following clicked <a> link
+    # Use currentTarget instead of target for when there's an a tag around a div
+    href = e.currentTarget.getAttribute('href')
+    History.pushState null, null, href
 
   # Fix bug where Mobile Safari landscape mode scrolls too far down the page
   window.addEventListener 'orientationchange', ->

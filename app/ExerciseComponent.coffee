@@ -84,7 +84,7 @@ ExerciseComponent = React.createClass
         div { className: 'throbber' }
 
       div { className: 'title' },
-        a { className: 'logo-link', href: '#/' }
+        a { className: 'logo-link', href: '/', onClick: History.onClick }
         EM_DASH
         "#{@props.topicNum}. #{@props.topicTitle}"
 

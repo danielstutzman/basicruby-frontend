@@ -25,7 +25,10 @@ MenuComponent = React.createClass
   doneIndicator: (topic, color) ->
     { a, div, span } = React.DOM
     completed = topic.completed[color]
-    a { className: 'done-indicator', href: '#' + completed.next },
+    a
+      className: 'done-indicator'
+      href: completed.next
+      onClick: History.onClick
       if color == 'purple'
         if completed.num > 0
           CHECKED_BOX

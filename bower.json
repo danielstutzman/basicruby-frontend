@@ -7,9 +7,9 @@
     "jquery": "~1.8.2",
     "underscore": "~1.6.0",
     "codemirror": "~4.4.0",
-    "hasher": "~1.2.0",
     "easyxdm": "https://github.com/hull/easyXDM.git#2.4.17",
-    "pytutor-on-bower": "https://github.com/danielstutzman/pytutor-on-bower.git"
+    "pytutor-on-bower": "https://github.com/danielstutzman/pytutor-on-bower.git",
+    "history.js": "~1.8.0"
   },
   "devDependencies": {
     "jasmine": "~2.0.0"

@@ -36,13 +36,17 @@ TutorMenuComponent = React.createClass
       ul {},
         _.map group1.exercises, (exercise) ->
           li { key: exercise.task_id },
-            a { href: "#/tutor/exercise/#{exercise.task_id}" },
+            a
+              href: "/tutor/exercise/#{exercise.task_id}"
+              onClick: History.onClick
               exercise.description
 
       h2 {}, '2. Trace your own program'
       ul {},
         li {},
-          a { href: '#/tutor/exercise/D000' },
+          a
+            href: '/tutor/exercise/D000'
+            onClick: History.onClick
             'Write your own'
 
       h2 {}, '3. Learn to program by solving puzzles'
@@ -61,7 +65,9 @@ TutorMenuComponent = React.createClass
             ul {},
               _.map group.exercises, (exercise) ->
                li { key: exercise.task_id },
-                  a { href: "#/tutor/exercise/#{exercise.task_id}" },
+                  a
+                    href: "/tutor/exercise/#{exercise.task_id}"
+                    onClick: History.onClick
                     exercise.task_id
                     backticksToCode truncate(exercise.description, 60)
 
