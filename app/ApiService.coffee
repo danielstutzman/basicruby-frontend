@@ -29,6 +29,9 @@ class ApiService
     config = { method, url, data: dataEncoded, headers }
     @rpc.request config, success, error
 
+  getAllExercises: (callback) ->
+    @_request 'GET', '/api/all_exercises.json', {}, callback
+
   getMenu: (callback) ->
     @_request 'GET', '/api/menu.json', {}, callback
 

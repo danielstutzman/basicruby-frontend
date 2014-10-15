@@ -46,5 +46,14 @@ render = (path) ->
     mkdir.mkdirsSync path_.dirname(pathOnDisk)
     fs.writeFileSync pathOnDisk, outputHtml
 
-for path in ['/', '/tutor', '/1Y', '/tutor/exercise/D001']
+service.getAllExercises (data) ->
+  for exercise in data
+    color = exercise.color.substring(0, 1).toUpperCase()
+    if exercise.rep_num == 1
+      path = "/#{exercise.topic_num}#{color}"
+    else
+      path = "/#{exercise.topic_num}#{color}/#{exercise.rep_num}"
+    render path
+
+for path in ['/', '/tutor', '/tutor/exercise/D001']
   render path
