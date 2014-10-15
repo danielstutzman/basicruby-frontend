@@ -53,7 +53,7 @@ module.exports = function(grunt) {
         src: [
           'bower_components/pytutor-on-bower/js/*.js',
         ],
-        dest: 'dist/javascripts/pytutor.js',
+        dest: 'dist/javascripts/pytutor.min.js',
       },
     },
     cssmin: {
