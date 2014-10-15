@@ -29,8 +29,8 @@ TutorMenuComponent = React.createClass
     div { style: { fontFamily: 'sans-serif', width: '600px', margin: '0 auto' } },
       h1 {}, 'Online Ruby Tutor'
       p {},
-        i, 'A free educational tool to visualize execution traces ',
-           'of user-supplied Ruby programs'
+        i {}, 'A free educational tool to visualize execution traces ',
+              'of user-supplied Ruby programs'
 
       h2 {}, '1. Trace some examples'
       ul {},
