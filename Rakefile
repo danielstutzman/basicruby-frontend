@@ -44,7 +44,7 @@ file 'build/javascripts/browserified.min.js' => Dir.glob('app/*.coffee') do |tas
     ../../node_modules/.bin/browserify
       --insert-global-vars ''
       #{paths}
-  | ../../node_modules/uglify-js/bin/uglifyjs -b ascii-only=true
+  | ../../node_modules/uglify-js/bin/uglifyjs -b "ascii-only=true, beautify=false"
   ].join(' ')
   create_with_sh command, "../../#{task.name}"
 end
