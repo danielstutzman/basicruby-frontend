@@ -2,6 +2,16 @@ var http = require('http');
 var fs = require('fs');
 var path = require('path');
 
+var MIME_TYPES = {
+  '.js':   'text/javascript',
+  '.css':  'text/css',
+  '.gif':  'image/gif',
+  '.jpg':  'image/jpeg',
+  '.jpeg': 'omage/jpeg',
+  '.ttf':  'application/octet-stream',
+  '.png':  'image/png',
+};
+
 var walk = function (dir, handleFile, done) {
     fs.readdir(dir, function (error, list) {
         if (error) {
@@ -67,16 +77,7 @@ function browserifiedServe(filePath, request, response) {
 
 function normalServe(filePath, request, response) {
   var extname = path.extname(filePath);
-  var contentType = 'text/html';
-  switch (extname) {
-    case '.js':   contentType = 'text/javascript';          break;
-    case '.css':  contentType = 'text/css';                 break;
-    case '.gif':  contentType = 'image/gif';                break;
-    case '.jpg':  contentType = 'image/jpeg';               break;
-    case '.jpeg': contentType = 'image/jpeg';               break;
-    case '.ttf':  contentType = 'application/octet-stream'; break;
-    case '.png':  contentType = 'image/png'; break;
-  }
+  var contentType = MIME_TYPES[extname] || 'text/html';
 
   fs.exists(filePath, function(exists) {
     if (exists) {
