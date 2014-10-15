@@ -86,5 +86,6 @@ gatherAllPaths (paths) ->
   renderPaths = (paths) ->
     nextPath = paths.shift()
     render nextPath, ->
-      renderPaths paths
+      if paths.length > 0
+        renderPaths paths
   renderPaths paths
