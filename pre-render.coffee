@@ -1,5 +1,7 @@
 fs            = require 'fs'
 http          = require 'http'
+mkdir         = require 'mkdir'
+path_         = require 'path'
 global.React  = require 'react'
 _             = require 'underscore'
 ApiService    = require './build/coffee/app/ApiService'
@@ -30,11 +32,19 @@ rpc =
 
 service = new ApiService(rpc)
 router = new Router(service)
-router.render '/', (reactComponent, callbackIgnored) ->
-  outerHtml  = fs.readFileSync('dist/index-outer.html').toString()
-  menuHtml   = React.renderComponentToString(reactComponent)
-  beforeHtml = outerHtml.replace /<!-- START PRE-RENDERED CONTENT -->([^]*)/, ''
-  afterHtml  = outerHtml.replace /([^]*)<!-- END PRE-RENDERED CONTENT -->/, ''
-  outputHtml = beforeHtml +
-    (new Entities()).encodeNonASCII(menuHtml) + afterHtml
-  fs.writeFileSync 'dist/index.html', outputHtml
+render = (path) ->
+  router.render path, (reactComponent, callbackIgnored) ->
+    outerHtml  = fs.readFileSync('dist/index-outer.html').toString()
+    menuHtml   = React.renderComponentToString(reactComponent)
+    beforeHtml = outerHtml.replace /<!-- START PRE-RENDERED CONTENT -->([^]*)/, ''
+    afterHtml  = outerHtml.replace /([^]*)<!-- END PRE-RENDERED CONTENT -->/, ''
+    outputHtml = beforeHtml +
+      (new Entities()).encodeNonASCII(menuHtml) + afterHtml
+    pathOnDisk = "dist#{path}/index.html"
+
+    console.log pathOnDisk
+    mkdir.mkdirsSync path_.dirname(pathOnDisk)
+    fs.writeFileSync pathOnDisk, outputHtml
+
+for path in ['/', '/tutor', '/1Y', '/tutor/exercise/D001']
+  render path
