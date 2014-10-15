@@ -22,7 +22,8 @@
     "uglify-js": "~2.4.15",
     "underscore": "~1.7.0",
     "html-entities": "~1.1.1",
-    "mkdir": "0.0.2"
+    "mkdir": "0.0.2",
+    "htmlparser2": "~3.7.3"
   },
   "browser": {
     "react": "./app/shims/react.js",
