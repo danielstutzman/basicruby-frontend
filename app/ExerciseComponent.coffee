@@ -1,3 +1,5 @@
+_                  = require 'underscore'
+React              = require 'react'
 CasesComponent     = require './CasesComponent'
 SetupResizeHandler = require './setup_resize_handler'
 

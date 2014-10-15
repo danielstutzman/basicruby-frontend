@@ -1,3 +1,6 @@
+_           = require 'underscore'
+React       = require 'react'
+
 type        = React.PropTypes
 NOT_EQUALS  = "\u2260"
 DOWN_ARROW  = "\u2193"
