@@ -5,9 +5,9 @@ DebuggerController    = require './DebuggerController'
 ExerciseComponent     = require './ExerciseComponent'
 
 class ExerciseController
-  constructor: ($div, service, path) ->
-    @$div            = $div
+  constructor: (service, reactRender, path) ->
     @service         = service
+    @reactRender     = reactRender
     @path            = path
     @popup           = null
     @waitingForAjax  = true
@@ -69,7 +69,7 @@ class ExerciseController
                                       case_.actual_output != undefined
           if _.every @cases, isCaseFinished
             @checkForPassingTests()
-    React.renderComponent ExerciseComponent(props), @$div, callback
+    @reactRender ExerciseComponent(props), callback
 
   handleClosePopup: ->
     if @popup != null

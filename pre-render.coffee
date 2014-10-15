@@ -3,8 +3,7 @@ http          = require 'http'
 global.React  = require 'react'
 _             = require 'underscore'
 ApiService    = require './build/coffee/app/ApiService'
-MenuComponent = require './build/coffee/app/MenuComponent'
-application   = require './build/coffee/app/application'
+Router        = require './build/coffee/app/Router'
 Entities      = require('html-entities').AllHtmlEntities
 
 # fake object is necessary global
@@ -30,9 +29,10 @@ rpc =
     request.end()
 
 service = new ApiService(rpc)
-service.getMenu (data) ->
+router = new Router(service)
+router.render '/', (reactComponent, callbackIgnored) ->
   outerHtml  = fs.readFileSync('dist/index-outer.html').toString()
-  menuHtml   = React.renderComponentToString(MenuComponent(data))
+  menuHtml   = React.renderComponentToString(reactComponent)
   beforeHtml = outerHtml.replace /<!-- START PRE-RENDERED CONTENT -->([^]*)/, ''
   afterHtml  = outerHtml.replace /([^]*)<!-- END PRE-RENDERED CONTENT -->/, ''
   outputHtml = beforeHtml +

@@ -11,9 +11,10 @@ if typeof(window) != 'undefined'
 
 class TutorController
 
-  constructor: (service, taskId) ->
-    @service = service
-    @taskId  = taskId
+  constructor: (service, reactRender, taskId) ->
+    @service     = service
+    @reactRender = reactRender
+    @taskId      = taskId
 
   changePythonToRuby: ->
 
@@ -362,8 +363,7 @@ class TutorController
 
   setup: ->
     @service.getTutorExercise @taskId, (exercise) =>
-      $one = (selector) -> document.querySelector(selector)
-      React.renderComponent TutorExerciseComponent(exercise), $one('#screen'), =>
-        @setup_after_render exercise
+      @reactRender TutorExerciseComponent(exercise), =>
+        @setup_after_render(exercise)
 
 module.exports = TutorController
