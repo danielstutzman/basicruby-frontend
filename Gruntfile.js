@@ -18,6 +18,10 @@ module.exports = function(grunt) {
         src: 'app/index.html',
         dest: 'dist/index-outer.html',
       },
+      robots: {
+        src: 'app/robots.txt',
+        dest: 'dist/robots.txt',
+      },
       browserified: {
         src: 'build/javascripts/browserified.min.js',
         dest: 'dist/javascripts/browserified.min.js',
