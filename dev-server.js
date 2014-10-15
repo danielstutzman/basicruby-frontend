@@ -75,6 +75,7 @@ function normalServe(filePath, request, response) {
     case '.jpg':  contentType = 'image/jpeg';               break;
     case '.jpeg': contentType = 'image/jpeg';               break;
     case '.ttf':  contentType = 'application/octet-stream'; break;
+    case '.png':  contentType = 'image/png'; break;
   }
 
   fs.exists(filePath, function(exists) {
