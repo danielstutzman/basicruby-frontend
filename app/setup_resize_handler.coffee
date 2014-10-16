@@ -14,6 +14,8 @@ resizeDivs = (w, h) ->
   height_under_banner = Math.floor(h - title_h - banner_h)
   if height_under_banner < 400
     height_under_banner = 400
+  if $one 'div.ExerciseComponent.has-video-script'
+    height_under_banner = 400
 
   # need to set debugger-container height's directly, because styling it as
   #   bottom: 0 uses the height of its parent, not the browser window

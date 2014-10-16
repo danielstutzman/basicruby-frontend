@@ -31,43 +31,42 @@ ExerciseComponent = React.createClass
     initialCode: @props.initialCode
 
   componentDidMount: ->
-    unless @props.youtubeId
-      # setup CodeMirror
-      options =
-        mode: 'ruby'
-        lineNumbers: true
-        autofocus: true
-        readOnly: false
-        lineWrapping: true
-      textarea = @refs.code.getDOMNode()
-      isMobileSafari = ->
-         navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-         navigator.userAgent.match(/AppleWebKit/)
-      codeMirrors = []
-      if isMobileSafari()
-        @setState codeMirror: null, retrieveNewCode: (-> textarea.value)
-      else
-        codeMirror = CodeMirror.fromTextArea textarea, options
+    # setup CodeMirror
+    options =
+      mode: 'ruby'
+      lineNumbers: true
+      autofocus: true
+      readOnly: false
+      lineWrapping: true
+    textarea = @refs.code.getDOMNode()
+    isMobileSafari = ->
+       navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+       navigator.userAgent.match(/AppleWebKit/)
+    codeMirrors = []
+    if isMobileSafari()
+      @setState codeMirror: null, retrieveNewCode: (-> textarea.value)
+    else
+      codeMirror = CodeMirror.fromTextArea textarea, options
+      codeMirror.on 'focus', => @props.doCommand.closePopup()
+      codeMirrors.push codeMirror
+      makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
+      @setState
+        codeMirror: codeMirror
+        retrieveNewCode: makeRetriever(codeMirror)
+
+    if @cases && @cases[0] && @cases[0].code
+      for textareaTests in @$div.querySelectorAll('textarea.expected')
+        options =
+          mode: 'ruby'
+          lineNumbers: true
+          readOnly: 'nocursor'
+          lineWrapping: true
+        codeMirror = CodeMirror.fromTextArea textareaTests, options
         codeMirror.on 'focus', => @props.doCommand.closePopup()
         codeMirrors.push codeMirror
-        makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
-        @setState
-          codeMirror: codeMirror
-          retrieveNewCode: makeRetriever(codeMirror)
 
-      if @cases && @cases[0] && @cases[0].code
-        for textareaTests in @$div.querySelectorAll('textarea.expected')
-          options =
-            mode: 'ruby'
-            lineNumbers: true
-            readOnly: 'nocursor'
-            lineWrapping: true
-          codeMirror = CodeMirror.fromTextArea textareaTests, options
-          codeMirror.on 'focus', => @props.doCommand.closePopup()
-          codeMirrors.push codeMirror
-
-      # TODO: destroy old resize handler before setting up a new one
-      SetupResizeHandler.setupResizeHandler codeMirrors
+    # TODO: destroy old resize handler before setting up a new one
+    SetupResizeHandler.setupResizeHandler codeMirrors
 
   componentDidUpdate: (prevProps, prevState) ->
     if @state.codeMirror && @props.initialCode != prevProps.initialCode
@@ -79,8 +78,10 @@ ExerciseComponent = React.createClass
     { a, br, button, div, h1, iframe, input, label, p, span, textarea
       } = React.DOM
 
-    div { className: ['ExerciseComponent', @props.color,
-        (if @props.videoScript then 'has-video-script' else '')].join(' ') },
+    hasScript = (@props.videoScript && !@props.youtubeId) && 'has-video-script'
+    hasVideo  = @props.youtubeId && 'has-video'
+    class_ = ['ExerciseComponent', @props.color, hasVideo, hasScript].join(' ')
+    div { className: class_ },
 
       if @props.showThrobber
         div { className: 'throbber' }
@@ -105,8 +106,7 @@ ExerciseComponent = React.createClass
           button
             className: 'next'
             disabled: @props.doCommand.next == null ||
-                      (@props.cases[0].actual_output == undefined &&
-                       @props.youtubeId == null)
+              (@props.cases[0].actual_output == undefined && !@props.youtubeId)
             onClick: (e) => @props.doCommand.next e
             onFocus: => @props.doCommand.closePopup()
             "#{RIGHT_ARROW} Go on"
@@ -146,31 +146,29 @@ ExerciseComponent = React.createClass
           allowFullScreen: true
           src: "//www.youtube.com/embed/#{@props.youtubeId}?rel=0&autoplay=0"
 
-      unless @props.youtubeId
-        div { className: 'col-1-of-2' },
-          div { className: 'wrapper' },
-            div { className: 'code-header' },
-              div { className: 'indent' }
-                label { className: 'code' },
-                  switch @props.color
-                    when 'purple' then 'Code to look over'
-                    when 'yellow' then 'Code to look over'
-                    when 'blue'   then 'Code to look over'
-                    when 'red'    then 'Code to edit'
-                    when 'green'  then 'Write code here'
-                    when 'orange' then 'Code to simplify'
-            div { className: 'code-wrapper' },
-              div { className: 'code-wrapper2' },
-                div { className: 'code-wrapper3' },
-                  textarea
-                    ref: 'code'
-                    className: 'code'
-                    defaultValue: @props.code
-                    onFocus: => @props.doCommand.closePopup()
-          div { className: 'margin' } # because %-based margins don't work
+      div { className: 'col-1-of-2' },
+        div { className: 'wrapper' },
+          div { className: 'code-header' },
+            div { className: 'indent' }
+              label { className: 'code' },
+                switch @props.color
+                  when 'purple' then 'Code to look over'
+                  when 'yellow' then 'Code to look over'
+                  when 'blue'   then 'Code to look over'
+                  when 'red'    then 'Code to edit'
+                  when 'green'  then 'Write code here'
+                  when 'orange' then 'Code to simplify'
+          div { className: 'code-wrapper' },
+            div { className: 'code-wrapper2' },
+              div { className: 'code-wrapper3' },
+                textarea
+                  ref: 'code'
+                  className: 'code'
+                  defaultValue: @props.initialCode
+                  onFocus: => @props.doCommand.closePopup()
+        div { className: 'margin' } # because %-based margins don't work
 
-      unless @props.youtubeId
-        CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)
+      CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)
 
       br { style: { clear: 'both' } }
 
