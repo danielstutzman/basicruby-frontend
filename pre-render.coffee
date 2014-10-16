@@ -41,7 +41,11 @@ render = (path, callback) ->
     afterHtml  = outerHtml.replace /([^]*)<!-- END PRE-RENDERED CONTENT -->/, ''
     outputHtml = beforeHtml +
       (new Entities()).encodeNonASCII(innerHtml) + afterHtml
-    pathOnDisk = "dist#{path}/index.html"
+    numDirs = path.split('/').length
+    if path == '/'
+      pathOnDisk = 'dist/index.html'
+    else
+      pathOnDisk = "dist/static#{numDirs}#{path}"
 
     console.log pathOnDisk
     mkdir.mkdirsSync path_.dirname(pathOnDisk)

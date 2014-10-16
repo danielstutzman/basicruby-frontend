@@ -3,25 +3,33 @@
 aws s3 mb s3://basicruby-frontend-danstutzman
 s3cmd ws-create s3://basicruby-frontend-danstutzman
 
-s3cmd del --recursive s3://basicruby-frontend-danstutzman --exclude="*" --include="*.css" --force
+s3cmd del --recursive s3://basicruby-frontend-danstutzman --force
 
 cd dist
 
 # First, gzip .html and .js and .css files
 # note: ending \; is required
-find . -iname '*.html' -exec ../gzip_if_not_gzipped.sh {} \;
+
+# Sync some top-level files
+for FILE in index.html robots.txt sitemap.txt; do
+  ../gzip_if_not_gzipped.sh $FILE
+done
+s3cmd sync . --exclude="*" --rinclude="^(index.html|sitemap.txt|robots.txt)$" s3://basicruby-frontend-danstutzman --acl-public --add-header 'Content-Encoding:gzip'
+
+# Sync gzipped and versioned files
 find . -iname '*.js'   -exec ../gzip_if_not_gzipped.sh {} \;
 find . -iname '*.css'  -exec ../gzip_if_not_gzipped.sh {} \;
+s3cmd sync . --exclude="*" --rinclude="[0-9a-f]{16}.(js|css)" s3://basicruby-frontend-danstutzman --acl-public --add-header="Cache-Control:max-age=31536000" --add-header 'Content-Encoding:gzip'
 
-# Sync 1: Gzipped and versioned
-s3cmd sync . --exclude="*" --rinclude="[0-9a-f]{16}.(html|js|css)" s3://basicruby-frontend-danstutzman --acl-public --add-header="Cache-Control:max-age=31536000" --add-header 'Content-Encoding:gzip'
-# Sync 2: Not gzipped but versioned (e.g. images)
+# Sync non-gzipped but version filed (e.g. images)
 s3cmd sync . --exclude="*" --rinclude="[0-9a-f]{16}" s3://basicruby-frontend-danstutzman --acl-public --add-header="Cache-Control:max-age=31536000"
-# Sync 3: Not versioned but gzipped (e.g. index.html)
-s3cmd sync . --exclude="*" --include "*.html" --include "*.js" --include "*.css" --add-header 'Content-Encoding:gzip' s3://basicruby-frontend-danstutzman --acl-public 
-# Sync 4: everything left
-s3cmd sync . s3://basicruby-frontend-danstutzman --acl-public --add-header="Cache-Control:no-cache"
 
-# to just specify root index.html: --exclude="*" --rinclude="^index.html$"
+# Sync HTML and gzipped files under static*
+find static* -type f -exec ../gzip_if_not_gzipped.sh {} \;
+for DIR in static*; do
+  cd $DIR
+  s3cmd sync . --add-header 'Content-Encoding:gzip' s3://basicruby-frontend-danstutzman --acl-public --default-mime-type=text/html
+  cd ..
+done
 
 open http://basicruby-frontend-danstutzman.s3-website-us-east-1.amazonaws.com
