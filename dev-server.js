@@ -50,7 +50,7 @@ function browserifiedServe(filePath, request, response) {
   fs.stat(filePath, function(error, stat) {
     var compiledMtime = stat.mtime;
     function complainIfCoffeeTimestampTooLate(path, stat, callback) {
-      if (compiledMtime < stat.mtime && !path.match(/\.(.*)\.swp$/)) {
+      if (compiledMtime < stat.mtime && path.match(/\.(coffee|js)$/)) {
         throw { message: "Path " + path + " is newer than " + filePath + "!" };
       }
       else {
