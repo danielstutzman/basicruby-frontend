@@ -69,10 +69,13 @@ ExerciseComponent = React.createClass
     SetupResizeHandler.setupResizeHandler codeMirrors
 
   componentDidUpdate: (prevProps, prevState) ->
-    if @state.codeMirror && @props.initialCode != prevProps.initialCode
-      @refs.code.getDOMNode().value = @props.initialCode
-      @state.codeMirror.setValue @props.initialCode
-      @setState initialCode: @props.initialCode
+    if @state.codeMirror
+      if @props.initialCode != prevProps.initialCode
+        @refs.code.getDOMNode().value = @props.initialCode
+        @state.codeMirror.setValue @props.initialCode
+        @setState initialCode: @props.initialCode
+      if @props.color != prevProps.color
+        @state.codeMirror.refresh() # in case it appeared (from purple)
 
   render: ->
     { a, br, button, div, h1, iframe, input, label, p, span, textarea
