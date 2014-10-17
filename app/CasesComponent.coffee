@@ -68,7 +68,7 @@ CasesComponent = React.createClass
                           'Predicted output for this input'
                         else
                           'Enter prediction here and click Run to check your answer'
-                      value: _case.predicted_output
+                      value: _case.predicted_output || ''
                       onChange: (e) =>
                         newText = e.target.value
                         @props.doCommand.setPredictedOutput case_num, newText
