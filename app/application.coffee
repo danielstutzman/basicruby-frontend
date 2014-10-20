@@ -12,7 +12,10 @@ else
 rpc = new easyXDM.Rpc({ remote: "http://#{apiHost}/easyxdm.html" },
   { remote: { request: {} } })
 
-service = new ApiService(rpc)
+service = new ApiService rpc, (showThrobber) ->
+  document.querySelector('#throbber').style.display =
+    (if showThrobber then 'block' else 'none')
+
 router = new Router(service)
 pathChanged = (path) ->
   router.render path, (reactComponent, callMeAfterRender) ->

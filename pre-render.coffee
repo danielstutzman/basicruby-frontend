@@ -31,7 +31,7 @@ rpc =
         throw new "problem with request: #{e.message}"
     request.end()
 
-service = new ApiService(rpc)
+service = new ApiService(rpc, (showThrobber)->)
 router = new Router(service)
 render = (path, callback) ->
   router.render path, (reactComponent, callbackIgnored) ->

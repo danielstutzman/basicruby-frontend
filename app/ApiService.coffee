@@ -1,14 +1,34 @@
+_ = require 'underscore'
+
 class ApiService
 
-  constructor: (rpc) ->
+  constructor: (rpc, showThrobber) ->
     @rpc = rpc
+    @showThrobber = showThrobber
+    @pendingRequests = []
+    @lastRequestNum = 0
+    @showThrobber false
+
+  addPendingRequest: (requestNum) ->
+    requestNum = @lastRequestNum + 1
+    @pendingRequests.push requestNum
+    @showThrobber @pendingRequests.length > 0
+    @lastRequestNum = requestNum # return it too
+
+  removePendingRequest: (requestNum) ->
+    @pendingRequests = _.without @pendingRequests, requestNum
+    @showThrobber @pendingRequests.length > 0
 
   _request: (method, url, data, callback) ->
-    success = (result) ->
+    requestNum = @addPendingRequest()
+
+    success = (result) =>
+      @removePendingRequest requestNum
       data = JSON.parse(result.data)
       callback data
 
-    error = (result) ->
+    error = (result) =>
+      @removePendingRequest requestNum
       console.error result
       if result.data && result.data.data
         window.alert result.data.data

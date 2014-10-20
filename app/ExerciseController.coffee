@@ -10,11 +10,9 @@ class ExerciseController
     @reactRender     = reactRender
     @path            = path
     @popup           = null
-    @waitingForAjax  = true
 
   setup: =>
     @service.getExercise @path, (model) =>
-      @waitingForAjax = false
       @_setupInstanceVarsFromModel model
       @render()
 
@@ -38,7 +36,6 @@ class ExerciseController
       color:        @model.color
       topicNum:     @model.topic.num
       topicTitle:   @model.topic.title
-      showThrobber: @waitingForAjax
       cases:        @cases
       popup:        @popup
       youtubeId:    @model.json.youtube_id
@@ -180,7 +177,6 @@ class ExerciseController
       changeBackground 5, '.failed', 'FAILED'
 
   _sendPostMarkComplete: (nextUrl) =>
-    @waitingForAjax = true
     @render()
     @service.markComplete @model.exercise_id, ->
       History.pushState null, null, nextUrl

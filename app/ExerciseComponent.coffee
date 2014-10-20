@@ -20,7 +20,6 @@ ExerciseComponent = React.createClass
     cases:        type.array.isRequired
     popup:        type.string
     topicTitle:   type.string
-    showThrobber: type.bool.isRequired
     youtubeId:    type.string
     videoScript:  type.string
     doCommand:    type.object.isRequired
@@ -85,10 +84,6 @@ ExerciseComponent = React.createClass
     hasVideo  = @props.youtubeId && 'has-video'
     class_ = ['ExerciseComponent', @props.color, hasVideo, hasScript].join(' ')
     div { className: class_ },
-
-      if @props.showThrobber
-        div { className: 'throbber' }
-
       div { className: 'title' },
         a { className: 'logo-link', href: '/', onClick: History.onClick }
         EM_DASH
