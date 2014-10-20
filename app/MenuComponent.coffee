@@ -1,12 +1,16 @@
 _     = require 'underscore'
 React = require 'react'
 
+type          = React.PropTypes
 UNCHECKED_BOX = '\u2610'
 CHECKED_BOX   = '\u2611'
 
 MenuComponent = React.createClass
 
   displayName: 'MenuComponent'
+
+  propTypes:
+    topics:       type.array.isRequired
 
   humanize: (s) ->
     s.replace(/_/g, ' ').replace /(\w+)/g, (match) ->
