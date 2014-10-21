@@ -23,7 +23,9 @@
     "underscore": "~1.7.0",
     "html-entities": "~1.1.1",
     "mkdir": "0.0.2",
-    "htmlparser2": "~3.7.3"
+    "htmlparser2": "~3.7.3",
+    "istanbulify": "~0.1.0",
+    "grunt-smartrev": "~0.1.2"
   },
   "browser": {
     "react": "./app/shims/react.js",

@@ -1,5 +1,7 @@
-ApiService             = require './ApiService'
-Router                 = require './Router'
+ApiService            = require './ApiService'
+AstToBytecodeCompiler = require './AstToBytecodeCompiler'
+Router                = require './Router'
+REQUIRE               = require './REQUIRE'
 
 if window.location.hostname == 'localhost'
   window.onerror = (message, url, lineNumber) ->
@@ -9,8 +11,10 @@ if window.location.hostname == 'localhost'
   apiHost = 'localhost:9292'
 else
   apiHost = 'basicruby.danstutzman.com'
-rpc = new easyXDM.Rpc({ remote: "http://#{apiHost}/easyxdm.html" },
-  { remote: { request: {} } })
+
+unless window.location.pathname == '/test.html'
+  rpc = new easyXDM.Rpc({ remote: "http://#{apiHost}/easyxdm.html" },
+    { remote: { request: {} } })
 
 service = new ApiService rpc, (showThrobber) ->
   document.querySelector('#throbber').style.display =
@@ -38,4 +42,4 @@ document.addEventListener 'DOMContentLoaded', ->
   window.addEventListener 'orientationchange', ->
     window.scrollTo 0, 1
 
-  window.setTimeout (-> REQUIRE['app/AstToBytecodeCompiler'].initCache()), 0
+  AstToBytecodeCompiler.initCache()

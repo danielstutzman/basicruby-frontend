@@ -11,10 +11,10 @@ cd dist
 # note: ending \; is required
 
 # Sync some top-level files
-for FILE in index.html robots.txt sitemap.txt; do
+for FILE in index.html test.html robots.txt sitemap.txt; do
   ../gzip_if_not_gzipped.sh $FILE
 done
-s3cmd sync . --exclude="*" --rinclude="^(index.html|sitemap.txt|robots.txt)$" s3://basicruby-frontend-danstutzman --acl-public --add-header 'Content-Encoding:gzip'
+s3cmd sync . --exclude="*" --rinclude="^(index.html|test.html|sitemap.txt|robots.txt)$" s3://basicruby-frontend-danstutzman --acl-public --add-header 'Content-Encoding:gzip'
 
 # Sync gzipped and versioned files
 find . -iname '*.js'   -exec ../gzip_if_not_gzipped.sh {} \;

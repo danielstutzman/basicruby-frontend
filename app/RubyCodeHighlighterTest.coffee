@@ -1,4 +1,7 @@
 RubyCodeHighlighter = require '../app/RubyCodeHighlighter'
+helper              = require './helper'
+
+{ describe } = helper
 
 describe 'RubyCodeHighlighter', ->
 

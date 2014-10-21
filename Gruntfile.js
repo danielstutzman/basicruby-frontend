@@ -18,6 +18,10 @@ module.exports = function(grunt) {
         src: 'app/index.html',
         dest: 'dist/index-outer.html',
       },
+      test_html: {
+        src: 'app/test.html',
+        dest: 'dist/test.html',
+      },
       robots: {
         src: 'app/robots.txt',
         dest: 'dist/robots.txt',
@@ -31,7 +35,7 @@ module.exports = function(grunt) {
       options: {
         dest: 'dist',
       },
-      html: 'index-outer.html',
+      html: ['index-outer.html', 'test.html'],
     },
     concat: {
       options: {
@@ -66,6 +70,8 @@ module.exports = function(grunt) {
             'build/stylesheets/tutor/*.css',
             'build/stylesheets/pytutor.css',
             'build/stylesheets/ui-lightness.css',
+            'bower_components/codemirror/lib/codemirror.css',
+            'bower_components/jasmine/lib/jasmine-core/jasmine.css',
           ],
         }
       }
@@ -93,6 +99,15 @@ module.exports = function(grunt) {
           ],
         },
       },
+      jasmine: {
+        files: {
+          'dist/javascripts/jasmine.min.js': [
+            'bower_components/jasmine/lib/jasmine-core/jasmine.js',
+            'bower_components/jasmine/lib/jasmine-core/jasmine-html.js',
+            'bower_components/jasmine/lib/jasmine-core/boot.js',
+          ],
+        },
+      }
     },
     imagemin: {
       options: {
@@ -135,13 +150,13 @@ module.exports = function(grunt) {
       options: {
         assetsDirs: ['dist']
       },
-      html: 'dist/index-outer.html',
+      html: ['dist/index-outer.html', 'dist/test.html'],
     },
     smartrev: {
       options: {
         cwd: 'dist',
         baseUrl: '..',
-        noRename: ['index-outer.html'],
+        noRename: ['index-outer.html', 'test.html'],
       },
       dist: {
         src: ['**/*.{css,jpg,jpeg,gif,png,js,html}'],

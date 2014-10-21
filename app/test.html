@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <!-- Note: make sure to update Gruntfile.js if there are any changes -->
+    <!-- build:css stylesheets/all.css -->
+    <link rel="stylesheet" href="/stylesheets/application.css" />
+    <link rel="stylesheet" href="/stylesheets/debugger.css" />
+    <link rel="stylesheet" href="/stylesheets/exercise.css" />
+    <link rel="stylesheet" href="/stylesheets/menu.css" />
+    <link rel="stylesheet"
+      href="/bower_components/codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" href="/stylesheets/tutor/all.css" />
+    <link rel="stylesheet" href="/stylesheets/tutor/application.css" />
+    <link rel="stylesheet" href="/stylesheets/tutor/case-content.css" />
+    <link rel="stylesheet" href="/stylesheets/tutor/edit-content.css" />
+    <link rel="stylesheet" href="/stylesheets/tutor/sidebar.css" />
+    <link rel="stylesheet" href="/stylesheets/pytutor.css" />
+    <link rel="stylesheet" href="/stylesheets/ui-lightness.css" />
+    <link rel="stylesheet"
+          href="/bower_components/jasmine/lib/jasmine-core/jasmine.css">
+    <!-- endbuild -->
+  </head>
+  <body>
+    <div id='throbber'></div>
+    <div id='screen'>
+      <!-- START PRE-RENDERED CONTENT -->
+      <!-- END PRE-RENDERED CONTENT -->
+    </div>
+    <div class='debugger-parent'></div>
+
+    <script>
+      var oldDebug = window.console.debug;
+      window.console.debug = function() {
+        if (arguments[0] === 'Download the React DevTools for a better development experience: http://fb.me/react-devtools') { return; }
+        oldDebug.apply(window.console, arguments);
+      };
+
+      window.onerror = function(message, url, lineNumber) {
+        window.alert('See console: ' + message + " at " + url +
+          ":" + lineNumber);
+      };
+    </script>
+
+    <!-- Note: make sure to update Gruntfile.js if there are any changes -->
+    <!-- build:js javascripts/vendor.min.js -->
+    <script src="/bower_components/react/react.js"></script>
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/codemirror/lib/codemirror.js"></script>
+    <script src="/bower_components/codemirror/mode/ruby/ruby.js"></script>
+    <script src='/bower_components/easyxdm/easyXDM.js'></script>
+    <script src='/bower_components/history.js/scripts/bundled/html4+html5/native.history.js'></script>
+    <!-- endbuild -->
+    <!-- build:js javascripts/basicruby.min.js -->
+    <script src='/bower_components/basicruby-interpreter/dist/opal.js'></script>
+    <script src='/bower_components/basicruby-interpreter/dist/basicruby-interpreter.js'></script>
+    <!-- endbuild -->
+    <!-- build:js javascripts/jasmine.min.js -->
+    <script src="/bower_components/jasmine/lib/jasmine-core/jasmine.js"></script>
+    <script src="/bower_components/jasmine/lib/jasmine-core/jasmine-html.js"></script>
+    <script src="/bower_components/jasmine/lib/jasmine-core/boot.js"></script>
+    <!-- endbuild -->
+    <!-- build:js javascripts/browserified.min.js -->
+    <script src='javascripts/browserified.js'></script>
+    <!-- endbuild -->
+
+    <!-- build:js javascripts/pytutor.min.js -->
+    <script src='/bower_components/pytutor-on-bower/js/d3.v2.min.js'></script>
+    <script src='/bower_components/pytutor-on-bower/js/jquery-1.8.2.min.js'></script>
+    <script src='/bower_components/pytutor-on-bower/js/jquery-ui-1.8.24.custom.min.js'></script>
+    <script src='/bower_components/pytutor-on-bower/js/jquery.ba-bbq.min.js'></script>
+    <script src='/bower_components/pytutor-on-bower/js/jquery.jsPlumb-1.3.10-all-min.js'></script>
+    <script src='/bower_components/pytutor-on-bower/js/pytutor.min.js'></script></script>
+    <!-- endbuild -->
+  </body>
+
+  <button class='show-test-coverage' style='float:right; padding: 10px'>
+    Show Test Coverage
+  </button>
+  <script>
+    $('.show-test-coverage').click(function() {
+      $.support.cors = true; // for IE8
+      $.post('/generate-cov-reports', JSON.stringify(__coverage__), function() {
+          window.open(window.location.href.replace("test.html",
+            "lcov-report/index.html"));
+        }
+      ).fail(function(error) {
+        alert("Couldn't contact cov_server.js at " + url + ": " +
+          JSON.stringify(error));
+      });
+    });
+  </script>
+</html>

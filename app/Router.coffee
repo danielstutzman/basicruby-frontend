@@ -30,6 +30,9 @@ class Router
       controller = new ExerciseController(@service, reactRender, path)
       controller.setup()
 
+    else if path == '/test.html'
+      # do nothing
+
     else
       throw "Unknown route #{path}"
 

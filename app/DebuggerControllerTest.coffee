@@ -1,7 +1,7 @@
 DebuggerController = require '../app/DebuggerController'
 helper             = require './helper'
 
-{ click } = helper
+{ click, describe } = helper
 
 describe 'DebuggerController', ->
   it 'renders a working close button', ->
@@ -16,4 +16,4 @@ describe 'DebuggerController', ->
     expect(div.querySelectorAll('.close-button').length).toBe 1
 
     helper.click(div.querySelectorAll('.close-button')[0])
-    expect(div.parentNode).toBe null
+    expect(div.innerHTML).toBe ''

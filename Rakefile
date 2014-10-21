@@ -24,6 +24,7 @@ file 'build/javascripts/browserified.js' => Dir.glob('app/*.coffee') do |task|
   command = %W[
     cd build/coffee &&
     ../../node_modules/.bin/browserify
+      -t istanbulify
       --insert-global-vars ''
       -d
       #{paths}
@@ -49,33 +50,6 @@ file 'build/javascripts/browserified.min.js' => Dir.glob('app/*.coffee') do |tas
   create_with_sh command, "../../#{task.name}"
 end
 
-file 'build/javascripts/browserified-coverage.js' =>
-    Dir.glob(['app/*.coffee', 'test/*.coffee']) do |task|
-  mkdir_p 'build/javascripts'
-  sh 'coffee -bc -o build/coffee/app app'
-
-  paths = task.prerequisites.map { |path|
-    path.gsub %r[\.coffee$], '.js'
-  }.join(' ')
-  command = %W[
-     coffee -c -o build/coffee/test test
-  && cd build/coffee
-  && ../../node_modules/.bin/istanbul
-       instrument .
-       --no-compact --embed-source --preserve-comments
-       -o ../../build/istanbul
-  && cd ../../build/istanbul
-  && ../../node_modules/.bin/browserify
-       --insert-global-vars ''
-       -d
-      #{paths}
-  ].join(' ')
-  create_with_sh command, "../../#{task.name}"
-
-  puts "To run tests: python -m SimpleHTTPServer; cd test; node cov_server.js;
-    open http://localhost:8000/test/index.html?coverage=true"
-end
-
 file 'build/stylesheets' => Dir.glob('app/stylesheets/*.*css') do |task|
   sh 'sass --update app/stylesheets:build/stylesheets'
   sh 'sass --update bower_components/pytutor-on-bower/css:build/stylesheets'
@@ -86,7 +60,6 @@ task :default => %W[
   build/javascripts/browserified.js
   build/javascripts/browserified.min.js
   build/stylesheets
-  build/javascripts/browserified-coverage.js
 ]
 
 task :watch do
@@ -101,7 +74,7 @@ task :watch do
   command = %W[
     cd build/coffee &&
     ../../node_modules/.bin/watchify
-      #{ENV['RAILS_ENV'] == 'assets' ? '-t uglifyify' : ''}
+      -t istanbulify
       --insert-global-vars ''
       -d
       -o ../../build/javascripts/browserified.js
