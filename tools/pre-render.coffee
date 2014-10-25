@@ -5,9 +5,11 @@ path_         = require 'path'
 htmlparser2   = require 'htmlparser2'
 global.React  = require 'react'
 _             = require 'underscore'
-ApiService    = require './build/coffee/app/ApiService'
-Router        = require './build/coffee/app/Router'
 Entities      = require('html-entities').AllHtmlEntities
+ApiService    = require '../build/coffee/app/ApiService.js'
+Router        = require '../build/coffee/app/Router'
+
+process.chdir(path_.dirname(process.argv[1]) + '/..')
 
 # fake object is necessary global
 global.History = {}
