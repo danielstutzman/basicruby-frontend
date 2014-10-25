@@ -5,6 +5,7 @@ REQUIRE               = require './REQUIRE'
 
 if window.location.hostname == 'localhost'
   window.onerror = (message, url, lineNumber) ->
+    document.querySelector('#throbber').style.display = 'none'
     window.alert "See console: #{message} at #{url}:#{lineNumber}"
 
 if window.location.hostname == 'localhost'
@@ -13,8 +14,11 @@ else
   apiHost = 'basicruby.danstutzman.com'
 
 unless window.location.pathname == '/test.html'
-  rpc = new easyXDM.Rpc({ remote: "http://#{apiHost}/easyxdm.html" },
-    { remote: { request: {} } })
+  timeout = window.setTimeout (-> throw "Timeout contacting API server"), 5000
+  socketConfig =
+    remote: "http://#{apiHost}/easyxdm.html"
+    onReady: -> window.clearTimeout timeout
+  rpc = new easyXDM.Rpc(socketConfig, { remote: { request: {} } })
 
 service = new ApiService rpc, (showThrobber) ->
   document.querySelector('#throbber').style.display =
