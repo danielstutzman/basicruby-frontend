@@ -84,8 +84,12 @@ renderSitemap = (paths) ->
   console.log 'dist/sitemap.txt'
   fs.writeFileSync 'dist/sitemap.txt', content
 
+render404 = ->
+  render '/404', (->)
+
 gatherAllPaths (paths) ->
   renderSitemap(paths)
+  render404()
 
   renderPaths = (paths) ->
     nextPath = paths.shift()

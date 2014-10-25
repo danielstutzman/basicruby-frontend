@@ -1,7 +1,7 @@
 #!/bin/bash
 
 aws s3 mb s3://basicruby-frontend-danstutzman
-s3cmd ws-create s3://basicruby-frontend-danstutzman
+s3cmd ws-create s3://basicruby-frontend-danstutzman --ws-error=404
 
 s3cmd del --recursive s3://basicruby-frontend-danstutzman --force
 

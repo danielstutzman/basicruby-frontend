@@ -3,6 +3,7 @@ DebuggerController  = require './DebuggerController'
 ExerciseController  = require './ExerciseController'
 ExerciseComponent   = require './ExerciseComponent'
 MenuComponent       = require './MenuComponent'
+NotFoundComponent   = require './NotFoundComponent'
 Router              = require './Router'
 TutorController     = require './TutorController'
 TutorMenuComponent  = require './TutorMenuComponent'
@@ -34,6 +35,6 @@ class Router
       # do nothing
 
     else
-      throw "Unknown route #{path}"
+      reactRender NotFoundComponent({}), null
 
 module.exports = Router
