@@ -7,3 +7,4 @@
 /test/browserified-coverage.js
 .*.swp
 /dist
+/.SAUCE_LABS_API_KEY

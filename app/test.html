@@ -87,5 +87,79 @@
           JSON.stringify(error));
       });
     });
+
+    var currentSpec = null;
+    var reporter2 = {
+      specStarted: function(spec) {
+          currentSpec = spec;
+      },
+    }
+    jasmine.getEnv().addReporter(reporter2);
+    window.onerror = function(message, url, lineNumber) {
+      if (currentSpec === null) {
+        describe('window.onError', function() {
+          it("caught an error", function() {
+            throw new Error('See console: ' + message + " at " + url +
+              ":" + lineNumber);
+          });
+        });
+      } else {
+        currentSpec.status = 'failed';
+        if (message == 'Script error.' && lineNumber == 0) {
+          message += ' (See console and try running tests from http:// ' +
+            'not file:// for a better error message)';
+        }
+        currentSpec.failedExpectations.push({
+          passed: false,
+          message: message,
+          stack: '' + message + '\nat ' + url + ':' + lineNumber
+        });
+      }
+    };
+
+    var buildJSReport = function() {
+      var numPassed = 0;
+      var numFailed = 0;
+      var report = {
+        tests: _.map(jsApiReporter.suites(), function(suite) {
+          var suitePassed = true;
+          var mySpecs = _.filter(jsApiReporter.specs(), function(spec) {
+            return spec.fullName.indexOf(suite.description) === 0;
+          });
+          _.each(mySpecs, function(spec) {
+            if (spec.status !== 'passed' && spec.status !== 'skipped') {
+              suitePassed = false;
+            }
+          });
+          if (suitePassed) {
+            numPassed += 1;
+          }
+          else {
+            numFailed += 1;
+          }
+          return {
+            name:     suite.description,
+            result:   suitePassed,
+            message:  suite.description,
+            duration: 0,
+          };
+        }),
+        passed: numPassed,
+        failed: numFailed,
+        total: numPassed + numFailed
+      };
+      return report;
+    };
+
+    var jasmineEnv = jasmine.getEnv();
+    jasmineEnv.addReporter({
+      jasmineDone: function() {
+        try {
+          window.global_test_results = buildJSReport();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
   </script>
 </html>
