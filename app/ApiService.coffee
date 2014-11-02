@@ -24,7 +24,12 @@ class ApiService
 
     success = (result) =>
       @removePendingRequest requestNum
-      data = JSON.parse(result.data)
+      try
+        data = JSON.parse(result.data)
+      catch e
+        if e.name == 'SyntaxError'
+          console.error result.data
+        throw e
       callback data
 
     error = (result) =>
