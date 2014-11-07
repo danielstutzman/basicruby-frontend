@@ -8,10 +8,8 @@ if window.location.hostname == 'localhost'
     document.querySelector('#throbber').style.display = 'none'
     window.alert "See console: #{message} at #{url}:#{lineNumber}"
 
-if window.location.hostname == 'localhost'
-  apiHost = 'localhost:9292'
-else
-  apiHost = 'basicruby.danstutzman.com'
+if typeof(apiHost) == 'undefined'
+  window.alert 'Missing global variable: apiHost'
 
 unless window.location.pathname == '/test.html'
   timeout = window.setTimeout (-> throw "Timeout contacting API server"), 5000
