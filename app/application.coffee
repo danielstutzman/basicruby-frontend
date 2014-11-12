@@ -16,6 +16,7 @@ unless window.location.pathname == '/test.html'
   socketConfig =
     remote: "http://#{apiHost}/easyxdm.html"
     onReady: -> window.clearTimeout timeout
+    channel: "999" # keep xdm_c GET param the same so easyxdm can be cached
   rpc = new easyXDM.Rpc(socketConfig, { remote: { request: {} } })
 
 service = new ApiService rpc, (showThrobber) ->
