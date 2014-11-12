@@ -56,7 +56,12 @@ file 'build/stylesheets' => Dir.glob('app/stylesheets/*.*css') do |task|
   sh 'cp -R bower_components/pytutor-on-bower/css/images/ build/stylesheets/images'
 end
 
+file 'bower_components/basicruby-interpreter/dist' do |task|
+  sh 'cd bower_components/basicruby-interpreter; bundle install; rake'
+end
+
 task :default => %W[
+  bower_components/basicruby-interpreter/dist
   build/javascripts/browserified.js
   build/javascripts/browserified.min.js
   build/stylesheets
