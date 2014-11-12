@@ -30,6 +30,10 @@ module.exports = function(grunt) {
         src: 'build/javascripts/browserified.min.js',
         dest: 'dist/javascripts/browserified.min.js',
       },
+      favicon: {
+        src: 'app/favicon.ico',
+        dest: 'dist/favicon.ico',
+      },
     },
     useminPrepare: {
       options: {

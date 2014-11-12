@@ -6,6 +6,9 @@ s3cmd ws-create s3://basicruby-frontend-danstutzman --ws-error=404
 
 #s3cmd del --recursive s3://basicruby-frontend-danstutzman --force
 
+# Sync favicon.ico with 1 year expiration
+s3cmd put favicon.ico s3://basicruby-frontend-danstutzman/favicon.ico --acl-public --add-header="Cache-Control:public,max-age=31536000"
+
 # Sync some top-level files with forced revalidation
 for FILE in index.html test.html robots.txt sitemap.txt; do
   ../tools/gzip_if_not_gzipped.sh $FILE
