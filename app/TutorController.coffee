@@ -195,6 +195,15 @@ class TutorController
         traces.push { code: code, returned: null, trace, test_status }
     traces
 
+  compile_to_traces_or_popup: (code, exercise) ->
+    try
+      @compile_to_traces code, exercise
+    catch e
+      if e.name == 'DebuggerDoesntYetSupport'
+        window.alert "Basic Ruby relies on a custom Ruby interpreter that " +
+          "unfortunately doesn't yet support: #{e.message}"
+      throw e
+
   execute_to_trace: (bytecodes, given_vars) ->
     trace = []
     spool = new BytecodeSpool bytecodes
@@ -346,7 +355,7 @@ class TutorController
       autofocus: true
     )
 
-    traces = @compile_to_traces codeMirror.getValue(), exercise
+    traces = @compile_to_traces_or_popup codeMirror.getValue(), exercise
     @render_traces traces, exercise
 
     $('#restore-button').click (e) =>
@@ -356,7 +365,7 @@ class TutorController
       e.preventDefault()
 
     $('#save-button').click (e) =>
-      traces = @compile_to_traces codeMirror.getValue(), exercise
+      traces = @compile_to_traces_or_popup codeMirror.getValue(), exercise
       @render_traces traces, exercise
       @service.saveTutorCode @taskId, codeMirror.getValue(), (->)
       e.preventDefault()
