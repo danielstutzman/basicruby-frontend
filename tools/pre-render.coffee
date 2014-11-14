@@ -43,6 +43,12 @@ render = (path, callback) ->
     afterHtml  = outerHtml.replace /([^]*)<!-- END PRE-RENDERED CONTENT -->/, ''
     outputHtml = beforeHtml +
       (new Entities()).encodeNonASCII(innerHtml) + afterHtml
+    outputHtml = outputHtml.replace(
+      /<link rel="stylesheet" href="..\/stylesheets\//g,
+      '<link rel="stylesheet" href="/stylesheets/')
+    outputHtml = outputHtml.replace(
+      /<script src="..\/javascripts\//g,
+      '<script src="/javascripts/')
     numDirs = path.split('/').length
     if path == '/'
       pathOnDisk = 'dist/index.html'
