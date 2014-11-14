@@ -40,7 +40,7 @@ TutorExerciseComponent = React.createClass
 
       div { id: 'edit-content' },
         if @props.task_id
-          b {}, "Exercise #{@props.task_id}"
+          b {}, "Exercise #{@props.task_id} "
         backticksToCode @props.description
 
         div { id: 'user_code_div' },
