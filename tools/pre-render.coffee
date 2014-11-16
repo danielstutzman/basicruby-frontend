@@ -1,3 +1,4 @@
+#!/usr/bin/env coffee
 fs            = require 'fs'
 http          = require 'http'
 mkdir         = require 'mkdir'
@@ -11,6 +12,12 @@ Router        = require '../build/coffee/app/Router'
 
 process.chdir(path_.dirname(process.argv[1]) + '/..')
 
+if process.argv.length < 2 + 1 # [0]coffee [1]script.coffee [2]hostname
+  process.stderr.write "First arg: hostname for API server\n"
+  process.exit 1
+else
+  apiHost = process.argv[2]
+
 # fake object is necessary global
 global.History = {}
 
@@ -18,8 +25,8 @@ rpc =
   request: (config, success, error) ->
     options =
        method:   config.method
-       hostname: 'localhost'
-       port:     9292
+       hostname: apiHost.split(':')[0]
+       port:     apiHost.split(':')[1]
        path:     config.url
     request = http.request options, (response) ->
       response.setEncoding 'utf8'
