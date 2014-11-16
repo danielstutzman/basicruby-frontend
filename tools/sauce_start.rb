@@ -9,6 +9,8 @@ URL = ARGV[0] or raise "For arg 1, provide URL to test"
 raise "Missing env var SAUCE_USERNAME" if ENV['SAUCE_USERNAME'].nil?
 raise "Missing env var SAUCE_ACCESS_KEY" if ENV['SAUCE_ACCESS_KEY'].nil?
 
+STDOUT.sync = true # so output shows immediately
+
 # ------------ Part 1: start the tests
 
 LINUX_CHROME = ["Linux", "googlechrome", ""]
