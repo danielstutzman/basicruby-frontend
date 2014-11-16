@@ -8,10 +8,10 @@ if window.location.hostname == 'localhost'
     document.querySelector('#throbber').style.display = 'none'
     window.alert "See console: #{message} at #{url}:#{lineNumber}"
 
-if typeof(apiHost) == 'undefined'
-  window.alert 'Missing global variable: apiHost'
-
 unless window.location.pathname == '/test.html'
+  if typeof(apiHost) == 'undefined'
+    window.alert 'Missing global variable: apiHost'
+
   timeout = window.setTimeout (-> throw "Timeout contacting API server"), 5000
   socketConfig =
     remote: "http://#{apiHost}/easyxdm.html"
