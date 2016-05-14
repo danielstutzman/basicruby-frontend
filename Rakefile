@@ -95,6 +95,10 @@ end
 #  create_with_sh command, "../../#{task.name}"
 #end
 
+task :clean do
+  sh 'rm -rf build dist'
+end
+
 task :build_all => %W[
   build
   build/index.html
