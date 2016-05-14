@@ -1,3 +1,6 @@
+Opal = require 'opal'
+require 'basicruby-interpreter'
+
 dump = (sexp, level) ->
   out = ''
   for i in [0..level]

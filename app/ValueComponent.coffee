@@ -1,3 +1,4 @@
+React = require 'react'
 NBSP = '\u00a0'
 
 ValueComponent = React.createClass

@@ -1,3 +1,4 @@
+React          = require 'react'
 type           = React.PropTypes
 
 RIGHT_ARROW    = '\u2192'

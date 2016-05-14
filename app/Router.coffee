@@ -5,8 +5,6 @@ ExerciseComponent   = require './ExerciseComponent'
 MenuComponent       = require './MenuComponent'
 NotFoundComponent   = require './NotFoundComponent'
 Router              = require './Router'
-TutorController     = require './TutorController'
-TutorMenuComponent  = require './TutorMenuComponent'
 
 class Router
 
@@ -17,15 +15,6 @@ class Router
     if path == '/'
       @service.getMenu (data) ->
         reactRender MenuComponent(data), null
-
-    else if path == '/tutor'
-      @service.getTutorMenu (data) ->
-        reactRender TutorMenuComponent(data), null
-
-    else if match = /^\/tutor\/exercise\/([CD][0-9]+)$/.exec(path)
-      taskId = match[1]
-      controller = new TutorController(@service, reactRender, taskId)
-      controller.setup()
 
     else if match = /^\/([0-9]+)([PYBRGO])(\/([0-9]+))?$/.exec(path)
       controller = new ExerciseController(@service, reactRender, path)

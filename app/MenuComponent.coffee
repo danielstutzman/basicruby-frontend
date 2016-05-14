@@ -32,7 +32,7 @@ MenuComponent = React.createClass
     a
       className: 'done-indicator'
       href: completed.next
-      onClick: History.onClick
+      onClick: window.history.onClick
       if color == 'purple'
         if completed.num > 0
           CHECKED_BOX

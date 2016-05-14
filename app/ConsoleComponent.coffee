@@ -1,3 +1,5 @@
+React          = require 'react'
+
 type           = React.PropTypes
 ENTER_KEY      = 13
 UP_ARROW       = "\u2191"

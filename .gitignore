@@ -1,5 +1,4 @@
 /node_modules
-/bower_components
 /test/lcov-report
 .DS_Store
 /build

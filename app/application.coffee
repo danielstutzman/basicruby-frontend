@@ -1,4 +1,5 @@
-ApiService            = require './ApiService'
+easyXDM               = require 'easyxdm'
+ApiService            = require './ApiService.coffee'
 AstToBytecodeCompiler = require './AstToBytecodeCompiler'
 Router                = require './Router'
 REQUIRE               = require './REQUIRE'
@@ -24,22 +25,21 @@ service = new ApiService rpc, (showThrobber) ->
     (if showThrobber then 'block' else 'none')
 
 router = new Router(service)
-pathChanged = (path) ->
+window.history.pathChanged = (path) ->
   router.render path, (reactComponent, callMeAfterRender) ->
     React.renderComponent reactComponent,
       document.querySelector('#screen'),
       callMeAfterRender
 
 document.addEventListener 'DOMContentLoaded', ->
-  window.History.Adapter.bind window, 'statechange', ->
-    pathChanged History.getState().hash
   unless window.location.hash
-    pathChanged window.location.pathname
-  window.History.onClick = (e) ->
+    window.history.pathChanged window.location.pathname
+  window.history.onClick = (e) ->
     e.preventDefault() # don't re-request page by following clicked <a> link
     # Use currentTarget instead of target for when there's an a tag around a div
     href = e.currentTarget.getAttribute('href')
-    History.pushState null, null, href
+    window.history.pushState null, null, href
+    window.history.pathChanged href
 
   # Fix bug where Mobile Safari landscape mode scrolls too far down the page
   window.addEventListener 'orientationchange', ->

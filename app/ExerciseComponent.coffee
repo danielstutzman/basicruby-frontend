@@ -85,7 +85,7 @@ ExerciseComponent = React.createClass
     class_ = ['ExerciseComponent', @props.color, hasVideo, hasScript].join(' ')
     div { className: class_ },
       div { className: 'title' },
-        a { className: 'logo-link', href: '/', onClick: History.onClick }
+        a { className: 'logo-link', href: '/', onClick: window.history.onClick }
         EM_DASH
         "#{@props.topicNum}. #{@props.topicTitle}"
 

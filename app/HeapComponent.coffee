@@ -1,3 +1,4 @@
+React          = require 'react'
 ValueComponent = require './ValueComponent'
 
 type           = React.PropTypes

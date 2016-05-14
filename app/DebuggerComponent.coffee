@@ -3,6 +3,7 @@ HeapComponent         = require './HeapComponent'
 InstructionsComponent = require './InstructionsComponent'
 VariablesComponent    = require './VariablesComponent'
 PartialCallsComponent = require './PartialCallsComponent'
+React                 = require 'react'
 
 POWER_SYMBOL   = '\u233d'
 RIGHT_TRIANGLE = '\u25b6'

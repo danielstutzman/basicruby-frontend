@@ -60,25 +60,11 @@ class ApiService
   getMenu: (callback) ->
     @_request 'GET', '/api/menu.json', {}, callback
 
-  getTutorMenu: (callback) ->
-    @_request 'GET', '/api/tutor.json', {}, callback
-
-  getTutorExercise: (taskId, callback) ->
-    @_request 'GET', "/api/tutor/exercise/#{taskId}.json", {}, callback
-
   getExercise: (path, callback) ->
     @_request 'GET', "/api/exercise#{path}.json", {}, callback
 
   markComplete: (exerciseId, callback) =>
     @_request 'POST', "/api/mark_complete.json",
       { exercise_id: exerciseId }, callback
-
-  saveTutorCode: (taskId, newCode, callback) ->
-    @_request 'POST', '/api/tutor/save_tutor_code.json',
-      { task_id: taskId, user_code_textarea: newCode }, callback
-
-  discardTutorCode: (taskId, callback) ->
-    @_request 'POST', '/api/tutor/discard_tutor_code.json',
-      { task_id: taskId }, callback
 
 module.exports = ApiService
