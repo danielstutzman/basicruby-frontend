@@ -3,9 +3,15 @@
   "dependencies": {
     "codemirror": "~4.4.0",
     "react": "~0.11.2",
-    "underscore": "~1.7.0"
+    "underscore": "~1.7.0",
+    "opal": "git@github.com:danielstutzman/opal.git#0.7.6-dev-patches-to-20140504",
+    "basicruby-interpreter": "git@github.com:danielstutzman/basicruby-interpreter.git#0.0.3"
   },
   "devDependencies": {
-    "uglify-js": "~2.4.15"
+    "browserify": "^13.0.1",
+    "coffeeify": "^2.0.1",
+    "easyxdm": "^2.4.19-pre.2",
+    "uglify-js": "~2.4.15",
+    "watchify": "^3.7.0"
   }
 }
