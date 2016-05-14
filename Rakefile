@@ -62,7 +62,7 @@ file 'build/stylesheets/all.css' => %w[build/stylesheets] do |task|
     task.name
 end
 
-task :serve_build => :build do
+task :serve_build => :build_all do
   require 'webrick' # require inside block to save time
   class NonCachingFileHandler < WEBrick::HTTPServlet::FileHandler
     def do_GET request, response
@@ -95,7 +95,8 @@ end
 #  create_with_sh command, "../../#{task.name}"
 #end
 
-task :build => %W[
+task :build_all => %W[
+  build
   build/index.html
   build/images
   build/stylesheets/all.css
@@ -103,4 +104,4 @@ task :build => %W[
   build/javascripts/vendor.js
 ]
 
-task :default => :build
+task :default => :build_all
