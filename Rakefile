@@ -1,3 +1,7 @@
+require 'json'
+require 'net/http'
+require 'webrick'
+
 def create_with_sh command, path
   begin
     sh "#{command} > #{path}"
@@ -5,6 +9,44 @@ def create_with_sh command, path
     sh "rm -f #{path}"
     raise
   end
+end
+
+class NonCachingFileHandler < WEBrick::HTTPServlet::FileHandler
+  def do_GET request, response
+    super
+    if request.path == '/'
+      # no-store because If-Modified-Since won't distinguish between build and dist index.html
+      response['Cache-Control'] = 'no-store'
+    elsif request.path.match /\.[0-9a-f]{5}\.(png|jpg|jpeg|css|js)$/
+      response['Cache-Control'] = 'max-age=31556926'
+    else
+      response['Cache-Control'] = 'no-cache, must-revalidate'
+    end
+  end
+end
+
+def run_forwarding_web_server on_port, static_dir, api_hostname, api_port
+  server = WEBrick::HTTPServer.new BindAddress: '127.0.0.1', Port: on_port,
+    AccessLog: [[$stderr, '%t %s %m %U']]
+  server.mount '/', NonCachingFileHandler, static_dir
+  server.mount_proc '/api' do |request, response|
+    http = Net::HTTP.new api_hostname, api_port
+    if request.request_method == 'GET'
+      method = Net::HTTP::Get.new response.request_uri.path
+    elsif request.request_method == 'POST'
+      method = Net::HTTP::Post.new response.request_uri.path
+      method.body = request.body
+    end
+    request.each { |key, value| method.add_field key, value } # copy headers
+    response2 = http.request method
+
+    response['X-Forwarded-From'] =
+      "http://#{api_hostname}:#{api_port}#{response.request_uri.path}"
+    response.status = response2.code
+    response.body = response2.body
+  end
+  trap 'INT' do exit! 1 end
+  server.start
 end
 
 directory 'build/javascripts'
@@ -60,18 +102,7 @@ file 'build/stylesheets/all.css' => %w[build/stylesheets] do |task|
 end
 
 task :serve_build => :build_all do
-  require 'webrick' # require inside block to save time
-  class NonCachingFileHandler < WEBrick::HTTPServlet::FileHandler
-    def do_GET request, response
-      super
-      response['Cache-Control'] = 'no-cache, must-revalidate'
-    end
-  end
-  server = WEBrick::HTTPServer.new BindAddress: '127.0.0.1', Port: 3000,
-    AccessLog: [[$stderr, '%t %s %m %U']]
-  server.mount '/', NonCachingFileHandler , 'build'
-  trap 'INT' do exit! 1 end
-  server.start
+  run_forwarding_web_server 3000, 'build', 'localhost', 9292
 end
 
 task :clean do
@@ -93,7 +124,6 @@ directory 'dist/images'
 
 file 'build/stylesheets/all.dist.css' =>
     %w[build/stylesheets/all.css dist/assets.images.json] do |task|
-  require 'json' # require inside block to save time
   assets = JSON.load(File.read('dist/assets.images.json'))
   assets.each { |key, value| value.gsub! 'dist/', '/' }
 
@@ -145,7 +175,6 @@ file 'dist/assets.json' => %w[
 end
 
 task 'dist/index.html' => %w[app/index.html dist/assets.json] do |task|
-  require 'json' # require inside block to save time
   assets = JSON.load(File.read('dist/assets.json'))
   assets.each { |key, value| value.gsub! 'dist/', '/' }
 
@@ -168,18 +197,7 @@ task :dist_all => %W[
 ]
 
 task :serve_dist => :dist_all do
-  require 'webrick' # require inside block to save time
-  class NonCachingFileHandler < WEBrick::HTTPServlet::FileHandler
-    def do_GET request, response
-      super
-      response['Cache-Control'] = 'no-cache, must-revalidate'
-    end
-  end
-  server = WEBrick::HTTPServer.new BindAddress: '127.0.0.1', Port: 3000,
-    AccessLog: [[$stderr, '%t %s %m %U']]
-  server.mount '/', NonCachingFileHandler , 'dist'
-  trap 'INT' do exit! 1 end
-  server.start
+  run_forwarding_web_server 3000, 'dist', 'localhost', 9292
 end
 
 task :default => :build_all
