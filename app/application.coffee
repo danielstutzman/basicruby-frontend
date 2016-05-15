@@ -35,8 +35,10 @@ window.history.pathChanged = (path) ->
       callMeAfterRender
 
 document.addEventListener 'DOMContentLoaded', ->
-  unless window.location.hash
+  window.onpopstate = (event) ->
     window.history.pathChanged window.location.pathname
+  window.onpopstate null # handle current GET params
+
   window.history.onClick = (e) ->
     e.preventDefault() # don't re-request page by following clicked <a> link
     # Use currentTarget instead of target for when there's an a tag around a div
