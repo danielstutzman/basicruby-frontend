@@ -1,4 +1,3 @@
-easyXDM               = require 'easyxdm'
 ApiService            = require './ApiService.coffee'
 AstToBytecodeCompiler = require './AstToBytecodeCompiler'
 Router                = require './Router'
@@ -10,15 +9,19 @@ if window.location.hostname == 'localhost'
     window.alert "See console: #{message} at #{url}:#{lineNumber}"
 
 unless window.location.pathname == '/test.html'
-  if typeof(apiHost) == 'undefined'
-    window.alert 'Missing global variable: apiHost'
-
-  timeout = window.setTimeout (-> throw "Timeout contacting API server"), 5000
-  socketConfig =
-    remote: "http://#{apiHost}/easyxdm.html"
-    onReady: -> window.clearTimeout timeout
-    channel: "999" # keep xdm_c GET param the same so easyxdm can be cached
-  rpc = new easyXDM.Rpc(socketConfig, { remote: { request: {} } })
+  rpc =
+    request: (config, success, error) ->
+      xhr = new XMLHttpRequest()
+      xhr.addEventListener 'load', ->
+        if this.status == 200
+          success { data: this.responseText }
+        else
+          error { data: this.responseText }
+      xhr.addEventListener 'error', -> error()
+      xhr.open config.method, config.url
+      for own key, value of config.headers
+        xhr.setRequestHeader key, value
+      xhr.send config.data
 
 service = new ApiService rpc, (showThrobber) ->
   document.querySelector('#throbber').style.display =

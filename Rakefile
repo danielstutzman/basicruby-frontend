@@ -24,9 +24,6 @@ file 'build/javascripts/vendor.js' => %w[build/javascripts] do |task|
     sh "cat node_modules/react/dist/react.min.js >> #{task.name}"
     sh "cat node_modules/underscore/underscore-min.js >> #{task.name}"
     sh "echo >> #{task.name}" # needs a newline if anything follows
-    sh "echo 'module = {};' >> #{task.name}"
-    sh "cat node_modules/easyxdm/lib/easyXDM.js >> #{task.name}"
-    sh "echo 'window.EasyXDM = module.exports; delete window.module;' >> #{task.name}"
     sh "cat node_modules/opal/opal.js >> #{task.name}"
     sh "cat node_modules/basicruby-interpreter/dist/basicruby-interpreter.js >> #{task.name}"
     sh "cat node_modules/codemirror/lib/codemirror.js >> #{task.name}"
@@ -43,7 +40,7 @@ file 'build/javascripts/browserified.js' =>
   create_with_sh "node_modules/.bin/browserify \
     -t coffeeify app/application.coffee -d --extension=.coffee \
     -x react -x react-dom -x underscore -x bluebird -x react-addons-update -x redux -x opal \
-    -x basicruby-interpreter -x easyxdm \
+    -x basicruby-interpreter \
     -v -o #{task.name}", task.name
 end
 
@@ -52,7 +49,7 @@ task :watch_coffee => %w[build/javascripts] do
   sh "node_modules/watchify/bin/cmd.js \
     -t coffeeify app/application.coffee -d --extension=.coffee \
     -x react -x react-dom -x underscore -x bluebird -x react-addons-update -x redux -x opal \
-    -x basicruby-interpreter -x easyxdm \
+    -x basicruby-interpreter \
     -v -o build/javascripts/browserified.js"
 end
 
