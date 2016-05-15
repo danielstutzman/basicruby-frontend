@@ -24,6 +24,7 @@ class Router
       # do nothing
 
     else
+      console.error 'path', path
       reactRender NotFoundComponent({}), null
 
 module.exports = Router
