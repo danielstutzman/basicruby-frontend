@@ -156,10 +156,10 @@ task 'dist/index.html' => %w[app/index.html dist/assets.json] do |task|
   index.gsub! "<link rel='stylesheet' href='/stylesheets/all.css'>",
     "<link rel='stylesheet' href='#{assets.fetch('build/stylesheets/all.min.css')}'>" \
     or raise "Couldn't find <link> for /stylesheets/all.min.css"
-  index.gsub! "<script src='javascripts/browserified.js'></script>",
+  index.gsub! "<script src='/javascripts/browserified.js'></script>",
     "<script src='#{assets.fetch('build/javascripts/browserified.min.js')}'></script>" \
     or raise "Couldn't find <script> for /javascripts/browserified.min.css"
-  index.gsub! "<script src='javascripts/vendor.js'></script>",
+  index.gsub! "<script src='/javascripts/vendor.js'></script>",
     "<script src='#{assets.fetch('build/javascripts/vendor.min.js')}'></script>" \
     or raise "Couldn't find <script> for /javascripts/vendor.min.css"
   File.open(task.name, 'w') { |f| f.write index }
