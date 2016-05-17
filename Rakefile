@@ -201,13 +201,13 @@ task :serve_dist => :dist_all do
 end
 
 task :deploy_dist_to_digitalocean => :dist_all do
-  sh %q[INSTANCE_IP=`tugboat droplets | grep basicruby2 | egrep -oh "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" || true`
+  sh %q[INSTANCE_IP=`tugboat droplets | grep 'basicruby ' | egrep -oh "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" || true`
     echo INSTANCE_IP=$INSTANCE_IP
     rsync -e "ssh -l deployer -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null" -rv \
       dist/ root@$INSTANCE_IP:/home/deployer/basicruby/current/public \
       --exclude vendor --exclude ".*" --exclude tmp --exclude log
   ]
-  sh "tugboat ssh -n basicruby2 -c 'chown -R deployer:www-data /home/deployer/basicruby/current'"
+  sh "tugboat ssh -n basicruby -c 'chown -R deployer:www-data /home/deployer/basicruby/current'"
 end
 
 task :default => :build_all
