@@ -172,9 +172,14 @@ file 'dist/assets.json' => %w[
   all_js = task.prerequisites.select { |path| path.match(/\.js$/) }.join(' ')
   sh "node_modules/.bin/hashmark #{all_js} \
     -l 5 -m dist/assets.json 'dist/javascripts/{name}.{hash}{ext}'"
+
+  assets = JSON.load(File.read('dist/assets.json'))
+  assets.each { |key, value| sh "gzip -9 -k #{value}" }
 end
 
-task 'dist/index.html' => %w[app/index.html dist/assets.json] do |task|
+file 'dist/index.html' => %w[app/index.html dist/assets.json] do |task|
+  sh 'rm -f dist/index.html.gz' # delete old gz in case this fails
+
   assets = JSON.load(File.read('dist/assets.json'))
   assets.each { |key, value| value.gsub! 'dist/', '/' }
 
@@ -191,9 +196,14 @@ task 'dist/index.html' => %w[app/index.html dist/assets.json] do |task|
   File.open(task.name, 'w') { |f| f.write index }
 end
 
+file 'dist/index.html.gz' => 'dist/index.html' do
+  sh 'gzip -9 -k dist/index.html'
+end
+
 task :dist_all => %W[
   dist
   dist/index.html
+  dist/index.html.gz
 ]
 
 task :serve_dist => :dist_all do
