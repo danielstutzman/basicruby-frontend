@@ -95,6 +95,7 @@ class ExerciseController
 
     idToSavedValue = {}
     replacements = []
+    methodNameToDefRange = {}
     callback = (name, row0, col0, row1, col1, methodReceiverId, methodName,
         methodArgumentIds, saveAsId, expr, consoleTexts) =>
       idToSavedValue[saveAsId] = expr
@@ -118,11 +119,27 @@ class ExerciseController
             "<code>#{output.$inspect()}</code>\n"
         log += "<code>#{methodName}</code> returned <code>#{expr.$inspect()}</code>"
         replacements.push { row0, col0, row1, col1, expr }
+
+        # Now that the method has been called, remove all the replacements in it
+        # so it can be called later with fresh values
+        defRange = methodNameToDefRange[methodName]
+        if defRange
+          newReplacements = []
+          for replacement in replacements
+            if replacement.row0 < defRange.row0 or \
+                replacement.row0 == defRange.row0 and \
+                replacement.col0 < defRange.col0 or \
+                replacement.row1 > defRange.row1 or \
+                replacement.row1 == defRange.row1 and \
+                replacement.col1 > defRange.col1
+              newReplacements.push replacement
+          replacements = newReplacements
       else if name == 'js_return'
         return
       else if name == 'def'
         log = "Defined method <code>#{methodName}</code>"
         highlighted = { row0, col0, row1, col1 }
+        methodNameToDefRange[methodName] = { row0, col0, row1, col1 }
       else if name == 'lvar'
         log = "Evaluated <code>#{methodName}</code> to be " +
           "<code>#{expr.$inspect()}</code>"
