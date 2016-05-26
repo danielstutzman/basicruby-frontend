@@ -96,9 +96,11 @@ class ExerciseController
     idToSavedValue = {}
     replacements = []
     methodNameToDefRange = {}
+    indentation = 0
     callback = (name, row0, col0, row1, col1, methodReceiverId, methodName,
         methodArgumentIds, saveAsId, expr, consoleTexts) =>
       idToSavedValue[saveAsId] = expr
+      indentationIncrease = 0
 
       output = ''
       for eachOutput in consoleTexts
@@ -134,6 +136,9 @@ class ExerciseController
                 replacement.col1 > defRange.col1
               newReplacements.push replacement
           replacements = newReplacements
+
+        if methodNameToDefRange[methodName]
+          indentationIncrease = -1
       else if name == 'js_return'
         return
       else if name == 'def'
@@ -154,6 +159,8 @@ class ExerciseController
             log += ", " if i > 0
             log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
         highlighted = { row0, col0, row1, col1 }
+        if methodNameToDefRange[methodName]
+          indentationIncrease = 1
       else
         log = "got #{name}"
 
@@ -165,7 +172,8 @@ class ExerciseController
         for textMarker in textMarkers
           textMarker.clear()
         textMarkers = []
-      @traceContents.push [row0, log, replaceCallback, clearCallback]
+      @traceContents.push [indentation, row0, log, replaceCallback, clearCallback]
+      indentation += indentationIncrease
 
     BasicRubyNew.runRubyWithHighlighting code, callback
     @render()
