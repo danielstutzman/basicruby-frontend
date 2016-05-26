@@ -390,7 +390,14 @@ body {
   font-size: 20pt;
   line-height: 120%;
 
+  th {
+    text-align: left;
+  }
   .line:hover {
     background-color: gray;
+  }
+  .output div {
+    font-family: monospace;
+    background-color: #ccc;
   }
 }

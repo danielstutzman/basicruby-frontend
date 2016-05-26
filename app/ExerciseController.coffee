@@ -109,10 +109,10 @@ class ExerciseController
       consoleTexts.length = 0
 
       if name == 'str'
-        log = 'See string literal'
+        log = 'Evaluate string literal'
         resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'int'
-        log = 'See number literal'
+        log = 'Evaluate number literal'
         resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'call'
         if methodNameToDefRange[methodName]
@@ -149,8 +149,6 @@ class ExerciseController
             for methodArgumentId, i in methodArgumentIds
               log += ", " if i > 0
               log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
-          if output != ''
-            log += " and output <code>#{output.$inspect()}</code>"
           resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'js_return'
         return
@@ -204,7 +202,7 @@ class ExerciseController
           textMarker.clear()
         textMarkers = []
       @traceContents.push [indentation, row0, log, replaceCallback,
-        replaceResultCallback, clearCallback, expr]
+        replaceResultCallback, clearCallback, expr, output]
 
       indentation += indentationIncrease
       replacements.push resultReplacement if resultReplacement.expr

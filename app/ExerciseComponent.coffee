@@ -3,12 +3,13 @@ React              = require 'react'
 CasesComponent     = require './CasesComponent'
 SetupResizeHandler = require './setup_resize_handler'
 
-type        = React.PropTypes
-RELOAD_ICON = "\u27f3"
-RIGHT_ARROW = "\u279c"
-EM_DASH     = "\u2014"
-X_FOR_CLOSE = "\u00d7"
-EM_DASH     = "\u2014"
+type          = React.PropTypes
+RELOAD_ICON   = "\u27f3"
+RIGHT_ARROW   = "\u279c"
+EM_DASH       = "\u2014"
+X_FOR_CLOSE   = "\u00d7"
+EM_DASH       = "\u2014"
+NEWLINE_ARROW = "\u21a9"
 
 ExerciseComponent = React.createClass
 
@@ -79,7 +80,7 @@ ExerciseComponent = React.createClass
 
   render: ->
     { a, br, button, code, div, h1, iframe, input, label, p, span, table, td,
-      textarea, tr } = React.DOM
+      textarea, th, tr } = React.DOM
 
     hasScript = (@props.videoScript && !@props.youtubeId) && 'has-video-script'
     hasVideo  = @props.youtubeId && 'has-video'
@@ -167,9 +168,15 @@ ExerciseComponent = React.createClass
                   defaultValue: @props.initialCode
                   onFocus: => @props.doCommand.closePopup()
           table { className: 'trace' },
+            if @props.traceContents.length > 0
+              tr {},
+                th {}, 'Line'
+                th {}, 'Description'
+                th {}, 'Value'
+                th {}, 'Output'
             _.map @props.traceContents, (line) =>
               [indentation, lineNum, text, replaceCallback, replaceResultCallback,
-                clearCallback, result] = line
+                clearCallback, result, output] = line
               for textLine in text.split("\n")
                 do (textLine) =>
                   tr { className: 'line' },
@@ -186,6 +193,9 @@ ExerciseComponent = React.createClass
                     td {},
                       code {},
                         result.$inspect() if result
+                    td { className: 'output' },
+                      if output
+                        div {}, output.replace("\n", NEWLINE_ARROW)
 
         div { className: 'margin' } # because %-based margins don't work
 
