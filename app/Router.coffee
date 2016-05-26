@@ -1,5 +1,4 @@
 ApiService          = require './ApiService'
-DebuggerController  = require './DebuggerController'
 ExerciseController  = require './ExerciseController'
 ExerciseComponent   = require './ExerciseComponent'
 MenuComponent       = require './MenuComponent'

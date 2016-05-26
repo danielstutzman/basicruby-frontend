@@ -1,7 +1,5 @@
 ApiService            = require './ApiService.coffee'
-AstToBytecodeCompiler = require './AstToBytecodeCompiler'
 Router                = require './Router'
-REQUIRE               = require './REQUIRE'
 
 if window.location.hostname == 'localhost'
   window.onerror = (message, url, lineNumber) ->
@@ -49,5 +47,3 @@ document.addEventListener 'DOMContentLoaded', ->
   # Fix bug where Mobile Safari landscape mode scrolls too far down the page
   window.addEventListener 'orientationchange', ->
     window.scrollTo 0, 1
-
-  AstToBytecodeCompiler.initCache()

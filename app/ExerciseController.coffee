@@ -1,7 +1,3 @@
-AstToBytecodeCompiler = require './AstToBytecodeCompiler'
-BytecodeInterpreter   = require './BytecodeInterpreter'
-BytecodeSpool         = require './BytecodeSpool'
-DebuggerController    = require './DebuggerController'
 ExerciseComponent     = require './ExerciseComponent'
 
 class ExerciseController
@@ -75,80 +71,8 @@ class ExerciseController
       @render()
 
   handleRun: (code) ->
-    allTestCode = _.map(@cases, (case_) -> case_.code || '').join('')
-    for case_ in @cases
-      case_.inputLineNum = 0
-      try
-        if case_.code
-          match = /^def (test[a-zA-Z0-9_]*)\n/.exec case_.code
-          throw "Case doesn't start with def test" if match == null
-          test_name = match[1]
-          bytecodes = AstToBytecodeCompiler.compile [
-            ['YourCode', code],
-            ['TestCode', allTestCode],
-            ['Main', "__run_test(:#{test_name})"]
-          ]
-        else
-          bytecodes = AstToBytecodeCompiler.compile [['YourCode', code]]
-      catch e
-        if e.name == 'SyntaxError'
-          case_.actual_output = [['stderr', "SyntaxError: #{e.message}\n"]]
-        else if e.name == 'DebuggerDoesntYetSupport'
-          case_.actual_output =
-            [['stderr', "DebuggerDoesntYetSupport: #{e.message}\n"]]
-        else
-          throw e
-
-      if bytecodes
-        @spool = new BytecodeSpool bytecodes
-        @interpreter = new BytecodeInterpreter()
-        @spool.queueRunUntil 'DONE'
-        i = 0
-        until @spool.isDone()
-          i += 1
-          if i > 10000
-            throw "Interpreter seems to be stuck in a loop"
-          bytecode = @spool.getNextBytecode()
-          try
-            spoolCommand = @interpreter.interpret bytecode
-            @spool.doCommand.apply @spool, spoolCommand
-          catch e
-            if e.name == 'ProgramTerminated'
-              @interpreter.undefineMethods()
-              @spool.terminateEarly()
-            else
-              throw e
-          if @interpreter.isAcceptingInput()
-            line = case_.input.toString().split("\n")[case_.inputLineNum] + "\n"
-            @interpreter.setInput line
-            case_.inputLineNum += 1
-        case_.actual_output = @interpreter.getStdoutAndStderr()
+    console.log 'handleRun'
     @render()
-
-  handleDebug: (code) ->
-    features = _.extend @features, showNextExercise: false, showNextRep: false,
-      showingSolution: false
-    @_popupDebugger code, features, {}
-
-  handleShowSolution: ->
-    features = _.extend @features,
-      showNextExercise: false
-      showNextRep: @model.paths.next_rep != null
-      showingSolution: true
-    doCommand =
-      nextExercise: (e) =>
-        e.target.disabled = true
-        window.history.pushState null, null, @model.paths.next_exercise
-        window.history.pathChanged @model.paths.next_exercise
-      nextRep: (e) =>
-        e.target.disabled = true
-        window.history.pushState null, null, @model.paths.next_rep
-        window.history.pathChanged @model.paths.next_rep
-    @_popupDebugger @model.json.solution, features, doCommand
-
-  _popupDebugger: (code, features, doCommand) ->
-    for div in document.querySelectorAll('.debugger-parent')
-      new DebuggerController(code, div, features, @model.json, doCommand).setup()
 
   checkForPassingTests: ->
     rtrim = (s) -> if s then s.replace(/\s+$/, '') else s

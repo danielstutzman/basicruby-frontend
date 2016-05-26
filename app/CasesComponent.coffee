@@ -167,6 +167,7 @@ CasesComponent = React.createClass
         button
           className: 'debug'
           onClick: => @props.doCommand.debug @props.retrieveNewCode()
+          disabled: true
           'Debug'
         button
           className: 'run'

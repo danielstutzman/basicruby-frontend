@@ -37,7 +37,6 @@
         else if (name === 'redux') { lib = window.Redux; }
         else if (name === 'opal') { lib = window.Opal; }
         else if (name === 'easyxdm') { lib = window.EasyXDM; }
-        else if (name === 'basicruby-interpreter') { lib = "ignored"; }
         else {
           document.querySelector('#throbber').style.display = 'none';
           throw new Error("Unknown library '" + name + "'");

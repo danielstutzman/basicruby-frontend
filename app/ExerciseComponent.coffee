@@ -112,6 +112,7 @@ ExerciseComponent = React.createClass
         if @props.color == 'red' || @props.color == 'green'
           button
             className: 'show-solution'
+            disabled: true
             onClick: => @props.doCommand.showSolution()
             onFocus: => @props.doCommand.closePopup()
             'Show solution'
