@@ -182,15 +182,15 @@ ExerciseComponent = React.createClass
                   tr { className: 'line' },
                     td
                       className: 'line-num'
-                      onMouseOver: => replaceCallback @state.codeMirror
-                      onMouseOut:  => clearCallback @state.codeMirror
                       Array(indentation + 1).join("\u00a0\u00a0") + lineNum
                     td
-                      onMouseOver: => replaceResultCallback @state.codeMirror
+                      onMouseOver: => replaceCallback @state.codeMirror
                       onMouseOut:  => clearCallback @state.codeMirror
                       dangerouslySetInnerHTML: __html:
                         Array(indentation + 1).join("\u00a0\u00a0") + textLine
-                    td {},
+                    td
+                      onMouseOver: => replaceResultCallback @state.codeMirror
+                      onMouseOut:  => clearCallback @state.codeMirror
                       code {},
                         result.$inspect() if result
                     td { className: 'output' },

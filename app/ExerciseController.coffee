@@ -76,16 +76,23 @@ class ExerciseController
   handleRun: (code) ->
     @traceContents = []
     textMarkers = []
-    highlight = (codeMirror, replacements) ->
+    highlight = (codeMirror, replacements, currentHighlight) ->
+      replacements = replacements.concat([currentHighlight]) if currentHighlight
       for replacement, i in replacements
-        #console.log "replacement #{i}", replacement
         replacedWith = null
         if replacement.expr
           exprType = document.createElement 'span'
           exprType.setAttribute 'style', 'font-size: 8pt; position: absolute; top: -5px'
           exprType.appendChild document.createTextNode replacement.expr.$class()
           replacedWith = document.createElement 'span'
-          replacedWith.setAttribute 'style', 'background-color: blue; color: white'
+          if currentHighlight and
+             replacement.row0 >= currentHighlight.row0 and
+             replacement.col0 >= currentHighlight.col0 and
+             replacement.row1 <= currentHighlight.row1 and
+             replacement.col1 <= currentHighlight.col1
+            replacedWith.setAttribute 'class', 'highlighted value'
+          else
+            replacedWith.setAttribute 'class', 'value'
           replacedWith.appendChild exprType
           replacedWith.appendChild document.createTextNode replacement.expr.$inspect()
         textMarker = codeMirror.getDoc().markText { line: replacement.row0 - 1, ch: replacement.col0 },
@@ -108,7 +115,7 @@ class ExerciseController
         output += eachOutput[1]
       consoleTexts.length = 0
 
-      highlighting      = { row0, col0, row1, col1 }
+      currentHighlight  = { row0, col0, row1, col1 }
       resultReplacement = { row0, col0, row1, col1, expr }
 
       if name == 'str'
@@ -124,7 +131,7 @@ class ExerciseController
           # Hack: show line num for the last statement executed (presumably the
           # return) instead of the line num for the method call
           lastReplacement = replacements[replacements.length - 1]
-          highlighting =
+          currentHighlight =
             row0: lastReplacement.row0
             col0: lastReplacement.col0
             row1: lastReplacement.row1
@@ -179,18 +186,18 @@ class ExerciseController
       else
         log = "got #{name}"
 
-      replacementsCopy1 = replacements.concat([highlighting])
+      replacementsCopy1 = replacements.concat([currentHighlight])
       replacementsCopy2 = replacements.concat(
         if resultReplacement then [resultReplacement] else [])
       replaceCallback = (codeMirror) ->
-        highlight codeMirror, replacementsCopy1
+        highlight codeMirror, replacementsCopy1, currentHighlight
       replaceResultCallback = (codeMirror) ->
-        highlight codeMirror, replacementsCopy2
+        highlight codeMirror, replacementsCopy2, currentHighlight
       clearCallback = (codeMirror) ->
         for textMarker in textMarkers
           textMarker.clear()
         textMarkers = []
-      @traceContents.push [indentation, highlighting.row0, log, replaceCallback,
+      @traceContents.push [indentation, currentHighlight.row0, log, replaceCallback,
         replaceResultCallback, clearCallback, expr, output]
 
       if name == 'call'
@@ -208,7 +215,6 @@ class ExerciseController
                 replacement.col1 > defRange.col1
               newReplacements.push replacement
           replacements = newReplacements
-
 
       indentation += indentationIncrease
       replacements.push resultReplacement if resultReplacement

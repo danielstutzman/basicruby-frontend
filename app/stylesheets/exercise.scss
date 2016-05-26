@@ -382,7 +382,10 @@ body {
 }
 
 .highlighted {
-  background-color: red;
+  background-color: yellow;
+  &.value {
+    background-color: #440;
+  }
 }
 
 .trace {
@@ -393,11 +396,15 @@ body {
   th {
     text-align: left;
   }
-  .line:hover {
+  td:hover {
     background-color: gray;
   }
   .output div {
     font-family: monospace;
     background-color: #ccc;
   }
+}
+.value {
+  background-color: black;
+  color: white;
 }
