@@ -3,9 +3,7 @@
   "dependencies": {
     "codemirror": "~4.4.0",
     "react": "~0.11.2",
-    "underscore": "~1.7.0",
-    "opal": "git@github.com:danielstutzman/opal.git#85a03e9",
-    "basicruby-interpreter": "git@github.com:danielstutzman/basicruby-interpreter.git#f942f20"
+    "underscore": "~1.7.0"
   },
   "devDependencies": {
     "browserify": "^13.0.1",
