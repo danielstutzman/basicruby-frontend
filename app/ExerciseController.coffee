@@ -109,17 +109,32 @@ class ExerciseController
 
       highlighted = null
       if name == 'str'
-        log = "Found string literal <code>#{expr.$inspect()}</code>"
+        log = 'See string literal'
         replacements.push { row0, col0, row1, col1, expr }
       else if name == 'int'
-        log = "Found number literal <code>#{expr.$inspect()}</code>"
+        log = 'See number literal'
         replacements.push { row0, col0, row1, col1, expr }
       else if name == 'call'
-        log = ''
-        if output != ''
-          log += "<code>#{methodName}</code> output " +
-            "<code>#{output.$inspect()}</code>\n"
-        log += "<code>#{methodName}</code> returned <code>#{expr.$inspect()}</code>"
+        if methodNameToDefRange[methodName]
+          # EARLY RETURN: for custom methods ignore 'call'
+          return
+        else
+          log = "Call <code>#{methodName}</code> method"
+          if methodReceiverId && methodReceiverId != 4
+            log += " on <code>#{idToSavedValue[methodReceiverId].$inspect()}</code>"
+          if methodArgumentIds
+            if methodArgumentIds.length == 0
+              log += " with no arguments"
+            else if methodArgumentIds.length == 1
+              log += " with argument "
+            else
+              log += " with arguments "
+
+            for methodArgumentId, i in methodArgumentIds
+              log += ", " if i > 0
+              log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
+          if output != ''
+            log += " and output <code>#{output.$inspect()}</code>"
         replacements.push { row0, col0, row1, col1, expr }
 
         # Now that the method has been called, remove all the replacements in it
@@ -142,25 +157,39 @@ class ExerciseController
       else if name == 'js_return'
         return
       else if name == 'def'
-        log = "Defined method <code>#{methodName}</code>"
+        log = "Define <code>#{methodName}</code> method"
         highlighted = { row0, col0, row1, col1 }
         methodNameToDefRange[methodName] = { row0, col0, row1, col1 }
+        expr = null # otherwise Opal returns "f" from (def f(x); end)
       else if name == 'lvar'
-        log = "Evaluated <code>#{methodName}</code> to be " +
-          "<code>#{expr.$inspect()}</code>"
+        log = "Evaluate <code>#{methodName}</code> variable"
         replacements.push { row0, col0, row1, col1, expr }
       else if name == 'start_call'
-        log = "Calling <code>#{methodName}</code>"
-        if methodReceiverId && methodReceiverId != 4
-          log += " on <code>#{idToSavedValue[methodReceiverId].$inspect()}</code>"
-        if methodArgumentIds
-          log += " with arguments "
-          for methodArgumentId, i in methodArgumentIds
-            log += ", " if i > 0
-            log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
-        highlighted = { row0, col0, row1, col1 }
         if methodNameToDefRange[methodName]
+          log = "Call <code>#{methodName}</code> method"
+          if methodReceiverId && methodReceiverId != 4
+            log += " on <code>#{idToSavedValue[methodReceiverId].$inspect()}</code>"
+          if methodArgumentIds
+            if methodArgumentIds.length == 0
+              log += " with no arguments"
+            else if methodArgumentIds.length == 1
+              log += " with argument "
+            else
+              log += " with arguments "
+
+            for methodArgumentId, i in methodArgumentIds
+              log += ", " if i > 0
+              log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
+          highlighted = { row0, col0, row1, col1 }
           indentationIncrease = 1
+          expr = null # expr isn't the real return yet, just the last arg
+        else
+          # EARLY RETURN: ignore start_call for methods we haven't defined
+          #   because we want to show the return value
+          return
+      else if name == 'return'
+        log = 'Return'
+        indentationIncrease = -1
       else
         log = "got #{name}"
 
@@ -172,7 +201,8 @@ class ExerciseController
         for textMarker in textMarkers
           textMarker.clear()
         textMarkers = []
-      @traceContents.push [indentation, row0, log, replaceCallback, clearCallback]
+      @traceContents.push [indentation, row0, log, replaceCallback, clearCallback,
+        expr]
       indentation += indentationIncrease
 
     BasicRubyNew.runRubyWithHighlighting code, callback

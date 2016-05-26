@@ -78,8 +78,8 @@ ExerciseComponent = React.createClass
         @state.codeMirror.refresh() # in case it appeared (from purple)
 
   render: ->
-    { a, br, button, div, h1, iframe, input, label, p, span, table, td, textarea,
-      tr } = React.DOM
+    { a, br, button, code, div, h1, iframe, input, label, p, span, table, td,
+      textarea, tr } = React.DOM
 
     hasScript = (@props.videoScript && !@props.youtubeId) && 'has-video-script'
     hasVideo  = @props.youtubeId && 'has-video'
@@ -168,18 +168,21 @@ ExerciseComponent = React.createClass
                   onFocus: => @props.doCommand.closePopup()
           table { className: 'trace' },
             _.map @props.traceContents, (line) =>
-              [indentation, lineNum, text, replaceCallback, clearCallback] = line
+              [indentation, lineNum, text, replaceCallback, clearCallback, result] \
+                = line
               for textLine in text.split("\n")
                 do (textLine) =>
                   tr { className: 'line' },
                     td { className: 'line-num' },
                       Array(indentation + 1).join("\u00a0\u00a0") + lineNum
+                    td
+                      onMouseOver: => replaceCallback @state.codeMirror
+                      onMouseOut:  => clearCallback @state.codeMirror
+                      dangerouslySetInnerHTML: __html:
+                        Array(indentation + 1).join("\u00a0\u00a0") + textLine
                     td {},
-                      a
-                        onMouseOver: => replaceCallback @state.codeMirror
-                        onMouseOut:  => clearCallback @state.codeMirror
-                        dangerouslySetInnerHTML: __html:
-                          Array(indentation + 1).join("\u00a0\u00a0") + textLine
+                      code {},
+                        result.$inspect() if result
 
         div { className: 'margin' } # because %-based margins don't work
 
