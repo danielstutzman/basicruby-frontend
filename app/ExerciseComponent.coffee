@@ -23,7 +23,7 @@ ExerciseComponent = React.createClass
     youtubeId:    type.string
     videoScript:  type.string
     doCommand:    type.object.isRequired
-    traceContents:type.string
+    traceContents:type.array.isRequired
 
   getInitialState: ->
     codeMirror: null
