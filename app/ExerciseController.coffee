@@ -1,4 +1,5 @@
 ExerciseComponent     = require './ExerciseComponent'
+BasicRubyNew          = require './BasicRubyNew'
 
 class ExerciseController
   constructor: (service, reactRender, path) ->
@@ -71,7 +72,7 @@ class ExerciseController
       @render()
 
   handleRun: (code) ->
-    console.log 'handleRun'
+    BasicRubyNew.runRubyWithHighlighting 'puts 1 + 1'
     @render()
 
   checkForPassingTests: ->

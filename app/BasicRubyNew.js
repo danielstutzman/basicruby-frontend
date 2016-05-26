@@ -1,0 +1,126 @@
+require('opal'); // sets Opal global
+
+function parseToSexp(rubySource) {
+  var $scope = Opal;
+  Opal.add_stubs(['$new', '$compile', '$instance_variable_get']);
+  compiler = (($scope.get('Opal')).$$scope.get('Compiler')).$new(rubySource);
+  compiler.$compile();
+  return compiler.$instance_variable_get("@sexp");
+}
+
+function continueRecursion(f, s) {
+  var name   = s.array[0];
+  if (name == 'top' || name == 'js_return') {
+    f(s.array[1]);
+  } else if (name == 'block' || name == 'arglist') {
+    for (var i = 1; i < s.array.length; i++) {
+      f(s.array[i]);
+    }
+  } else if (name == 'call') {
+    if (s.array[1].array) {
+      f(s.array[1]);
+    }
+    if (s.array[3].array) {
+      f(s.array[3]);
+    }
+  } else if (name == 'int' || name == 'str' || name == 'lvar') {
+    // no further recursion is possible
+  } else if (name == 'def') {
+    if (s.array[1].$$id != 4) {
+      throw new Error('Expected nil in def.array[1]');
+    }
+    if (s.array[4].array[0] != 'block') {
+      throw new Error('Expected block in def.array[4]');
+    }
+    f(s.array[4]);
+  } else {
+    throw new Error("Don't know how to handle sexp of type '" + name + "'");
+  }
+}
+
+function convertRowColToOffsets(s, lineNumToOffset) {
+  console.log('convertRowColToOffsets', s);
+  continueRecursion(function(s) { convertRowColToOffsets(s, lineNumToOffset) }, s);
+  if (s.source && s.source.length) {
+    var source = s.source;
+    if (lineNumToOffset[source[0]] === undefined) {
+      throw new Error("Couldn't find lineNumToOffset[" + source[0] + "]");
+    }
+    if (lineNumToOffset[source[2]] === undefined) {
+      throw new Error("Couldn't find lineNumToOffset[" + source[2] + "]");
+    }
+    source.push(lineNumToOffset[source[0]] + source[1]);
+    source.push(lineNumToOffset[source[2]] + source[3]);
+  }
+}
+
+function instrumentRuby(s, offsetToAdditions) {
+  console.log('instrumentRuby', s);
+  continueRecursion(function(s) { instrumentRuby(s, offsetToAdditions) }, s);
+  if (s.source && s.source.length) {
+    console.log('Handling source', s.source);
+
+    var offsetStart = s.source[4];
+    if (offsetToAdditions[offsetStart] === undefined) {
+      offsetToAdditions[offsetStart] = [];
+    }
+    // unshift not push because recursion will go to children first
+    offsetToAdditions[offsetStart].unshift("got('" + s.array[0] + "'," +
+        s.source[0] + ',' + s.source[1] + ',' +
+        s.source[2] + ',' + s.source[3] + ',(');
+
+    var offsetEnd = s.source[5];
+    if (offsetToAdditions[offsetEnd] === undefined) {
+      offsetToAdditions[offsetEnd] = [];
+    }
+    // push not unshift because recursion will go to children first
+    offsetToAdditions[offsetEnd].push("))");
+  }
+}
+
+function runRubyWithHighlighting(rubySource) {
+  var lineNumToOffset = {};
+  var rubySourceLines = rubySource.split("\n");
+  var offsetSoFar = 0;
+  for (var lineNum0 = 0; lineNum0 < rubySourceLines.length; lineNum0++) {
+    lineNumToOffset[lineNum0 + 1] = offsetSoFar; // + 1 since line nums start at 1
+    offsetSoFar += rubySourceLines[lineNum0].length + 1; // + 1 for the newline
+  }
+
+  var sexp = parseToSexp(rubySource);
+  //console.log(JSON.stringify(sexp, null, 2));
+  convertRowColToOffsets(sexp, lineNumToOffset);
+  //console.log('sexp', sexp);
+  //console.log(JSON.stringify(sexp, null, 2));
+
+  var offsetToAdditions = {};
+  instrumentRuby(sexp, offsetToAdditions);
+  console.log(offsetToAdditions);
+  var offsets = Object.keys(offsetToAdditions).sort(function(a,b) { return a - b; });
+  console.log('offsets', offsets);
+  var lastOffset = 0;
+  var instrumentedSource = [];
+  for (var offset in offsetToAdditions) {
+    instrumentedSource.push(rubySource.substring(lastOffset, offset));
+    instrumentedSource = instrumentedSource.concat(offsetToAdditions[offset]);
+    lastOffset = offset;
+  }
+  instrumentedSource.push(rubySource.substring(lastOffset));
+  instrumentedSource = "def got(name, row0, col0, row1, col1, expr)\n" +
+    "  `console.log(\"\\033[1;30mGot\", " +
+      "  name, row0 + ':' + col0 + '-' + row1 + ':' + col1," +
+      "  expr.$$id == 4 ? 'nil' : expr, \"\\033[0m\")`\n" +
+    "  expr\n" +
+    "end\n" + 
+    instrumentedSource.join('');
+  console.log('instrumented:', instrumentedSource);
+
+  Opal.eval(instrumentedSource);
+}
+   
+//var rubySource = "def f(x)\n x + 1\n end\n p f(2)"
+//var rubySource = "p 1 + 2 + 3";
+
+module.exports = {
+  runRubyWithHighlighting: runRubyWithHighlighting
+};
