@@ -171,11 +171,13 @@ ExerciseComponent = React.createClass
               [lineNum, text, replaceCallback, clearCallback] = line
               for textLine in text.split("\n")
                 do (textLine) =>
-                  div { className: 'line' },
-                    a
-                      onMouseOver: => replaceCallback @state.codeMirror
-                      onMouseOut:  => clearCallback @state.codeMirror
-                      "Line #{lineNum}\u00a0\u00a0 #{textLine}"
+                  a
+                    onMouseOver: => replaceCallback @state.codeMirror
+                    onMouseOut:  => clearCallback @state.codeMirror
+                    div { className: 'line' },
+                      span { className: 'line-num' },
+                        lineNum
+                      span dangerouslySetInnerHTML: __html: textLine
 
         div { className: 'margin' } # because %-based margins don't work
 

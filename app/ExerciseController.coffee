@@ -104,27 +104,44 @@ class ExerciseController
         output += eachOutput[1]
       consoleTexts.length = 0
 
-      log = "got #{name}"
+      highlighted = null
       if name == 'str'
-        log = "Found string literal #{expr.$inspect()}"
+        log = "Found string literal <code>#{expr.$inspect()}</code>"
         replacements.push { row0, col0, row1, col1, expr }
       else if name == 'int'
-        log = "Found number literal #{expr.$inspect()}"
+        log = "Found number literal <code>#{expr.$inspect()}</code>"
         replacements.push { row0, col0, row1, col1, expr }
       else if name == 'call'
-        log = "Called #{methodName} method"
+        log = ''
+        if output != ''
+          log += "<code>#{methodName}</code> output " +
+            "<code>#{output.$inspect()}</code>\n"
+        log += "<code>#{methodName}</code> returned <code>#{expr.$inspect()}</code>"
+        replacements.push { row0, col0, row1, col1, expr }
+      else if name == 'js_return'
+        return
+      else if name == 'def'
+        log = "Defined method <code>#{methodName}</code>"
+        highlighted = { row0, col0, row1, col1 }
+      else if name == 'lvar'
+        log = "Evaluated <code>#{methodName}</code> to be " +
+          "<code>#{expr.$inspect()}</code>"
+        replacements.push { row0, col0, row1, col1, expr }
+      else if name == 'start_call'
+        log = "Calling <code>#{methodName}</code>"
         if methodReceiverId && methodReceiverId != 4
-          log += " on #{idToSavedValue[methodReceiverId].$inspect()}"
+          log += " on <code>#{idToSavedValue[methodReceiverId].$inspect()}</code>"
         if methodArgumentIds
           log += " with arguments "
           for methodArgumentId, i in methodArgumentIds
             log += ", " if i > 0
-            log += idToSavedValue[methodArgumentId].$inspect()
-        replacements.push { row0, col0, row1, col1, expr: null }
-      else if name == 'js_return'
-        return
+            log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
+        highlighted = { row0, col0, row1, col1 }
+      else
+        log = "got #{name}"
 
       replacementsCopy = replacements.slice(0)
+      replacementsCopy.push highlighted if highlighted
       replaceCallback = (codeMirror) ->
         highlight codeMirror, replacementsCopy
       clearCallback = (codeMirror) ->
@@ -132,17 +149,6 @@ class ExerciseController
           textMarker.clear()
         textMarkers = []
       @traceContents.push [row0, log, replaceCallback, clearCallback]
-
-      if name == 'call'
-        log = ''
-        if output != ''
-          log += "\u00a0\u00a0Output #{output.$inspect()}\n"
-        log += "\u00a0\u00a0Returned #{expr.$inspect()}"
-        replacements.push { row0, col0, row1, col1, expr }
-        replacementsCopy2 = replacements.slice(0)
-        replaceCallback = (codeMirror) ->
-          highlight codeMirror, replacementsCopy2
-        @traceContents.push [row0, log, replaceCallback, clearCallback]
 
     BasicRubyNew.runRubyWithHighlighting code, callback
     @render()

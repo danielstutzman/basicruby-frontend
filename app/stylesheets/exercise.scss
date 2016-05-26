@@ -384,3 +384,17 @@ body {
 .highlighted {
   background-color: red;
 }
+
+.trace {
+  background-color: white;
+  font-size: 20pt;
+  line-height: 120%;
+
+  .line-num {
+    display: inline-block;
+    width: 30px;
+  }
+  .line:hover {
+    background-color: gray;
+  }
+}

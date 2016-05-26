@@ -79,6 +79,38 @@ function instrumentRuby(s, offsetToAdditions) {
         methodArgumentIds.push(arglist[i].$$id);
       }
       console.log('methodArgids', methodArgumentIds);
+    } else if (s.array[0] == 'def') {
+      methodName = s.array[2];
+    } else if (s.array[0] == 'lvar') {
+      methodName = s.array[1];
+    }
+
+    // For method calls we want to call 'got' with 'start_method' just before
+    // the method evaluation starts.  The only way is to surround the last
+    // argument: e.g. f(1,2,3) changes to f(1,2,start_method(3))
+    // If there's no last argument, send in *start_method([])
+    if (s.array[0] == 'call') {
+      var arglist = s.array[3];
+      var lastArg = arglist.array[arglist.array.length - 1];
+      var offsetStart = lastArg.source[4];
+      if (offsetToAdditions[offsetStart] === undefined) {
+        offsetToAdditions[offsetStart] = [];
+      }
+      offsetToAdditions[offsetStart].unshift(
+        "got('start_call'," +
+        s.source[0] + ',' + s.source[1] + ',' +
+        s.source[2] + ',' + s.source[3] + "," +
+        (methodReceiverId || 'nil') + "," +
+        "'" + (methodName || 'nil') + "'," +
+        (methodArgumentIds ? methodArgumentIds.$inspect() : 'nil') + "," +
+        s.$$id + ",(");
+
+      var offsetEnd = lastArg.source[5];
+      if (offsetToAdditions[offsetEnd] === undefined) {
+        offsetToAdditions[offsetEnd] = [];
+      }
+      // push not unshift because recursion will go to children first
+      offsetToAdditions[offsetEnd].push("))");
     }
 
     var offsetStart = s.source[4];
