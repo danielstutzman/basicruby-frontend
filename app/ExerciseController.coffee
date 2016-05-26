@@ -95,6 +95,7 @@ class ExerciseController
 
     idToSavedValue = {}
     replacements = []
+    resultReplacement = null
     methodNameToDefRange = {}
     indentation = 0
     callback = (name, row0, col0, row1, col1, methodReceiverId, methodName,
@@ -107,17 +108,32 @@ class ExerciseController
         output += eachOutput[1]
       consoleTexts.length = 0
 
-      highlighted = null
       if name == 'str'
         log = 'See string literal'
-        replacements.push { row0, col0, row1, col1, expr }
+        resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'int'
         log = 'See number literal'
-        replacements.push { row0, col0, row1, col1, expr }
+        resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'call'
         if methodNameToDefRange[methodName]
-          # EARLY RETURN: for custom methods ignore 'call'
-          return
+          log = "Return #{methodName}"
+          indentationIncrease = -1
+          resultReplacement = { row0, col0, row1, col1, expr }
+
+          # Now that the method has been called, remove all the replacements in it
+          # so it can be called later with fresh values
+          defRange = methodNameToDefRange[methodName]
+          if defRange
+            newReplacements = []
+            for replacement in replacements
+              if replacement.row0 < defRange.row0 or \
+                  replacement.row0 == defRange.row0 and \
+                  replacement.col0 < defRange.col0 or \
+                  replacement.row1 > defRange.row1 or \
+                  replacement.row1 == defRange.row1 and \
+                  replacement.col1 > defRange.col1
+                newReplacements.push replacement
+            replacements = newReplacements
         else
           log = "Call <code>#{methodName}</code> method"
           if methodReceiverId && methodReceiverId != 4
@@ -135,35 +151,17 @@ class ExerciseController
               log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
           if output != ''
             log += " and output <code>#{output.$inspect()}</code>"
-        replacements.push { row0, col0, row1, col1, expr }
-
-        # Now that the method has been called, remove all the replacements in it
-        # so it can be called later with fresh values
-        defRange = methodNameToDefRange[methodName]
-        if defRange
-          newReplacements = []
-          for replacement in replacements
-            if replacement.row0 < defRange.row0 or \
-                replacement.row0 == defRange.row0 and \
-                replacement.col0 < defRange.col0 or \
-                replacement.row1 > defRange.row1 or \
-                replacement.row1 == defRange.row1 and \
-                replacement.col1 > defRange.col1
-              newReplacements.push replacement
-          replacements = newReplacements
-
-        if methodNameToDefRange[methodName]
-          indentationIncrease = -1
+          resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'js_return'
         return
       else if name == 'def'
         log = "Define <code>#{methodName}</code> method"
-        highlighted = { row0, col0, row1, col1 }
+        resultReplacement = { row0, col0, row1, col1 }
         methodNameToDefRange[methodName] = { row0, col0, row1, col1 }
         expr = null # otherwise Opal returns "f" from (def f(x); end)
       else if name == 'lvar'
         log = "Evaluate <code>#{methodName}</code> variable"
-        replacements.push { row0, col0, row1, col1, expr }
+        resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'start_call'
         if methodNameToDefRange[methodName]
           log = "Call <code>#{methodName}</code> method"
@@ -180,30 +178,36 @@ class ExerciseController
             for methodArgumentId, i in methodArgumentIds
               log += ", " if i > 0
               log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
-          highlighted = { row0, col0, row1, col1 }
+          resultReplacement = { row0, col0, row1, col1 }
           indentationIncrease = 1
           expr = null # expr isn't the real return yet, just the last arg
         else
           # EARLY RETURN: ignore start_call for methods we haven't defined
           #   because we want to show the return value
           return
-      else if name == 'return'
-        log = 'Return'
-        indentationIncrease = -1
       else
         log = "got #{name}"
 
-      replacementsCopy = replacements.slice(0)
-      replacementsCopy.push highlighted if highlighted
+      resultAsHighlight =
+        row0: resultReplacement.row0
+        col0: resultReplacement.col0
+        row1: resultReplacement.row1
+        col1: resultReplacement.col1
+      replacementsCopy1 = replacements.concat([resultAsHighlight])
+      replacementsCopy2 = replacements.concat([resultReplacement])
       replaceCallback = (codeMirror) ->
-        highlight codeMirror, replacementsCopy
+        highlight codeMirror, replacementsCopy1
+      replaceResultCallback = (codeMirror) ->
+        highlight codeMirror, replacementsCopy2
       clearCallback = (codeMirror) ->
         for textMarker in textMarkers
           textMarker.clear()
         textMarkers = []
-      @traceContents.push [indentation, row0, log, replaceCallback, clearCallback,
-        expr]
+      @traceContents.push [indentation, row0, log, replaceCallback,
+        replaceResultCallback, clearCallback, expr]
+
       indentation += indentationIncrease
+      replacements.push resultReplacement if resultReplacement.expr
 
     BasicRubyNew.runRubyWithHighlighting code, callback
     @render()

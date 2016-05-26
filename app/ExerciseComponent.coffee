@@ -168,15 +168,18 @@ ExerciseComponent = React.createClass
                   onFocus: => @props.doCommand.closePopup()
           table { className: 'trace' },
             _.map @props.traceContents, (line) =>
-              [indentation, lineNum, text, replaceCallback, clearCallback, result] \
-                = line
+              [indentation, lineNum, text, replaceCallback, replaceResultCallback,
+                clearCallback, result] = line
               for textLine in text.split("\n")
                 do (textLine) =>
                   tr { className: 'line' },
-                    td { className: 'line-num' },
+                    td
+                      className: 'line-num'
+                      onMouseOver: => replaceCallback @state.codeMirror
+                      onMouseOut:  => clearCallback @state.codeMirror
                       Array(indentation + 1).join("\u00a0\u00a0") + lineNum
                     td
-                      onMouseOver: => replaceCallback @state.codeMirror
+                      onMouseOver: => replaceResultCallback @state.codeMirror
                       onMouseOut:  => clearCallback @state.codeMirror
                       dangerouslySetInnerHTML: __html:
                         Array(indentation + 1).join("\u00a0\u00a0") + textLine
