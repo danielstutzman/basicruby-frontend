@@ -37,6 +37,8 @@ function continueRecursion(f, s) {
       throw new Error('Expected block in def.array[4]');
     }
     f(s.array[4]);
+  } else if (name == 'return') {
+    f(s.array[1]);
   } else {
     throw new Error("Don't know how to handle sexp of type '" + name + "'");
   }
