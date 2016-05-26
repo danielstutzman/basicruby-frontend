@@ -117,7 +117,7 @@ class ExerciseController
         log = 'Evaluate number literal'
       else if name == 'call'
         if methodNameToDefRange[methodName]
-          log = "Return #{methodName}"
+          log = "Return"
           indentationIncrease = -1
           resultReplacement = { row0, col0, row1, col1, expr }
 
