@@ -23,6 +23,7 @@ ExerciseComponent = React.createClass
     youtubeId:    type.string
     videoScript:  type.string
     doCommand:    type.object.isRequired
+    traceContents:type.string
 
   getInitialState: ->
     codeMirror: null
@@ -65,7 +66,7 @@ ExerciseComponent = React.createClass
         codeMirrors.push codeMirror
 
     # TODO: destroy old resize handler before setting up a new one
-    SetupResizeHandler.setupResizeHandler codeMirrors
+    #SetupResizeHandler.setupResizeHandler codeMirrors
 
   componentDidUpdate: (prevProps, prevState) ->
     if @state.codeMirror
@@ -165,6 +166,19 @@ ExerciseComponent = React.createClass
                   className: 'code'
                   defaultValue: @props.initialCode
                   onFocus: => @props.doCommand.closePopup()
+          div { className: 'trace' },
+            _.map @props.traceContents, (line) =>
+              [lineNum, text, highlightCallback, replaceCallback, clearCallback] = line
+              div { className: 'line' },
+                a
+                  onMouseOver: => highlightCallback @state.codeMirror
+                  onMouseOut:  => clearCallback @state.codeMirror
+                  "Line #{lineNum}\u00a0\u00a0"
+                a
+                  onMouseOver: => replaceCallback @state.codeMirror
+                  onMouseOut:  => clearCallback @state.codeMirror
+                  text
+
         div { className: 'margin' } # because %-based margins don't work
 
       CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)

@@ -1,5 +1,9 @@
 require('opal'); // sets Opal global
 
+(function() {
+
+gotCallbackGlobal = null;
+
 function parseToSexp(rubySource) {
   var $scope = Opal;
   Opal.add_stubs(['$new', '$compile', '$instance_variable_get']);
@@ -60,6 +64,21 @@ function instrumentRuby(s, offsetToAdditions) {
   if (s.source && s.source.length) {
     console.log('Handling source', s.source);
 
+    var methodReceiverId  = null;
+    var methodName        = null;
+    var methodArgumentIds = null;
+    if (s.array[0] == 'call') {
+      methodReceiverId = s.array[1].$$id;
+      methodName       = s.array[2];
+      methodArgumentIds = [];
+      arglist = s.array[3].array;
+      console.log('arglist', arglist);
+      for (var i = 1; i < arglist.length; i++) {
+        methodArgumentIds.push(arglist[i].$$id);
+      }
+      console.log('methodArgids', methodArgumentIds);
+    }
+
     var offsetStart = s.source[4];
     if (offsetToAdditions[offsetStart] === undefined) {
       offsetToAdditions[offsetStart] = [];
@@ -67,7 +86,11 @@ function instrumentRuby(s, offsetToAdditions) {
     // unshift not push because recursion will go to children first
     offsetToAdditions[offsetStart].unshift("got('" + s.array[0] + "'," +
         s.source[0] + ',' + s.source[1] + ',' +
-        s.source[2] + ',' + s.source[3] + ',(');
+        s.source[2] + ',' + s.source[3] + "," +
+        (methodReceiverId || 'nil') + "," +
+        "'" + (methodName || 'nil') + "'," +
+        (methodArgumentIds ? methodArgumentIds.$inspect() : 'nil') + "," +
+        s.$$id + ",(");
 
     var offsetEnd = s.source[5];
     if (offsetToAdditions[offsetEnd] === undefined) {
@@ -78,7 +101,9 @@ function instrumentRuby(s, offsetToAdditions) {
   }
 }
 
-function runRubyWithHighlighting(rubySource) {
+function runRubyWithHighlighting(rubySource, gotCallback) {
+  gotCallbackGlobal = gotCallback;
+
   var lineNumToOffset = {};
   var rubySourceLines = rubySource.split("\n");
   var offsetSoFar = 0;
@@ -106,21 +131,72 @@ function runRubyWithHighlighting(rubySource) {
     lastOffset = offset;
   }
   instrumentedSource.push(rubySource.substring(lastOffset));
-  instrumentedSource = "def got(name, row0, col0, row1, col1, expr)\n" +
-    "  `console.log(\"\\033[1;30mGot\", " +
-      "  name, row0 + ':' + col0 + '-' + row1 + ':' + col1," +
-      "  expr.$$id == 4 ? 'nil' : expr, \"\\033[0m\")`\n" +
+  instrumentedSource = "def got(name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr)\n" +
+    "  console_texts = $console_texts\n" +
+    "  `gotCallbackGlobal(name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr, console_texts)`\n" +
     "  expr\n" +
-    "end\n" + 
+    "end\n" +
+
+    "# redefine puts to handle trailing newlines like MRI does\n" +
+    "def puts *args\n" +
+    "  if args.size > 0\n" +
+    "    $stdout.write args.map { |arg|\n" +
+    "      arg_to_s = \"#{arg}\"\n" +
+    "      arg_to_s + (arg_to_s.end_with?(\"\n\") ? \"\" : \"\n\")\n" +
+    "    }.join\n" +
+    "  else\n" +
+    "    $stdout.write \"\n\"\n" +
+    "  end\n" +
+    "  nil\n" +
+    "end\n" +
+
+    "def p *args\n" +
+    "  args.each do |arg|\n" +
+    "    $stdout.write arg.inspect + \"\n\"\n" +
+    "  end\n" +
+    "  case args.size\n" +
+    "    when 0 then nil\n" +
+    "    when 1 then args[0]\n" +
+    "    else args\n" +
+    "  end\n" +
+    "end\n" +
+
+    "$console_texts = []\n" +
+    "$is_capturing_output = true\n" +
+    "class <<$stdout\n" +
+    "  alias :old_write :write\n" +
+    "  def write *args\n" +
+    "    if $is_capturing_output\n" +
+    "      $console_texts = $console_texts.clone +\n" +
+    "        args.map { |arg| [:stdout, \"#{arg}\"] }\n" +
+    "    else\n" +
+    "      old_write *args\n" +
+    "    end\n" +
+    "  end\n" +
+    "end\n" +
+    "class <<$stderr\n" +
+    "  alias :old_write :write\n" +
+    "  def write *args\n" +
+    "    if $is_capturing_output\n" +
+    "      $console_texts = $console_texts.clone +\n" +
+    "        args.map { |arg| [:stderr, \"#{arg}\"] }\n" +
+    "    else\n" +
+    "      old_write *args\n" +
+    "    end\n" +
+    "  end\n" +
+    "end\n" +
+
     instrumentedSource.join('');
+
   console.log('instrumented:', instrumentedSource);
 
   Opal.eval(instrumentedSource);
 }
-   
-//var rubySource = "def f(x)\n x + 1\n end\n p f(2)"
-//var rubySource = "p 1 + 2 + 3";
 
 module.exports = {
   runRubyWithHighlighting: runRubyWithHighlighting
 };
+
+//var rubySource = "def f(x)\n x + 1\n end\n p f(2)"
+//var rubySource = "p 1 + 2 + 3";
+})();

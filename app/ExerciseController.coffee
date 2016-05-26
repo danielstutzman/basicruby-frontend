@@ -7,6 +7,7 @@ class ExerciseController
     @reactRender     = reactRender
     @path            = path
     @popup           = null
+    @traceContents   = []
 
   setup: =>
     @service.getExercise @path, (model) =>
@@ -37,6 +38,7 @@ class ExerciseController
       popup:        @popup
       youtubeId:    @model.json.youtube_id
       videoScript:  @model.json.video_script
+      traceContents:@traceContents
       doCommand:
         run: (code) =>
           @handleRun code
@@ -72,7 +74,64 @@ class ExerciseController
       @render()
 
   handleRun: (code) ->
-    BasicRubyNew.runRubyWithHighlighting 'puts 1 + 1'
+    @traceContents = []
+    textMarker = null
+    highlight = (codeMirror, row0, col0, row1, col1, exprClass, expr) ->
+      if exprClass
+        exprType = document.createElement 'span'
+        exprType.setAttribute 'style', 'font-size: 8pt; position: absolute; top: -5px'
+        exprType.appendChild document.createTextNode exprClass
+        replacedWith = document.createElement 'span'
+        replacedWith.setAttribute 'style', 'background-color: blue; color: white'
+        replacedWith.appendChild exprType
+        replacedWith.appendChild document.createTextNode expr
+
+      textMarker = codeMirror.getDoc().markText { line: row0 - 1, ch: col0 },
+        { line: row1 - 1, ch: col1 },
+        { className: 'highlighted', replacedWith: (if exprClass then replacedWith) }
+
+    idToSavedValue = {}
+    callback = (name, row0, col0, row1, col1, methodReceiverId, methodName,
+        methodArgumentIds, saveAsId, expr, consoleTexts) =>
+      idToSavedValue[saveAsId] = expr
+
+      output = ''
+      for eachOutput in consoleTexts
+        output += eachOutput[1]
+      consoleTexts.length = 0
+
+      log = "got #{name}"
+      if name == 'str'
+        log = "Found string literal #{expr.$inspect()}"
+      else if name == 'int'
+        log = "Found number literal #{expr.$inspect()}"
+      else if name == 'call'
+        log = "Called #{methodName} method"
+        if methodReceiverId && methodReceiverId != 4
+          log += " on receiver #{idToSavedValue[methodReceiverId].$inspect()}"
+        if methodArgumentIds
+          log += " with arguments "
+          for methodArgumentId, i in methodArgumentIds
+            log += ", " if i > 0
+            log += idToSavedValue[methodArgumentId].$inspect()
+
+        if output != ''
+          log += ". It output #{output.$inspect()} and "
+        else
+          log += ". It "
+        log += "returned #{expr.$inspect()}"
+      else if name == 'js_return'
+        return
+      highlightCallback = (codeMirror) ->
+        highlight codeMirror, row0, col0, row1, col1, null, null
+      replaceCallback = (codeMirror) ->
+        highlight codeMirror, row0, col0, row1, col1, expr.$class(), expr.$inspect()
+      clearCallback = (codeMirror) ->
+        textMarker.clear() if textMarker
+        textMarker = null
+      @traceContents.push [row0, log, highlightCallback, replaceCallback, clearCallback]
+
+    BasicRubyNew.runRubyWithHighlighting code, callback
     @render()
 
   checkForPassingTests: ->
