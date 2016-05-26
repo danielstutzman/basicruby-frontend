@@ -108,18 +108,27 @@ class ExerciseController
         output += eachOutput[1]
       consoleTexts.length = 0
 
+      highlighting      = { row0, col0, row1, col1 }
+      resultReplacement = { row0, col0, row1, col1, expr }
+
       if name == 'str'
         log = 'Evaluate string literal'
-        resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'int'
         log = 'Evaluate number literal'
-        resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'call'
         if methodNameToDefRange[methodName]
           log = "Return #{methodName}"
           indentationIncrease = -1
           resultReplacement = { row0, col0, row1, col1, expr }
 
+          # Hack: show line num for the last statement executed (presumably the
+          # return) instead of the line num for the method call
+          lastReplacement = replacements[replacements.length - 1]
+          highlighting =
+            row0: lastReplacement.row0
+            col0: lastReplacement.col0
+            row1: lastReplacement.row1
+            col1: lastReplacement.col1
         else
           log = "Call <code>#{methodName}</code> method"
           if methodReceiverId && methodReceiverId != 4
@@ -135,17 +144,15 @@ class ExerciseController
             for methodArgumentId, i in methodArgumentIds
               log += ", " if i > 0
               log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
-          resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'js_return'
         return
       else if name == 'def'
         log = "Define <code>#{methodName}</code> method"
-        resultReplacement = { row0, col0, row1, col1 }
+        resultReplacement = null
         methodNameToDefRange[methodName] = { row0, col0, row1, col1 }
         expr = null # otherwise Opal returns "f" from (def f(x); end)
       else if name == 'lvar'
         log = "Evaluate <code>#{methodName}</code> variable"
-        resultReplacement = { row0, col0, row1, col1, expr }
       else if name == 'start_call'
         if methodNameToDefRange[methodName]
           log = "Call <code>#{methodName}</code> method"
@@ -162,7 +169,7 @@ class ExerciseController
             for methodArgumentId, i in methodArgumentIds
               log += ", " if i > 0
               log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
-          resultReplacement = { row0, col0, row1, col1 }
+          resultReplacement = null
           indentationIncrease = 1
           expr = null # expr isn't the real return yet, just the last arg
         else
@@ -172,13 +179,9 @@ class ExerciseController
       else
         log = "got #{name}"
 
-      resultAsHighlight =
-        row0: resultReplacement.row0
-        col0: resultReplacement.col0
-        row1: resultReplacement.row1
-        col1: resultReplacement.col1
-      replacementsCopy1 = replacements.concat([resultAsHighlight])
-      replacementsCopy2 = replacements.concat([resultReplacement])
+      replacementsCopy1 = replacements.concat([highlighting])
+      replacementsCopy2 = replacements.concat(
+        if resultReplacement then [resultReplacement] else [])
       replaceCallback = (codeMirror) ->
         highlight codeMirror, replacementsCopy1
       replaceResultCallback = (codeMirror) ->
@@ -187,7 +190,7 @@ class ExerciseController
         for textMarker in textMarkers
           textMarker.clear()
         textMarkers = []
-      @traceContents.push [indentation, row0, log, replaceCallback,
+      @traceContents.push [indentation, highlighting.row0, log, replaceCallback,
         replaceResultCallback, clearCallback, expr, output]
 
       if name == 'call'
@@ -208,7 +211,7 @@ class ExerciseController
 
 
       indentation += indentationIncrease
-      replacements.push resultReplacement if resultReplacement.expr
+      replacements.push resultReplacement if resultReplacement
 
     BasicRubyNew.runRubyWithHighlighting code, callback
     @render()
