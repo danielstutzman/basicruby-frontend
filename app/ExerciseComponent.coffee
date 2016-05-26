@@ -168,16 +168,14 @@ ExerciseComponent = React.createClass
                   onFocus: => @props.doCommand.closePopup()
           div { className: 'trace' },
             _.map @props.traceContents, (line) =>
-              [lineNum, text, highlightCallback, replaceCallback, clearCallback] = line
-              div { className: 'line' },
-                a
-                  onMouseOver: => highlightCallback @state.codeMirror
-                  onMouseOut:  => clearCallback @state.codeMirror
-                  "Line #{lineNum}\u00a0\u00a0"
-                a
-                  onMouseOver: => replaceCallback @state.codeMirror
-                  onMouseOut:  => clearCallback @state.codeMirror
-                  text
+              [lineNum, text, replaceCallback, clearCallback] = line
+              for textLine in text.split("\n")
+                do (textLine) =>
+                  div { className: 'line' },
+                    a
+                      onMouseOver: => replaceCallback @state.codeMirror
+                      onMouseOut:  => clearCallback @state.codeMirror
+                      "Line #{lineNum}\u00a0\u00a0 #{textLine}"
 
         div { className: 'margin' } # because %-based margins don't work
 

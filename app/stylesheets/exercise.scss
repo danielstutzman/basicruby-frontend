@@ -150,7 +150,7 @@ body {
     .wrapper {
       width: 100%;
       height: 96%;
-      display: table;
+//      display: table;
 
       .code-header {
         display: table-row;
@@ -161,24 +161,24 @@ body {
           margin-right: 5px;
         }
       }
-      .code-wrapper {
-        display: table-row;
-        width: 100%;
-        height: 50%;
-      }
-      .code-wrapper2 {
-        display: table-cell;
-        position: relative;
-        width: 100%;
-        height: 100%;
-      }
-      .code-wrapper3 {
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-      }
+//      .code-wrapper {
+//        display: table-row;
+//        width: 100%;
+//        height: 50%;
+//      }
+//      .code-wrapper2 {
+//        display: table-cell;
+//        position: relative;
+//        width: 100%;
+//        height: 100%;
+//      }
+//      .code-wrapper3 {
+//        position: absolute;
+//        left: 0;
+//        top: 0;
+//        right: 0;
+//        bottom: 0;
+//      }
       textarea.code, .CodeMirror {
         width: 100%;
         height: 100%;
