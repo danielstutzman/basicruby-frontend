@@ -403,27 +403,36 @@ body {
 }
 .value {
   position: relative;
-  border: 1px black solid;
-  font-size: 16pt;
   font-family: sans-serif;
+  line-height: 10pt;
 
   .type {
-    font-size: 8pt;
+    font-size: 9pt;
     position: absolute;
-    top: -15pt;
+    top: 0;
   }
   .number {
     display: inline-block;
+    border: 1px black solid;
     min-width: 40px;
     text-align: right;
     padding-right: 4px;
+    font-size: 18pt;
+    position: relative;
+    bottom: -5px;
+    line-height: 14pt;
   }
   .empty {
     display: inline-block;
+    border: 1px black solid;
     min-width: 40px;
   }
   .char {
     font-family: monospace;
     border: 1px black solid;
+    font-size: 12pt;
+    position: relative;
+    bottom: -2px;
+    line-height: 12pt;
   }
 }
