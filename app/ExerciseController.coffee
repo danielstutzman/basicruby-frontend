@@ -81,9 +81,18 @@ class ExerciseController
       for replacement, i in replacements
         replacedWith = null
         if replacement.expr
+          exprTypeString = replacement.expr.$class().$to_s()
           exprType = document.createElement 'span'
-          exprType.setAttribute 'style', 'font-size: 8pt; position: absolute; top: -5px'
-          exprType.appendChild document.createTextNode replacement.expr.$class()
+          exprType.setAttribute 'class', 'type'
+          exprType.appendChild document.createTextNode exprTypeString
+
+          contents = document.createElement 'span'
+          if exprTypeString == 'Number'
+            contents.setAttribute 'class', 'number'
+            contents.appendChild document.createTextNode replacement.expr
+          else
+            contents.setAttribute 'class', 'empty'
+
           replacedWith = document.createElement 'span'
           if currentHighlight and
              replacement.row0 >= currentHighlight.row0 and
@@ -94,7 +103,8 @@ class ExerciseController
           else
             replacedWith.setAttribute 'class', 'value'
           replacedWith.appendChild exprType
-          replacedWith.appendChild document.createTextNode replacement.expr.$inspect()
+          replacedWith.appendChild contents if contents
+
         textMarker = codeMirror.getDoc().markText { line: replacement.row0 - 1, ch: replacement.col0 },
           { line: replacement.row1 - 1, ch: replacement.col1 },
           { className: 'highlighted', replacedWith: replacedWith }
