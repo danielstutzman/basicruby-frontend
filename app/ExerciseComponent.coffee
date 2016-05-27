@@ -2,6 +2,7 @@ _                  = require 'underscore'
 React              = require 'react'
 CasesComponent     = require './CasesComponent'
 SetupResizeHandler = require './setup_resize_handler'
+classNames         = require 'classnames'
 
 type          = React.PropTypes
 RELOAD_ICON   = "\u27f3"
@@ -30,6 +31,8 @@ ExerciseComponent = React.createClass
     codeMirror: null
     retrieveNewCode: (->) # since it's a required property
     initialCode: @props.initialCode
+    hoverRow: null
+    hoverCol: null
 
   componentDidMount: ->
     # setup CodeMirror
@@ -186,33 +189,55 @@ ExerciseComponent = React.createClass
             if @props.traceContents.length > 0
               tr {},
                 th {}, 'Line'
-                th {}, 'Description'
+                th { className: 'description' }, 'Description'
                 th {}, 'Value'
                 th {}, 'Output'
             _.map @props.traceContents, (line, i) =>
-              [indentation, lineNum, text, replaceCallback, replaceResultCallback,
-                clearCallback, expr, output] = line
-              tr { key: i, className: 'line' },
-                td
-                  className: 'line-num'
-                  Array(indentation + 1).join("\u00a0\u00a0") + lineNum
-                td
-                  onMouseOver: => replaceCallback @state.codeMirror
-                  onMouseOut:  => clearCallback @state.codeMirror
-                  dangerouslySetInnerHTML: __html:
-                    Array(indentation + 1).join("\u00a0\u00a0") + text
-                if expr
+              do (i) =>
+                [indentation, lineNum, text, replaceCallback, replaceResultCallback,
+                  clearCallback, expr, output] = line
+                tr { key: i, className: 'line' },
                   td
-                    onMouseOver: => replaceResultCallback @state.codeMirror
-                    onMouseOut:  => clearCallback @state.codeMirror
-                    @_renderExpr expr
-                else
-                  td {}
-                td { className: 'output' },
-                  if output
-                    _.map [0...output.length], (i) ->
-                      span { key: i, className: 'char' },
-                        output.charAt(i).replace("\n", NEWLINE_ARROW)
+                    className: classNames
+                      'line-num': true
+                      hover: @state.hoverRow == i and @state.hoverCol == 'highlight'
+                    onMouseOver: =>
+                      replaceCallback @state.codeMirror
+                      @setState hoverRow: i, hoverCol: 'highlight'
+                    onMouseOut: =>
+                      clearCallback @state.codeMirror
+                      @setState hoverRow: null, hoverCol: null
+                    Array(indentation + 1).join("\u00a0\u00a0") + lineNum
+                  td
+                    className: classNames
+                      description: true
+                      hover: @state.hoverRow == i and @state.hoverCol == 'highlight'
+                    onMouseOver: =>
+                      replaceCallback @state.codeMirror
+                      @setState hoverRow: i, hoverCol: 'highlight'
+                    onMouseOut: =>
+                      clearCallback @state.codeMirror
+                      @setState hoverRow: null, hoverCol: null
+                    dangerouslySetInnerHTML: __html:
+                      Array(indentation + 1).join("\u00a0\u00a0") + text
+                  if expr
+                    td
+                      className: classNames
+                        hover: @state.hoverRow == i and @state.hoverCol == 'value'
+                      onMouseOver: =>
+                        replaceResultCallback @state.codeMirror
+                        @setState hoverRow: i, hoverCol: 'value'
+                      onMouseOut: =>
+                        clearCallback @state.codeMirror
+                        @setState hoverRow: null, hoverCol: null
+                      @_renderExpr expr
+                  else
+                    td {}
+                  td { className: 'output' },
+                    if output
+                      _.map [0...output.length], (i) ->
+                        span { key: i, className: 'char' },
+                          output.charAt(i).replace("\n", NEWLINE_ARROW)
 
         div { className: 'margin' } # because %-based margins don't work
 

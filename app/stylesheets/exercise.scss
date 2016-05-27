@@ -385,16 +385,20 @@ body {
   background-color: yellow;
 }
 
-.trace {
+table.trace {
   background-color: white;
   font-size: 20pt;
   line-height: 120%;
+  border-collapse: collapse;
 
   th {
     text-align: left;
   }
-  td:hover {
-    background-color: gray;
+  th.description, td.description {
+    padding-right: 20px;
+  }
+  td.hover {
+    background-color: yellow;
   }
   .output .char {
     font-family: monospace;
