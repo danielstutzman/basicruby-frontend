@@ -236,7 +236,7 @@ ExerciseComponent = React.createClass
             onClick: (e) => @props.doCommand.next e
             "#{RIGHT_ARROW} Go on"
 
-      if @props.popup == 'FAILED'
+      if false && @props.popup == 'FAILED'
         div
           className: 'popup failed'
           a
