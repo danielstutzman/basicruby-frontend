@@ -396,12 +396,13 @@ body {
   td:hover {
     background-color: gray;
   }
-  .output div {
+  .output .char {
     font-family: monospace;
-    background-color: #ccc;
+    border: 1px black solid;
   }
 }
 .value {
+  position: relative;
   border: 1px black solid;
   font-size: 16pt;
   font-family: sans-serif;
@@ -409,7 +410,7 @@ body {
   .type {
     font-size: 8pt;
     position: absolute;
-    top: -6pt;
+    top: -15pt;
   }
   .number {
     display: inline-block;
@@ -420,5 +421,9 @@ body {
   .empty {
     display: inline-block;
     min-width: 40px;
+  }
+  .char {
+    font-family: monospace;
+    border: 1px black solid;
   }
 }

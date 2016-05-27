@@ -80,8 +80,9 @@ class ExerciseController
       replacements = replacements.concat([currentHighlight]) if currentHighlight
       for replacement, i in replacements
         replacedWith = null
-        if replacement.expr
-          exprTypeString = replacement.expr.$class().$to_s()
+        expr = replacement.expr
+        if expr
+          exprTypeString = expr.$class().$to_s()
           exprType = document.createElement 'span'
           exprType.setAttribute 'class', 'type'
           exprType.appendChild document.createTextNode exprTypeString
@@ -89,7 +90,14 @@ class ExerciseController
           contents = document.createElement 'span'
           if exprTypeString == 'Number'
             contents.setAttribute 'class', 'number'
-            contents.appendChild document.createTextNode replacement.expr
+            contents.appendChild document.createTextNode expr
+          else if exprTypeString == 'String'
+            contents.setAttribute 'class', 'string'
+            for i in [0...expr.length]
+              char = document.createElement 'span'
+              char.setAttribute 'class', 'char'
+              char.appendChild document.createTextNode expr.charAt(i)
+              contents.appendChild char
           else
             contents.setAttribute 'class', 'empty'
 

@@ -78,6 +78,21 @@ ExerciseComponent = React.createClass
       if @props.color != prevProps.color
         @state.codeMirror.refresh() # in case it appeared (from purple)
 
+  _renderExpr: (expr) ->
+    { td, span } = React.DOM
+    exprTypeString = expr.$class().$to_s()
+    span { className: 'value' },
+      span { className: 'type' }, exprTypeString
+      if exprTypeString == 'Number'
+        span { className: 'number' }, expr
+      else if exprTypeString == 'String'
+        span { className: 'string' },
+          _.map [0...expr.length], (i) ->
+            span { key: i, className: 'char' },
+              expr.charAt(i).replace("\n", NEWLINE_ARROW)
+      else
+        span { className: 'empty' }
+
   render: ->
     { a, br, button, code, div, h1, iframe, input, label, p, span, table, td,
       textarea, th, tr } = React.DOM
@@ -174,28 +189,30 @@ ExerciseComponent = React.createClass
                 th {}, 'Description'
                 th {}, 'Value'
                 th {}, 'Output'
-            _.map @props.traceContents, (line) =>
+            _.map @props.traceContents, (line, i) =>
               [indentation, lineNum, text, replaceCallback, replaceResultCallback,
-                clearCallback, result, output] = line
-              for textLine in text.split("\n")
-                do (textLine) =>
-                  tr { className: 'line' },
-                    td
-                      className: 'line-num'
-                      Array(indentation + 1).join("\u00a0\u00a0") + lineNum
-                    td
-                      onMouseOver: => replaceCallback @state.codeMirror
-                      onMouseOut:  => clearCallback @state.codeMirror
-                      dangerouslySetInnerHTML: __html:
-                        Array(indentation + 1).join("\u00a0\u00a0") + textLine
-                    td
-                      onMouseOver: => replaceResultCallback @state.codeMirror
-                      onMouseOut:  => clearCallback @state.codeMirror
-                      code {},
-                        result.$inspect() if result
-                    td { className: 'output' },
-                      if output
-                        div {}, output.replace("\n", NEWLINE_ARROW)
+                clearCallback, expr, output] = line
+              tr { key: i, className: 'line' },
+                td
+                  className: 'line-num'
+                  Array(indentation + 1).join("\u00a0\u00a0") + lineNum
+                td
+                  onMouseOver: => replaceCallback @state.codeMirror
+                  onMouseOut:  => clearCallback @state.codeMirror
+                  dangerouslySetInnerHTML: __html:
+                    Array(indentation + 1).join("\u00a0\u00a0") + text
+                if expr
+                  td
+                    onMouseOver: => replaceResultCallback @state.codeMirror
+                    onMouseOut:  => clearCallback @state.codeMirror
+                    @_renderExpr expr
+                else
+                  td {}
+                td { className: 'output' },
+                  if output
+                    _.map [0...output.length], (i) ->
+                      span { key: i, className: 'char' },
+                        output.charAt(i).replace("\n", NEWLINE_ARROW)
 
         div { className: 'margin' } # because %-based margins don't work
 
