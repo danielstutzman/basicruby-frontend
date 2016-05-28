@@ -60,9 +60,11 @@ function convertRowColToOffsets(s, lineNumToOffset) {
   }
 }
 
-function instrumentRuby(s, offsetToAdditions) {
+function instrumentRuby(s, offsetToAdditions, rubySource) {
   console.log('instrumentRuby', s);
-  continueRecursion(function(s) { instrumentRuby(s, offsetToAdditions) }, s);
+  continueRecursion(function(s) {
+    instrumentRuby(s, offsetToAdditions, rubySource)
+  }, s);
   if (s.source && s.source.length) {
     console.log('Handling source', s.source);
 
@@ -91,21 +93,50 @@ function instrumentRuby(s, offsetToAdditions) {
     // If there's no last argument, send in *start_method([])
     if (s.array[0] == 'call') {
       var arglist = s.array[3];
-      var lastArg = arglist.array[arglist.array.length - 1];
-      var offsetStart = lastArg.source[4];
+      var numArgs = arglist.array.length - 1;
+      var offsetStart;
+      var needsExtraParens;
+      console.log('numArgs', numArgs);
+      if (numArgs > 0) {
+        var lastArg = arglist.array[numArgs];
+        offsetStart = lastArg.source[4];
+        needsExtraParens = false;
+      } else {
+        console.log('source is', rubySource.charAt(s.source[5] - 1));
+        console.log('char is', rubySource.charAt(s.source[5] - 1));
+        needsExtraParens = (rubySource.charAt(s.source[5] - 1) != ')');
+        if (needsExtraParens) {
+          offsetStart = s.source[5];
+        } else {
+          offsetStart = s.source[5] - 1; // before the closing paren
+        }
+      }
+
       if (offsetToAdditions[offsetStart] === undefined) {
         offsetToAdditions[offsetStart] = [];
       }
       offsetToAdditions[offsetStart].unshift(
+        (numArgs == 0 ? (needsExtraParens ? '(*(' : '*(') : '') +
         "got('start_call'," +
         s.source[0] + ',' + s.source[1] + ',' +
         s.source[2] + ',' + s.source[3] + "," +
         (methodReceiverId || 'nil') + "," +
         "'" + (methodName || 'nil') + "'," +
         (methodArgumentIds ? methodArgumentIds.$inspect() : 'nil') + "," +
-        s.$$id + ",(");
+        s.$$id + ",(" +
+        (numArgs == 0 ? (needsExtraParens ? '[]))' : '[])') : '')
+        );
 
-      var offsetEnd = lastArg.source[5];
+      var offsetEnd;
+      if (numArgs > 0) {
+        offsetEnd = lastArg.source[5];
+      } else {
+        if (needsExtraParens) {
+          offsetEnd = s.source[5];
+        } else {
+          offsetEnd = s.source[5] - 1; // before the closing paren
+        }
+      }
       if (offsetToAdditions[offsetEnd] === undefined) {
         offsetToAdditions[offsetEnd] = [];
       }
@@ -153,7 +184,7 @@ function runRubyWithHighlighting(rubySource, gotCallback) {
   //console.log(JSON.stringify(sexp, null, 2));
 
   var offsetToAdditions = {};
-  instrumentRuby(sexp, offsetToAdditions);
+  instrumentRuby(sexp, offsetToAdditions, rubySource);
   console.log(offsetToAdditions);
   var offsets = Object.keys(offsetToAdditions).sort(function(a,b) { return a - b; });
   console.log('offsets', offsets);
