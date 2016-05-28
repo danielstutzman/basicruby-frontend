@@ -203,6 +203,8 @@ class ExerciseController
           # EARLY RETURN: ignore start_call for methods we haven't defined
           #   because we want to show the return value
           return
+      else if name == 'lasgn'
+        log = "Set <code>#{methodName}</code> variable"
       else
         log = "got #{name}"
 

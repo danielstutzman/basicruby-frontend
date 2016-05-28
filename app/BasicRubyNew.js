@@ -39,6 +39,8 @@ function continueRecursion(f, s) {
     f(s.array[4]);
   } else if (name == 'return') {
     f(s.array[1]);
+  } else if (name == 'lasgn') {
+    f(s.array[2]);
   } else {
     throw new Error("Don't know how to handle sexp of type '" + name + "'");
   }
@@ -84,6 +86,8 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
     } else if (s.array[0] == 'def') {
       methodName = s.array[2];
     } else if (s.array[0] == 'lvar') {
+      methodName = s.array[1];
+    } else if (s.array[0] == 'lasgn') {
       methodName = s.array[1];
     }
 
