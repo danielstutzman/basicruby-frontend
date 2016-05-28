@@ -243,8 +243,12 @@ class ExerciseController
       indentation += indentationIncrease
       replacements.push resultReplacement if resultReplacement
 
-    BasicRubyNew.runRubyWithHighlighting code, callback
-    @cases[0].actual_output = totalOutput
+    try
+      BasicRubyNew.runRubyWithHighlighting code, callback
+      @cases[0].actual_output = totalOutput
+    catch e
+      @cases[0].actual_output = totalOutput.concat(
+        [['stderr', "#{e.name}: #{e.message}"]])
     @render()
 
   checkForPassingTests: ->
