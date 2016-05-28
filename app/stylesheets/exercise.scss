@@ -430,6 +430,9 @@ table.trace {
     display: inline-block;
     border: 1px black solid;
     min-width: 40px;
+    height: 19px;
+    position: relative;
+    bottom: -5px;
   }
   .char {
     font-family: monospace;
