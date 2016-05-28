@@ -76,6 +76,7 @@ class ExerciseController
   handleRun: (code) ->
     @traceContents = []
     textMarkers = []
+    totalOutput = []
     highlight = (codeMirror, replacements, currentHighlight) ->
       replacements = replacements.concat([currentHighlight]) if currentHighlight
       for replacement, i in replacements
@@ -128,6 +129,7 @@ class ExerciseController
       idToSavedValue[saveAsId] = expr
       indentationIncrease = 0
 
+      totalOutput = totalOutput.concat(consoleTexts)
       output = ''
       for eachOutput in consoleTexts
         output += eachOutput[1]
@@ -238,6 +240,7 @@ class ExerciseController
       replacements.push resultReplacement if resultReplacement
 
     BasicRubyNew.runRubyWithHighlighting code, callback
+    @cases[0].actual_output = totalOutput
     @render()
 
   checkForPassingTests: ->
