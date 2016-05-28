@@ -428,11 +428,9 @@ table.trace {
   }
   .empty {
     display: inline-block;
-    border: 1px black solid;
     min-width: 40px;
-    height: 19px;
-    position: relative;
-    bottom: -5px;
+    height: 22px; // hack
+    border-bottom: 2px black solid;
   }
   .char {
     font-family: monospace;

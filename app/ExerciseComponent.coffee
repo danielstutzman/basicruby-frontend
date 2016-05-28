@@ -88,7 +88,7 @@ ExerciseComponent = React.createClass
       span { className: 'type' }, exprTypeString
       if exprTypeString == 'Number'
         span { className: 'number' }, expr
-      else if exprTypeString == 'String'
+      else if exprTypeString == 'String' && expr.length > 0
         span { className: 'string' },
           _.map [0...expr.length], (i) ->
             span { key: i, className: 'char' },
@@ -220,7 +220,7 @@ ExerciseComponent = React.createClass
                       @setState hoverRow: null, hoverCol: null
                     dangerouslySetInnerHTML: __html:
                       Array(indentation + 1).join("\u00a0\u00a0") + text
-                  if expr
+                  if expr != null
                     td
                       className: classNames
                         hover: @state.hoverRow == i and @state.hoverCol == 'value'

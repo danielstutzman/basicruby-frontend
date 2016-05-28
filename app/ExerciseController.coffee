@@ -82,7 +82,7 @@ class ExerciseController
       for replacement, i in replacements
         replacedWith = null
         expr = replacement.expr
-        if expr
+        if expr != undefined
           exprTypeString = expr.$class().$to_s()
           exprType = document.createElement 'span'
           exprType.setAttribute 'class', 'type'
@@ -92,7 +92,7 @@ class ExerciseController
           if exprTypeString == 'Number'
             contents.setAttribute 'class', 'number'
             contents.appendChild document.createTextNode expr
-          else if exprTypeString == 'String'
+          else if exprTypeString == 'String' && expr.length > 0
             contents.setAttribute 'class', 'string'
             for i in [0...expr.length]
               char = document.createElement 'span'
