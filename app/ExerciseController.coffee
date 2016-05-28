@@ -205,6 +205,8 @@ class ExerciseController
           return
       else if name == 'lasgn'
         log = "Set <code>#{methodName}</code> variable"
+      else if name == 'paren'
+        return
       else
         log = "got #{name}"
 

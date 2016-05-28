@@ -41,6 +41,8 @@ function continueRecursion(f, s) {
     f(s.array[1]);
   } else if (name == 'lasgn') {
     f(s.array[2]);
+  } else if (name == 'paren') {
+    f(s.array[1]);
   } else {
     throw new Error("Don't know how to handle sexp of type '" + name + "'");
   }
