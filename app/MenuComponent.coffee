@@ -53,15 +53,15 @@ MenuComponent = React.createClass
       th
         className: 'title'
         style: { verticalAlign: 'bottom' }
-        h2 {}, 'Outputting Strings'
+        h2 {}, 'Variables and Methods'
       @thForColor 'purple', 'Watch',     'intro'
       @thForColor 'yellow', 'Run an',    'example'
       @thForColor 'blue',   'Predict',   'output'
       @thForColor 'red',    'Fix the',   'bugs'
       @thForColor 'green',  'Implement', 'the spec'
 
-    _.each ['outputting_strings', 'expressions_and_types', 'lambda'], (level) =>
-      if level != 'outputting_strings' # because we'll show it left of the icons
+    _.each ['variables and methods', 'strings'], (level) =>
+      if level != 'variables and methods' # because we'll show it left of the icons
         trs.push tr { key: level },
           th { className: 'title' },
             br { key: 1 }
