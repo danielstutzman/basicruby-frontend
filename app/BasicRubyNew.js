@@ -49,7 +49,7 @@ function continueRecursion(f, s) {
 }
 
 function convertRowColToOffsets(s, lineNumToOffset) {
-  console.log('convertRowColToOffsets', s);
+  //console.log('convertRowColToOffsets', s);
   continueRecursion(function(s) { convertRowColToOffsets(s, lineNumToOffset) }, s);
   if (s.source && s.source.length) {
     var source = s.source;
@@ -65,12 +65,12 @@ function convertRowColToOffsets(s, lineNumToOffset) {
 }
 
 function instrumentRuby(s, offsetToAdditions, rubySource) {
-  console.log('instrumentRuby', s);
+  //console.log('instrumentRuby', s);
   continueRecursion(function(s) {
     instrumentRuby(s, offsetToAdditions, rubySource)
   }, s);
   if (s.source && s.source.length) {
-    console.log('Handling source', s.source);
+    //console.log('Handling source', s.source);
 
     var methodReceiverId  = null;
     var methodName        = null;
@@ -80,11 +80,11 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
       methodName       = s.array[2];
       methodArgumentIds = [];
       arglist = s.array[3].array;
-      console.log('arglist', arglist);
+      //console.log('arglist', arglist);
       for (var i = 1; i < arglist.length; i++) {
         methodArgumentIds.push(arglist[i].$$id);
       }
-      console.log('methodArgids', methodArgumentIds);
+      //console.log('methodArgids', methodArgumentIds);
     } else if (s.array[0] == 'def') {
       methodName = s.array[2];
     } else if (s.array[0] == 'lvar') {
@@ -102,14 +102,14 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
       var numArgs = arglist.array.length - 1;
       var offsetStart;
       var needsExtraParens;
-      console.log('numArgs', numArgs);
+      //console.log('numArgs', numArgs);
       if (numArgs > 0) {
         var lastArg = arglist.array[numArgs];
         offsetStart = lastArg.source[4];
         needsExtraParens = false;
       } else {
-        console.log('source is', rubySource.charAt(s.source[5] - 1));
-        console.log('char is', rubySource.charAt(s.source[5] - 1));
+        //console.log('source is', rubySource.charAt(s.source[5] - 1));
+        //console.log('char is', rubySource.charAt(s.source[5] - 1));
         needsExtraParens = (rubySource.charAt(s.source[5] - 1) != ')');
         if (needsExtraParens) {
           offsetStart = s.source[5];
@@ -184,16 +184,16 @@ function runRubyWithHighlighting(rubySource, gotCallback) {
   }
 
   var sexp = parseToSexp(rubySource);
-  //console.log(JSON.stringify(sexp, null, 2));
+  console.log(JSON.stringify(sexp, null, 2));
   convertRowColToOffsets(sexp, lineNumToOffset);
   //console.log('sexp', sexp);
   //console.log(JSON.stringify(sexp, null, 2));
 
   var offsetToAdditions = {};
   instrumentRuby(sexp, offsetToAdditions, rubySource);
-  console.log(offsetToAdditions);
+  //console.log(offsetToAdditions);
   var offsets = Object.keys(offsetToAdditions).sort(function(a,b) { return a - b; });
-  console.log('offsets', offsets);
+  //console.log('offsets', offsets);
   var lastOffset = 0;
   var instrumentedSource = [];
   for (var offset in offsetToAdditions) {
