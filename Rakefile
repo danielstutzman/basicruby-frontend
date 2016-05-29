@@ -92,7 +92,8 @@ task :watch_coffee => %w[build/javascripts] do
     -v -o build/javascripts/browserified.js"
 end
 
-file 'build/stylesheets/all.css' => %w[build/stylesheets] do |task|
+file 'build/stylesheets/all.css' =>
+    %w[build/stylesheets] + Dir.glob('app/stylesheets/*.scss') do |task|
   sh "sass --update app/stylesheets:build/stylesheets --sourcemap=none"
   create_with_sh "cat build/stylesheets/*.css node_modules/codemirror/lib/codemirror.css",
     task.name
