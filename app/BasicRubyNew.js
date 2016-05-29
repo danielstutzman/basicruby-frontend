@@ -202,7 +202,9 @@ function runRubyWithHighlighting(rubySource, gotCallback) {
     lastOffset = offset;
   }
   instrumentedSource.push(rubySource.substring(lastOffset));
-  instrumentedSource = "def got(name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr)\n" +
+  console.log('instrumented:', instrumentedSource);
+
+  prelude = "def got(name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr)\n" +
     "  console_texts = $console_texts\n" +
     "  `gotCallbackGlobal(name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr, console_texts)`\n" +
     "  expr\n" +
@@ -255,11 +257,8 @@ function runRubyWithHighlighting(rubySource, gotCallback) {
     "      old_write *args\n" +
     "    end\n" +
     "  end\n" +
-    "end\n" +
-
-    instrumentedSource.join('');
-
-  console.log('instrumented:', instrumentedSource);
+    "end\n"
+  instrumentedSource = prelude + instrumentedSource.join('');
 
   Opal.eval(instrumentedSource);
 }
