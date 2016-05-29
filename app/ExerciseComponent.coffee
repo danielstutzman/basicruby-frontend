@@ -11,6 +11,7 @@ EM_DASH       = "\u2014"
 X_FOR_CLOSE   = "\u00d7"
 EM_DASH       = "\u2014"
 NEWLINE_ARROW = "\u21a9"
+NBSP          = "\u00a0"
 
 ExerciseComponent = React.createClass
 
@@ -92,7 +93,7 @@ ExerciseComponent = React.createClass
         span { className: 'string' },
           _.map [0...expr.length], (i) ->
             span { key: i, className: 'char' },
-              expr.charAt(i).replace("\n", NEWLINE_ARROW)
+              expr.charAt(i).replace("\n", NEWLINE_ARROW).replace(" ", NBSP)
       else
         span { className: 'empty' }
 
@@ -238,7 +239,8 @@ ExerciseComponent = React.createClass
                       if output
                         _.map [0...output.length], (i) ->
                           span { key: i, className: 'char' },
-                            output.charAt(i).replace("\n", NEWLINE_ARROW)
+                            output.charAt(i).replace("\n", NEWLINE_ARROW).replace(
+                              " ", NBSP)
 
         div { className: 'margin' } # because %-based margins don't work
 
