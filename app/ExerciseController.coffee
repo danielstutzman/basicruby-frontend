@@ -78,7 +78,8 @@ class ExerciseController
     textMarkers = []
     totalOutput = []
     highlight = (codeMirror, replacements, currentHighlight) ->
-      replacements = replacements.concat([currentHighlight]) if currentHighlight
+      #replacements = replacements.concat([currentHighlight]) if currentHighlight
+      replacements = if currentHighlight then [currentHighlight] else []
       for replacement, i in replacements
         replacedWith = null
         expr = replacement.expr
