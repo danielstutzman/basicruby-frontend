@@ -116,6 +116,9 @@ class ExerciseController
             log = idToSavedValue[methodReceiverId].$inspect() + ' ' +
               methodName + ' ' +
               idToSavedValue[methodArgumentIds[0]].$inspect()
+          else if methodName == '[]'
+            log = idToSavedValue[methodReceiverId].$inspect() + '[' +
+              idToSavedValue[methodArgumentIds[0]].$inspect() + ']'
           else
             if methodReceiverId && methodReceiverId != 4
               log += idToSavedValue[methodReceiverId].$inspect() + '.'
