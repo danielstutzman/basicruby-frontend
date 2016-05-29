@@ -192,7 +192,6 @@ ExerciseComponent = React.createClass
                 tr {},
                   th {}, 'Line'
                   th { className: 'description' }, 'Description'
-                  th {}, 'Value'
                   th {}, 'Output'
               _.map @props.traceContents, (line, i) =>
                 do (i) =>
@@ -222,19 +221,6 @@ ExerciseComponent = React.createClass
                         @setState hoverRow: null, hoverCol: null
                       dangerouslySetInnerHTML: __html:
                         Array(indentation + 1).join("\u00a0\u00a0") + text
-                    if expr != null
-                      td
-                        className: classNames
-                          hover: @state.hoverRow == i and @state.hoverCol == 'value'
-                        onMouseOver: =>
-                          replaceResultCallback @state.codeMirror
-                          @setState hoverRow: i, hoverCol: 'value'
-                        onMouseOut: =>
-                          clearCallback @state.codeMirror
-                          @setState hoverRow: null, hoverCol: null
-                        @_renderExpr expr
-                    else
-                      td {}
                     td { className: 'output' },
                       if output
                         _.map [0...output.length], (i) ->
