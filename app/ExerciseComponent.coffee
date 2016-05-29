@@ -186,7 +186,7 @@ ExerciseComponent = React.createClass
                   className: 'code'
                   defaultValue: @props.initialCode
                   onFocus: => @props.doCommand.closePopup()
-          div { style: { height: '50%', overflow: 'scroll' } },
+          div { style: { height: '400px', overflow: 'scroll' } },
             table { className: 'trace' },
               if @props.traceContents.length > 0
                 tr {},
