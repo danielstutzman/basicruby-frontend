@@ -163,6 +163,11 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
         (methodArgumentIds ? methodArgumentIds.$inspect() : 'nil') + "," +
         s.$$id + ",(");
 
+    if (s.array[0] == 'def') {
+      offsetToAdditions[offsetStart].unshift(
+        "remember_to_undefine('" + methodName + "');")
+    }
+
     var offsetEnd = s.source[5];
     if (offsetToAdditions[offsetEnd] === undefined) {
       offsetToAdditions[offsetEnd] = [];
@@ -208,6 +213,17 @@ function runRubyWithHighlighting(rubySource, gotCallback) {
     "  console_texts = $console_texts\n" +
     "  `gotCallbackGlobal(name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr, console_texts)`\n" +
     "  expr\n" +
+    "end\n" +
+
+    "def remember_to_undefine(name)\n" +
+    "  $methods_to_restore = {} if $methods_to_restore.nil?\n" +
+    "  unless $methods_to_restore.has_key? name\n" +
+    "    begin\n" +
+    "      $methods_to_restore[name] = receiver.method(name)\n" +
+    "    rescue NameError\n" +
+    "      $methods_to_restore[name] = nil\n" +
+    "    end\n" +
+    "  end\n" +
     "end\n" +
 
     "# redefine puts to handle trailing newlines like MRI does\n" +
@@ -261,6 +277,21 @@ function runRubyWithHighlighting(rubySource, gotCallback) {
   instrumentedSource = prelude + instrumentedSource.join('');
 
   Opal.eval(instrumentedSource);
+
+  // undefine methods or redefine them
+  var methods_to_restore = Opal.gvars.methods_to_restore;
+  if (methods_to_restore !== undefined) {
+    for (var i = 0; i < methods_to_restore.$$keys.length; i++) {
+      var methodName = methods_to_restore.$$keys[i];
+      var existingDef = methods_to_restore.$$map[methodName];
+      if (existingDef) {
+        Opal.Object.$send("define_method", methodName, existingDef);
+      } else {
+        Opal.Object.$send("remove_method", methodName);
+      }
+    }
+    delete Opal.gvars.methods_to_restore;
+  }
 }
 
 module.exports = {
