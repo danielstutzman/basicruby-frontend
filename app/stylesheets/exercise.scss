@@ -391,6 +391,9 @@ table.trace {
   line-height: 120%;
   border-collapse: collapse;
 
+  tr.new-line {
+    border-top: 1px black solid;
+  }
   th {
     text-align: left;
   }

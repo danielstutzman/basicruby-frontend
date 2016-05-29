@@ -193,11 +193,16 @@ ExerciseComponent = React.createClass
                   th {}, 'Line'
                   th { className: 'description' }, 'Description'
                   th {}, 'Output'
+              lastLineNum = null
               _.map @props.traceContents, (line, i) =>
                 do (i) =>
                   [indentation, lineNum, text, replaceCallback, replaceResultCallback,
                     clearCallback, expr, output] = line
-                  tr { key: i, className: 'line' },
+                  tr
+                    key: i
+                    className: classNames
+                      line: true
+                      'new-line': lineNum != lastLineNum
                     td
                       className: classNames
                         'line-num': true
@@ -227,6 +232,7 @@ ExerciseComponent = React.createClass
                           span { key: i, className: 'char' },
                             output.charAt(i).replace("\n", NEWLINE_ARROW).replace(
                               " ", NBSP)
+                    lastLineNum = lineNum
 
         div { className: 'margin' } # because %-based margins don't work
 
