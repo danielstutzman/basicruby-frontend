@@ -127,7 +127,7 @@ class ExerciseController
       else if name == 'js_return'
         return
       else if name == 'def'
-        log = "def #{methodName}"
+        log = "def #{methodName} ..."
         resultReplacement = null
         methodNameToDefRange[methodName] = { row0, col0, row1, col1 }
         expr = null # otherwise Opal returns "f" from (def f(x); end)
