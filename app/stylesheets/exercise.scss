@@ -397,8 +397,12 @@ table.trace {
   th {
     text-align: left;
   }
-  th.description, td.description {
+  th.description {
     padding-right: 20px;
+  }
+  td.description {
+    padding-right: 20px;
+    font-family: monospace;
   }
   td.hover {
     background-color: yellow;

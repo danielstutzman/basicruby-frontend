@@ -138,13 +138,11 @@ class ExerciseController
       currentHighlight  = { row0, col0, row1, col1 }
       resultReplacement = { row0, col0, row1, col1, expr }
 
-      if name == 'str'
-        log = 'Evaluate string literal'
-      else if name == 'int'
-        log = 'Evaluate number literal'
+      if name == 'str' || name == 'int'
+        return
       else if name == 'call'
         if methodNameToDefRange[methodName]
-          log = "Return"
+          log = "return #{expr.$inspect()}"
           indentationIncrease = -1
           resultReplacement = { row0, col0, row1, col1, expr }
 
@@ -157,45 +155,39 @@ class ExerciseController
             row1: lastReplacement.row1
             col1: lastReplacement.col1
         else
-          log = "Call <code>#{methodName}</code> method"
-          if methodReceiverId && methodReceiverId != 4
-            log += " on <code>#{idToSavedValue[methodReceiverId].$inspect()}</code>"
-          if methodArgumentIds
-            if methodArgumentIds.length == 0
-              log += " with no arguments"
-            else if methodArgumentIds.length == 1
-              log += " with argument "
-            else
-              log += " with arguments "
-
+          log = ''
+          if {'+':true, '-':true, '*':true, '/':true }[methodName]
+            log = idToSavedValue[methodReceiverId].$inspect() + ' ' +
+              methodName + ' ' +
+              idToSavedValue[methodArgumentIds[0]].$inspect()
+          else
+            if methodReceiverId && methodReceiverId != 4
+              log += idToSavedValue[methodReceiverId].$inspect() + '.'
+            log += methodName + '('
             for methodArgumentId, i in methodArgumentIds
               log += ", " if i > 0
-              log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
+              log += idToSavedValue[methodArgumentId].$inspect()
+            log += ')'
       else if name == 'js_return'
         return
       else if name == 'def'
-        log = "Define <code>#{methodName}</code> method"
+        log = "def #{methodName}"
         resultReplacement = null
         methodNameToDefRange[methodName] = { row0, col0, row1, col1 }
         expr = null # otherwise Opal returns "f" from (def f(x); end)
       else if name == 'lvar'
-        log = "Evaluate <code>#{methodName}</code> variable"
+        log = methodName
       else if name == 'start_call'
         if methodNameToDefRange[methodName]
-          log = "Call <code>#{methodName}</code> method"
+          log = ''
           if methodReceiverId && methodReceiverId != 4
-            log += " on <code>#{idToSavedValue[methodReceiverId].$inspect()}</code>"
-          if methodArgumentIds
-            if methodArgumentIds.length == 0
-              log += " with no arguments"
-            else if methodArgumentIds.length == 1
-              log += " with argument "
-            else
-              log += " with arguments "
+            log += idToSavedValue[methodReceiverId].$inspect() + '.'
+          log += methodName + '('
+          for methodArgumentId, i in methodArgumentIds
+            log += ", " if i > 0
+            log += idToSavedValue[methodArgumentId].$inspect()
+          log += ')'
 
-            for methodArgumentId, i in methodArgumentIds
-              log += ", " if i > 0
-              log += "<code>#{idToSavedValue[methodArgumentId].$inspect()}</code>"
           resultReplacement = null
           indentationIncrease = 1
           expr = null # expr isn't the real return yet, just the last arg
@@ -204,7 +196,7 @@ class ExerciseController
           #   because we want to show the return value
           return
       else if name == 'lasgn'
-        log = "Set <code>#{methodName}</code> variable"
+        log = "#{methodName} = #{expr.$inspect()}"
       else if name == 'paren'
         return
       else
@@ -222,7 +214,7 @@ class ExerciseController
           textMarker.clear()
         textMarkers = []
       @traceContents.push [indentation, currentHighlight.row0, log, replaceCallback,
-        replaceResultCallback, clearCallback, expr, output]
+        replaceResultCallback, clearCallback, expr, output, currentHighlight.col0]
 
       if name == 'call'
         # Now that the method has been called, remove all the replacements in it

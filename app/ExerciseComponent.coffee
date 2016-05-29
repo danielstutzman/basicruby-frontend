@@ -197,7 +197,7 @@ ExerciseComponent = React.createClass
               _.map @props.traceContents, (line, i) =>
                 do (i) =>
                   [indentation, lineNum, text, replaceCallback, replaceResultCallback,
-                    clearCallback, expr, output] = line
+                    clearCallback, expr, output, col0] = line
                   tr
                     key: i
                     className: classNames
@@ -225,7 +225,7 @@ ExerciseComponent = React.createClass
                         clearCallback @state.codeMirror
                         @setState hoverRow: null, hoverCol: null
                       dangerouslySetInnerHTML: __html:
-                        Array(indentation + 1).join("\u00a0\u00a0") + text
+                        Array(col0 + 1).join("\u00a0") + text
                     td { className: 'output' },
                       if output
                         _.map [0...output.length], (i) ->
