@@ -78,46 +78,11 @@ class ExerciseController
     textMarkers = []
     totalOutput = []
     highlight = (codeMirror, replacements, currentHighlight) ->
-      #replacements = replacements.concat([currentHighlight]) if currentHighlight
       replacements = if currentHighlight then [currentHighlight] else []
       for replacement, i in replacements
-        replacedWith = null
-        expr = replacement.expr
-        if expr != undefined
-          exprTypeString = expr.$class().$to_s()
-          exprType = document.createElement 'span'
-          exprType.setAttribute 'class', 'type'
-          exprType.appendChild document.createTextNode exprTypeString
-
-          contents = document.createElement 'span'
-          if exprTypeString == 'Number'
-            contents.setAttribute 'class', 'number'
-            contents.appendChild document.createTextNode expr
-          else if exprTypeString == 'String' && expr.length > 0
-            contents.setAttribute 'class', 'string'
-            for i in [0...expr.length]
-              char = document.createElement 'span'
-              char.setAttribute 'class', 'char'
-              char.appendChild document.createTextNode expr.charAt(i)
-              contents.appendChild char
-          else
-            contents.setAttribute 'class', 'empty'
-
-          replacedWith = document.createElement 'span'
-          if currentHighlight and
-             replacement.row0 >= currentHighlight.row0 and
-             replacement.col0 >= currentHighlight.col0 and
-             replacement.row1 <= currentHighlight.row1 and
-             replacement.col1 <= currentHighlight.col1
-            replacedWith.setAttribute 'class', 'highlighted value'
-          else
-            replacedWith.setAttribute 'class', 'value'
-          replacedWith.appendChild exprType
-          replacedWith.appendChild contents if contents
-
         textMarker = codeMirror.getDoc().markText { line: replacement.row0 - 1, ch: replacement.col0 },
           { line: replacement.row1 - 1, ch: replacement.col1 },
-          { className: 'highlighted', replacedWith: replacedWith }
+          { className: 'highlighted' }
         textMarkers.push textMarker
 
     idToSavedValue = {}
@@ -143,18 +108,8 @@ class ExerciseController
         return
       else if name == 'call'
         if methodNameToDefRange[methodName]
-          log = "return #{expr.$inspect()}"
-          indentationIncrease = -1
-          resultReplacement = { row0, col0, row1, col1, expr }
-
-          # Hack: show line num for the last statement executed (presumably the
-          # return) instead of the line num for the method call
-          lastReplacement = replacements[replacements.length - 1]
-          currentHighlight =
-            row0: lastReplacement.row0
-            col0: lastReplacement.col0
-            row1: lastReplacement.row1
-            col1: lastReplacement.col1
+          indentation -= 1
+          return
         else
           log = ''
           if {'+':true, '-':true, '*':true, '/':true }[methodName]
