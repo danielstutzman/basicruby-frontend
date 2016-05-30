@@ -39,9 +39,17 @@ function continueRecursion(f, s) {
     f(s.array[4]);
   } else if (name == 'return') {
     f(s.array[1]);
-  } else if (name == 'lasgn') {
+  } else if (name == 'lasgn') { // e.g. x = 1
     f(s.array[2]);
   } else if (name == 'paren') {
+    f(s.array[1]);
+  } else if (name == 'dstr') { // e.g. "a#{1}b"
+    for (var i = 1; i < s.array.length; i++) {
+      if (s.array[i].array && s.array[i].array[0] == 'evstr') {
+        f(s.array[i]);
+      }
+    }
+  } else if (name == 'evstr') { // e.g. the 1 inside "a#{1}b"
     f(s.array[1]);
   } else {
     throw new Error("Don't know how to handle sexp of type '" + name + "'");
@@ -91,6 +99,17 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
       methodName = s.array[1];
     } else if (s.array[0] == 'lasgn') {
       methodName = s.array[1];
+    } else if (s.array[0] == 'dstr') {
+      console.log('sa1', s.array[1], typeof(s.array[1]));
+      methodName = s.array[1];
+      methodArgumentIds = [];
+      for (var i = 2; i < s.array.length; i++) {
+        if (s.array[i].array[0] == 'str') {
+          methodArgumentIds.push(s.array[i].array[1]);
+        } else {
+          methodArgumentIds.push(s.array[i].$$id);
+        }
+      }
     }
 
     // For method calls we want to call 'got' with 'start_method' just before
@@ -117,6 +136,9 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
           offsetStart = s.source[5] - 1; // before the closing paren
         }
       }
+      if (offsetStart === undefined) {
+        throw new Error("offsetStart is undefined");
+      }
 
       if (offsetToAdditions[offsetStart] === undefined) {
         offsetToAdditions[offsetStart] = [];
@@ -127,7 +149,7 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
         s.source[0] + ',' + s.source[1] + ',' +
         s.source[2] + ',' + s.source[3] + "," +
         (methodReceiverId || 'nil') + "," +
-        "'" + (methodName || 'nil') + "'," +
+        methodName.$inspect() + "," +
         (methodArgumentIds ? methodArgumentIds.$inspect() : 'nil') + "," +
         s.$$id + ",(" +
         (numArgs == 0 ? (needsExtraParens ? '[]))' : '[])') : '')
@@ -143,6 +165,9 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
           offsetEnd = s.source[5] - 1; // before the closing paren
         }
       }
+      if (offsetEnd === undefined) {
+        throw new Error("offsetEnd is undefined");
+      }
       if (offsetToAdditions[offsetEnd] === undefined) {
         offsetToAdditions[offsetEnd] = [];
       }
@@ -151,6 +176,9 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
     }
 
     var offsetStart = s.source[4];
+    if (offsetStart === undefined) {
+      throw new Error("offsetStart is undefined");
+    }
     if (offsetToAdditions[offsetStart] === undefined) {
       offsetToAdditions[offsetStart] = [];
     }
@@ -159,7 +187,7 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
         s.source[0] + ',' + s.source[1] + ',' +
         s.source[2] + ',' + s.source[3] + "," +
         (methodReceiverId || 'nil') + "," +
-        "'" + (methodName || 'nil') + "'," +
+        "'" + methodName + "'," +
         (methodArgumentIds ? methodArgumentIds.$inspect() : 'nil') + "," +
         s.$$id + ",(");
 
@@ -169,6 +197,9 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
     }
 
     var offsetEnd = s.source[5];
+    if (offsetEnd === undefined) {
+      throw new Error("offsetEnd is undefined");
+    }
     if (offsetToAdditions[offsetEnd] === undefined) {
       offsetToAdditions[offsetEnd] = [];
     }

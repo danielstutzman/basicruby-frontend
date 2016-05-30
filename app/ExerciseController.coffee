@@ -158,6 +158,19 @@ class ExerciseController
         log = "#{methodName} = #{expr.$inspect()}"
       else if name == 'paren'
         return
+      else if name == 'dstr' # e.g. "a#{2 + 2}b"
+        log = ''
+        console.log 'methodName', methodName, typeof(methodName)
+        if methodName != ''
+          log += methodName.$inspect() + ' + '
+        for methodArgumentId, i in methodArgumentIds
+          log += ' + ' if i > 0
+          if typeof methodArgumentId == 'string'
+            log += methodArgumentId.$inspect()
+          else
+            log += idToSavedValue[methodArgumentId].$to_s().$inspect()
+      else if name == 'evstr' # e.g. the (2 + 2).to_s in "a#{2 + 2}b"
+        log = expr.$inspect() + '.to_s'
       else
         log = "got #{name}"
 
