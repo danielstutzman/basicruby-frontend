@@ -36,6 +36,6 @@ click = (node) ->
     # Doesn't work with PhantomJS:
     #   node.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
-describe = window.describe || (->)
+describe = if typeof(window) == 'undefined' then (->) else window.describe || (->)
 
 module.exports = { assertRendersHtml, click, describe }

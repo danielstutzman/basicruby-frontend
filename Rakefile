@@ -221,3 +221,7 @@ task :deploy_dist_to_digitalocean => :dist_all do
 end
 
 task :default => :build_all
+
+task :watch_tests do
+  sh 'node_modules/.bin/mocha --reporter spec --compilers coffee:coffee-script --require coffee-script/register --require should --ui tdd app/*Test.coffee --watch --reporter list --growl'
+end
