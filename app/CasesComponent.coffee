@@ -17,7 +17,7 @@ CasesComponent = React.createClass
 
   componentDidMount: ->
     if @props.color == 'blue'
-      window.setTimeout (=> @refs.prediction0.getDOMNode().focus()), 100
+      window.setTimeout (=> @refs.prediction0.focus()), 100
 
   render: ->
     { br, button, div, input, span, table, tbody, td, th, tr, textarea } = React.DOM

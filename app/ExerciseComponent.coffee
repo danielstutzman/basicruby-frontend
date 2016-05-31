@@ -43,7 +43,7 @@ ExerciseComponent = React.createClass
       autofocus: true
       readOnly: false
       lineWrapping: true
-    textarea = @refs.code.getDOMNode()
+    textarea = @refs.code
     isMobileSafari = ->
        navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
        navigator.userAgent.match(/AppleWebKit/)
@@ -76,7 +76,7 @@ ExerciseComponent = React.createClass
   componentDidUpdate: (prevProps, prevState) ->
     if @state.codeMirror
       if @props.initialCode != prevProps.initialCode
-        @refs.code.getDOMNode().value = @props.initialCode
+        @refs.code.value = @props.initialCode
         @state.codeMirror.setValue @props.initialCode
         @setState initialCode: @props.initialCode
       if @props.color != prevProps.color
