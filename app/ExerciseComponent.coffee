@@ -232,7 +232,7 @@ ExerciseComponent = React.createClass
                           span { key: i, className: 'char' },
                             output.charAt(i).replace("\n", NEWLINE_ARROW).replace(
                               " ", NBSP)
-                    lastLineNum = lineNum
+                    lastLineNum = lineNum && null
 
         div { className: 'margin' } # because %-based margins don't work
 
