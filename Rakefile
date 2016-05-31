@@ -64,6 +64,7 @@ file 'build/javascripts/vendor.js' => %w[build/javascripts] do |task|
   begin
     sh "rm -f #{task.name}"
     sh "cat node_modules/react/dist/react.js >> #{task.name}"
+    sh "cat node_modules/react-dom/dist/react-dom.js >> #{task.name}"
     sh "cat node_modules/underscore/underscore.js >> #{task.name}"
     sh "echo >> #{task.name}" # needs a newline if anything follows
     sh "cat node_modules/opal/dist/opal.js >> #{task.name}"
