@@ -2,8 +2,6 @@ require('opal'); // sets Opal global
 
 (function() {
 
-gotCallbackGlobal = null;
-
 function parseToSexp(rubySource) {
   var $scope = Opal;
   Opal.add_stubs(['$new', '$compile', '$instance_variable_get']);
@@ -208,9 +206,7 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
   }
 }
 
-function runRubyWithHighlighting(rubySource, gotCallback) {
-  gotCallbackGlobal = gotCallback;
-
+function runRubyWithHighlighting(rubySource) {
   var lineNumToOffset = {};
   var rubySourceLines = rubySource.split("\n");
   var offsetSoFar = 0;
@@ -238,11 +234,17 @@ function runRubyWithHighlighting(rubySource, gotCallback) {
     lastOffset = offset;
   }
   instrumentedSource.push(rubySource.substring(lastOffset));
-  console.log('instrumented:', instrumentedSource);
+  //console.log('instrumented:', instrumentedSource);
+
+  trace = [];
+  gotCallbackGlobal = function(name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr, console_texts) {
+    trace.push([name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr, console_texts]);
+  }
 
   prelude = "def got(name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr)\n" +
     "  console_texts = $console_texts\n" +
     "  `gotCallbackGlobal(name, row0, col0, row1, col1, method_receiver, method_name, method_argument_ids, save_as_id, expr, console_texts)`\n" +
+    "  $console_texts = []\n" +
     "  expr\n" +
     "end\n" +
 
@@ -323,6 +325,8 @@ function runRubyWithHighlighting(rubySource, gotCallback) {
     }
     delete Opal.gvars.methods_to_restore;
   }
+
+  return trace;
 }
 
 module.exports = {

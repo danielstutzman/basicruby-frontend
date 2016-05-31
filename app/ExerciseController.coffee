@@ -99,7 +99,6 @@ class ExerciseController
       output = ''
       for eachOutput in consoleTexts
         output += eachOutput[1]
-      consoleTexts.length = 0
 
       currentHighlight  = { row0, col0, row1, col1 }
       resultReplacement = { row0, col0, row1, col1, expr }
@@ -208,7 +207,9 @@ class ExerciseController
       replacements.push resultReplacement if resultReplacement
 
     try
-      BasicRubyNew.runRubyWithHighlighting code, callback
+      trace = BasicRubyNew.runRubyWithHighlighting code
+      for line in trace
+        callback.apply null, line
       @cases[0].actual_output = totalOutput
     catch e
       @cases[0].actual_output = totalOutput.concat(
