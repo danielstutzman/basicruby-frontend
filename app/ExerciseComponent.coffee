@@ -236,7 +236,8 @@ ExerciseComponent = React.createClass
 
         div { className: 'margin' } # because %-based margins don't work
 
-      CasesComponent _.extend(@props, retrieveNewCode: @state.retrieveNewCode)
+      React.createElement CasesComponent,
+        _.extend(_.clone(@props), retrieveNewCode: @state.retrieveNewCode)
 
       br { style: { clear: 'both' } }
 

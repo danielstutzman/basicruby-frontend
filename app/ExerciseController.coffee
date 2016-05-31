@@ -1,3 +1,4 @@
+React                 = require 'react'
 ExerciseComponent     = require './ExerciseComponent'
 BasicRubyNew          = require './BasicRubyNew'
 
@@ -66,7 +67,7 @@ class ExerciseController
                                       case_.actual_output != undefined
           if _.every @cases, isCaseFinished
             @checkForPassingTests()
-    @reactRender ExerciseComponent(props), callback
+    @reactRender React.createElement(ExerciseComponent, props), callback
 
   handleClosePopup: ->
     if @popup != null

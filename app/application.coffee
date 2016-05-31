@@ -1,4 +1,5 @@
 ApiService            = require './ApiService.coffee'
+ReactDOM              = require 'react-dom'
 Router                = require './Router'
 
 if window.location.hostname == 'localhost'
@@ -28,7 +29,7 @@ service = new ApiService rpc, (showThrobber) ->
 router = new Router(service)
 window.history.pathChanged = (path) ->
   router.render path, (reactComponent, callMeAfterRender) ->
-    React.renderComponent reactComponent,
+    ReactDOM.render reactComponent,
       document.querySelector('#screen'),
       callMeAfterRender
 

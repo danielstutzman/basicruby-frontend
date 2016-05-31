@@ -13,7 +13,7 @@ class Router
   render: (path, reactRender) ->
     if path == '/'
       @service.getMenu (data) ->
-        reactRender MenuComponent(data), null
+        reactRender React.createElement(MenuComponent, data), null
 
     else if match = /^\/([0-9]+)([PYBRGO])(\/([0-9]+))?$/.exec(path)
       controller = new ExerciseController(@service, reactRender, path)
@@ -24,6 +24,6 @@ class Router
 
     else
       console.error 'path', path
-      reactRender NotFoundComponent({}), null
+      reactRender React.createElement(NotFoundComponent, {}), null
 
 module.exports = Router
