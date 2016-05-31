@@ -12,6 +12,9 @@
     "coffeeify": "^2.0.1",
     "cssmin": "^0.4.3",
     "hashmark": "^3.1.0",
+    "html": "0.0.10",
+    "mocha": "^2.5.3",
+    "should": "^9.0.0",
     "uglify-js": "~2.4.15",
     "watchify": "^3.7.0"
   }
