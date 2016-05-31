@@ -69,11 +69,11 @@ MenuComponent = React.createClass
             if level == 'intermediate'
               div { className: 'under-construction-icon' }
             h2 { key: 3 }, @humanize(level)
-            td { className: 'purple', key: 'purple' }
-            td { className: 'yellow', key: 'yellow' }
-            td { className: 'blue'  , key: 'blue' }
-            td { className: 'red'   , key: 'red' }
-            td { className: 'green' , key: 'green' }
+          td { className: 'purple', key: 'purple' }
+          td { className: 'yellow', key: 'yellow' }
+          td { className: 'blue'  , key: 'blue' }
+          td { className: 'red'   , key: 'red' }
+          td { className: 'green' , key: 'green' }
       _.each @props.topics, (topic) =>
         if topic.level == level
           trs.push tr { key: "#{topic.level}-#{topic.num}" },
