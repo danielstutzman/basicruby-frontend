@@ -2,6 +2,8 @@ React                 = require 'react'
 ExerciseComponent     = require './ExerciseComponent'
 BasicRubyNew          = require './BasicRubyNew'
 
+ELLIPSIS = "\u2026"
+
 class ExerciseController
   constructor: (service, reactRender, path) ->
     @service         = service
@@ -130,7 +132,7 @@ class ExerciseController
       else if name == 'js_return'
         return
       else if name == 'def'
-        log = "def #{methodName} ..."
+        log = "def #{methodName}#{ELLIPSIS}"
         resultReplacement = null
         methodNameToDefRange[methodName] = { row0, col0, row1, col1 }
         expr = null # otherwise Opal returns "f" from (def f(x); end)
