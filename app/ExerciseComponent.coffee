@@ -98,7 +98,7 @@ ExerciseComponent = React.createClass
         span { className: 'empty' }
 
   render: ->
-    { a, br, button, code, div, h1, iframe, input, label, p, span, table, td,
+    { a, br, button, code, div, h1, iframe, input, label, p, span, table, tbody, td,
       textarea, th, tr } = React.DOM
 
     hasScript = (@props.videoScript && !@props.youtubeId) && 'has-video-script'
@@ -188,51 +188,52 @@ ExerciseComponent = React.createClass
                   onFocus: => @props.doCommand.closePopup()
           div { style: { height: '400px', overflow: 'scroll' } },
             table { className: 'trace' },
-              if @props.traceContents.length > 0
-                tr {},
-                  th {}, 'Line'
-                  th { className: 'description' }, 'Description'
-                  th {}, 'Output'
-              lastLineNum = null
-              _.map @props.traceContents, (line, i) =>
-                do (i) =>
-                  [indentation, lineNum, text, replaceCallback, replaceResultCallback,
-                    clearCallback, expr, output, col0] = line
-                  tr
-                    key: i
-                    className: classNames
-                      line: true
-                      'new-line': lineNum != lastLineNum
-                    td
+              tbody {},
+                if @props.traceContents.length > 0
+                  tr {},
+                    th {}, 'Line'
+                    th { className: 'description' }, 'Description'
+                    th {}, 'Output'
+                lastLineNum = null
+                _.map @props.traceContents, (line, i) =>
+                  do (i) =>
+                    [indentation, lineNum, text, replaceCallback,
+                      replaceResultCallback, clearCallback, expr, output, col0] = line
+                    tr
+                      key: i
                       className: classNames
-                        'line-num': true
-                        hover: @state.hoverRow == i and @state.hoverCol == 'highlight'
-                      onMouseOver: =>
-                        replaceCallback @state.codeMirror
-                        @setState hoverRow: i, hoverCol: 'highlight'
-                      onMouseOut: =>
-                        clearCallback @state.codeMirror
-                        @setState hoverRow: null, hoverCol: null
-                      Array(indentation + 1).join("\u00a0\u00a0") + lineNum
-                    td
-                      className: classNames
-                        description: true
-                        hover: @state.hoverRow == i and @state.hoverCol == 'highlight'
-                      onMouseOver: =>
-                        replaceCallback @state.codeMirror
-                        @setState hoverRow: i, hoverCol: 'highlight'
-                      onMouseOut: =>
-                        clearCallback @state.codeMirror
-                        @setState hoverRow: null, hoverCol: null
-                      dangerouslySetInnerHTML: __html:
-                        Array(col0 + 1).join("\u00a0") + text
-                    td { className: 'output' },
-                      if output
-                        _.map [0...output.length], (i) ->
-                          span { key: i, className: 'char' },
-                            output.charAt(i).replace("\n", NEWLINE_ARROW).replace(
-                              " ", NBSP)
-                    lastLineNum = lineNum && null
+                        line: true
+                        'new-line': lineNum != lastLineNum
+                      td
+                        className: classNames
+                          'line-num': true
+                          hover: @state.hoverRow == i && @state.hoverCol == 'highlight'
+                        onMouseOver: =>
+                          replaceCallback @state.codeMirror
+                          @setState hoverRow: i, hoverCol: 'highlight'
+                        onMouseOut: =>
+                          clearCallback @state.codeMirror
+                          @setState hoverRow: null, hoverCol: null
+                        Array(indentation + 1).join("\u00a0\u00a0") + lineNum
+                      td
+                        className: classNames
+                          description: true
+                          hover: @state.hoverRow == i && @state.hoverCol == 'highlight'
+                        onMouseOver: =>
+                          replaceCallback @state.codeMirror
+                          @setState hoverRow: i, hoverCol: 'highlight'
+                        onMouseOut: =>
+                          clearCallback @state.codeMirror
+                          @setState hoverRow: null, hoverCol: null
+                        dangerouslySetInnerHTML: __html:
+                          Array(col0 + 1).join("\u00a0") + text
+                      td { className: 'output' },
+                        if output
+                          _.map [0...output.length], (i) ->
+                            span { key: i, className: 'char' },
+                              output.charAt(i).replace("\n", NEWLINE_ARROW).replace(
+                                " ", NBSP)
+                      lastLineNum = lineNum && null
 
         div { className: 'margin' } # because %-based margins don't work
 
