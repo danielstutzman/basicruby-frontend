@@ -60,7 +60,15 @@ file 'build/images' do |task|
   sh "ln -s ../app/images #{task.name}"
 end
 
-file 'build/javascripts/vendor.js' => %w[build/javascripts] do |task|
+file 'build/javascripts/vendor.js' => %w[
+  build/javascripts
+  node_modules/react/dist/react.js
+  node_modules/react-dom/dist/react-dom.js
+  node_modules/underscore/underscore.js
+  node_modules/opal/dist/opal.js
+  node_modules/codemirror/lib/codemirror.js
+  node_modules/codemirror/mode/ruby/ruby.js
+] do |task|
   begin
     sh "rm -f #{task.name}"
     sh "cat node_modules/react/dist/react.js >> #{task.name}"
