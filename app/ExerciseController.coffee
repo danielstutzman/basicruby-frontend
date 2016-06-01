@@ -173,6 +173,14 @@ class ExerciseController
             log += idToSavedValue[methodArgumentId].$to_s().$inspect()
       else if name == 'evstr' # e.g. the (2 + 2).to_s in "a#{2 + 2}b"
         log = expr.$inspect() + '.to_s'
+      else if name == 'if_true'
+        log = 'if true'
+      else if name == 'if'
+        log = 'end'
+        # HACK: line num should show as the line number of the 'end'
+        currentHighlight.row0 = currentHighlight.row1
+      else if name == 'if_false'
+        log = 'if false'
       else
         log = "got #{name}"
 

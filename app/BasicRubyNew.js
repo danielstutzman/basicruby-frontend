@@ -49,6 +49,12 @@ function continueRecursion(f, s) {
     }
   } else if (name == 'evstr') { // e.g. the 1 inside "a#{1}b"
     f(s.array[1]);
+  } else if (name == 'if') {
+    f(s.array[1]); // condition
+    f(s.array[2]); // true branch
+    f(s.array[3]); // false branch
+  } else if (name == 'nil') {
+    // no further recursion is possible
   } else {
     throw new Error("Don't know how to handle sexp of type '" + name + "'");
   }
@@ -203,6 +209,47 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
     }
     // push not unshift because recursion will go to children first
     offsetToAdditions[offsetEnd].push("))");
+  }
+
+  if (s.array[0] == 'if') {
+    // Instrument the true branch of if with got('if_true')
+    var offsetStartAndEnd = s.array[2].source[4];
+    if (offsetStartAndEnd === undefined) {
+      throw new Error("offsetStartAndEnd is undefined");
+    }
+    if (offsetToAdditions[offsetStartAndEnd] === undefined) {
+      offsetToAdditions[offsetStartAndEnd] = [];
+    }
+    offsetToAdditions[offsetStartAndEnd].unshift("got('if_true'," +
+      s.source[0] + ',' + s.source[1] + ',' +
+      s.source[2] + ',' + s.source[3] + ',nil,nil,nil,nil,true)&&');
+
+    if (s.array[3].source.length > 0) {
+      // Instrument the else branch too with got('if_false')
+      var offsetStartAndEnd = s.array[3].source[4];
+      if (offsetStartAndEnd === undefined) {
+        throw new Error("offsetStartAndEnd is undefined");
+      }
+      if (offsetToAdditions[offsetStartAndEnd] === undefined) {
+        offsetToAdditions[offsetStartAndEnd] = [];
+      }
+      offsetToAdditions[offsetStartAndEnd].unshift("got('if_false'," +
+        s.source[0] + ',' + s.source[1] + ',' +
+        s.source[2] + ',' + s.source[3] + ',nil,nil,nil,nil,true)&&');
+    } else {
+      // There's no else branch; so add one
+      var offsetStartAndEnd = s.source[5];
+      if (offsetStartAndEnd === undefined) {
+        throw new Error("offsetStartAndEnd is undefined");
+      }
+      offsetStartAndEnd -= 3; // HACK: go back 3 for 'end'
+      if (offsetToAdditions[offsetStartAndEnd] === undefined) {
+        offsetToAdditions[offsetStartAndEnd] = [];
+      }
+      offsetToAdditions[offsetStartAndEnd].unshift("else got('if_false'," +
+        s.source[0] + ',' + s.source[1] + ',' +
+        s.source[2] + ',' + s.source[3] + ',nil,nil,nil,nil,true) ');
+    }
   }
 }
 
