@@ -31,12 +31,8 @@
         var lib = null;
         if (name === 'react') { lib = window.React; }
         else if (name === 'react-dom') { lib = window.ReactDOM; }
-        else if (name === 'react-addons-update') { lib = window.React.addons.update; }
         else if (name === 'underscore') { lib = window._; }
-        else if (name === 'bluebird') { lib = { Promise: window.Promise }; }
-        else if (name === 'redux') { lib = window.Redux; }
         else if (name === 'opal') { lib = window.Opal; }
-        else if (name === 'easyxdm') { lib = window.EasyXDM; }
         else {
           document.querySelector('#throbber').style.display = 'none';
           throw new Error("Unknown library '" + name + "'");
