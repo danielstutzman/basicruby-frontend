@@ -3,6 +3,8 @@ ExerciseComponent     = require './ExerciseComponent'
 BasicRubyNew          = require './BasicRubyNew'
 
 ELLIPSIS = "\u2026"
+OPERATORS = {'+':true, '-':true, '*':true, '/':true, '>':true, '<':true, '>=':true, \
+  '<=':true, '==':true, '!=':true, '===':true }
 
 class ExerciseController
   constructor: (service, reactRender, path) ->
@@ -114,7 +116,7 @@ class ExerciseController
           return
         else
           log = ''
-          if {'+':true, '-':true, '*':true, '/':true }[methodName]
+          if OPERATORS[methodName]
             log = idToSavedValue[methodReceiverId].$inspect() + ' ' +
               methodName + ' ' +
               idToSavedValue[methodArgumentIds[0]].$inspect()
