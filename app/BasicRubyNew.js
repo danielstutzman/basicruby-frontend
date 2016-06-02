@@ -253,7 +253,7 @@ function instrumentRuby(s, offsetToAdditions, rubySource) {
   }
 }
 
-function runRubyWithHighlighting(rubySource) {
+function runRubyWithHighlighting(rubySource, redefinePuts) {
   var lineNumToOffset = {};
   var rubySourceLines = rubySource.split("\n");
   var offsetSoFar = 0;
@@ -263,7 +263,7 @@ function runRubyWithHighlighting(rubySource) {
   }
 
   var sexp = parseToSexp(rubySource);
-  console.log(JSON.stringify(sexp, null, 2));
+  //console.log(JSON.stringify(sexp, null, 2));
   convertRowColToOffsets(sexp, lineNumToOffset);
   //console.log('sexp', sexp);
   //console.log(JSON.stringify(sexp, null, 2));
@@ -304,9 +304,9 @@ function runRubyWithHighlighting(rubySource) {
     "      $methods_to_restore[name] = nil\n" +
     "    end\n" +
     "  end\n" +
-    "end\n" +
-
-    "# redefine puts to handle trailing newlines like MRI does\n" +
+    "end\n";
+  if (redefinePuts) {
+    prelude += "# redefine puts to handle trailing newlines like MRI does\n" +
     "def puts *args\n" +
     "  if args.size > 0\n" +
     "    $stdout.write args.map { |arg|\n" +
@@ -354,7 +354,10 @@ function runRubyWithHighlighting(rubySource) {
     "    end\n" +
     "  end\n" +
     "end\n"
+  }
   instrumentedSource = prelude + instrumentedSource.join('');
+
+  //console.log(instrumentedSource);
 
   Opal.eval(instrumentedSource);
 

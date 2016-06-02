@@ -220,7 +220,7 @@ class ExerciseController
       replacements.push resultReplacement if resultReplacement
 
     try
-      trace = BasicRubyNew.runRubyWithHighlighting code
+      trace = BasicRubyNew.runRubyWithHighlighting code, true
       for line in trace
         callback.apply null, line
       @cases[0].actual_output = totalOutput
