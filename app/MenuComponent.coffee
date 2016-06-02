@@ -60,7 +60,7 @@ MenuComponent = React.createClass
       @thForColor 'red',    'Fix the',   'bugs'
       @thForColor 'green',  'Implement', 'the spec'
 
-    _.each ['variables and methods', 'strings'], (level) =>
+    _.each ['variables and methods', 'strings', 'recursion'], (level) =>
       if level != 'variables and methods' # because we'll show it left of the icons
         trs.push tr { key: level },
           th { className: 'title' },
