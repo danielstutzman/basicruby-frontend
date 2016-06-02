@@ -1,0 +1,12 @@
+puts:
+  code: |
+    puts 3
+    puts 4
+  trace:
+  - int
+  - start_call
+  - call
+  - int
+  - start_call
+  - call
+  - js_return
