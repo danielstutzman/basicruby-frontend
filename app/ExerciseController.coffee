@@ -108,7 +108,7 @@ class ExerciseController
       currentHighlight  = { row0, col0, row1, col1 }
       resultReplacement = { row0, col0, row1, col1, expr }
 
-      if name == 'str' || name == 'int'
+      if name == 'str' || name == 'int' || name == 'irange' || name == 'erange'
         return
       else if name == 'call'
         if methodNameToDefRange[methodName]

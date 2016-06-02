@@ -53,7 +53,7 @@ function continueRecursion(f, s) {
     f(s.array[1]); // condition
     f(s.array[2]); // true branch
     f(s.array[3]); // false branch
-  } else if (name == 'nil') {
+  } else if (name == 'nil' || name == 'irange' || name == 'erange') {
     // no further recursion is possible
   } else {
     throw new Error("Don't know how to handle sexp of type '" + name + "'");
