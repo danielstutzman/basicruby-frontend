@@ -25,7 +25,7 @@ function continueRecursion(f, s) {
     if (s.array[3].array) {
       f(s.array[3]);
     }
-  } else if (name == 'int' || name == 'str' || name == 'lvar') {
+  } else if (name == 'int' || name == 'str' || name == 'lvar' || name == 'float') {
     // no further recursion is possible
   } else if (name == 'def') {
     if (s.array[1].$$id != 4) {
