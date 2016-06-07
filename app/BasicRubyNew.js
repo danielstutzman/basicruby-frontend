@@ -275,7 +275,11 @@ function runRubyWithHighlighting(rubySource, redefinePuts) {
   //console.log('offsets', offsets);
   var lastOffset = 0;
   var instrumentedSource = [];
+  var rubySourceLength = rubySource.length;
   for (var offset in offsetToAdditions) {
+    if (offset > rubySourceLength) {
+      throw new Error("Offset " + offset + " > rubySourceLength " + rubySourceLength);
+    }
     instrumentedSource.push(rubySource.substring(lastOffset, offset));
     instrumentedSource = instrumentedSource.concat(offsetToAdditions[offset]);
     lastOffset = offset;
