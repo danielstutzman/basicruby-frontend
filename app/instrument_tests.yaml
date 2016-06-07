@@ -10,3 +10,20 @@ puts:
   - start_call
   - call
   - js_return
+newline_in_string:
+  code: |
+    puts "abc\nd"
+    puts "efg
+    h"
+    puts "ijk"
+  trace:
+  - str
+  - start_call
+  - call
+  - str
+  - start_call
+  - call
+  - str
+  - start_call
+  - call
+  - js_return
