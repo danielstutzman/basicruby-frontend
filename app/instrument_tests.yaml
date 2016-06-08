@@ -27,3 +27,34 @@ newline_in_string:
   - start_call
   - call
   - js_return
+call_space_paren_paren:
+  code: |
+    p
+    p()
+    p ()
+    p 2
+    p(2)
+    p (2)
+  trace:
+  - start_call
+  - call
+
+  - start_call
+  - call
+
+  - nil
+  - start_call
+  - call
+
+  - int
+  - start_call
+  - call
+
+  - int
+  - start_call
+  - call
+
+  - int
+  - start_call
+  - call
+  - js_return
