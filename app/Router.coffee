@@ -1,9 +1,10 @@
-ApiService          = require './ApiService'
-ExerciseController  = require './ExerciseController'
-ExerciseComponent   = require './ExerciseComponent'
-MenuComponent       = require './MenuComponent'
-NotFoundComponent   = require './NotFoundComponent'
-Router              = require './Router'
+ApiService           = require './ApiService'
+ExerciseController   = require './ExerciseController'
+ExerciseComponent    = require './ExerciseComponent'
+MenuComponent        = require './MenuComponent'
+NotFoundComponent    = require './NotFoundComponent'
+TreeEditorController = require './TreeEditorController'
+Router               = require './Router'
 
 class Router
 
@@ -14,6 +15,10 @@ class Router
     if path == '/'
       @service.getMenu (data) ->
         reactRender React.createElement(MenuComponent, data), null
+
+    else if path == '/tree.html'
+      controller = new TreeEditorController(reactRender)
+      controller.setup()
 
     else if match = /^\/([0-9]+)([PYBRGO])(\/([0-9]+))?$/.exec(path)
       controller = new ExerciseController(@service, reactRender, path)

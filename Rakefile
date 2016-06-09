@@ -56,6 +56,10 @@ file 'build/index.html' do |task|
   sh "ln -s ../app/index.html #{task.name}"
 end
 
+file 'build/tree.html' => %w[build/index.html] do |task|
+  sh "ln -s index.html #{task.name}"
+end
+
 file 'build/images' do |task|
   sh "ln -s ../app/images #{task.name}"
 end
@@ -119,6 +123,7 @@ end
 task :build_all => %W[
   build
   build/index.html
+  build/tree.html
   build/images
   build/stylesheets/all.css
   build/javascripts/browserified.js
