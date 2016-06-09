@@ -40,11 +40,19 @@ TreeEditorComponent = React.createClass
             topY: e.clientY - node.startY
           @setState draggingNode: null
         else if tip = @state.draggingTip
-          @props.dispatch
-            type: 'MOVE_TIP'
-            nodeNum: tip.nodeNum
-            tipX: e.clientX - tip.startX
-            tipY: e.clientY - tip.startY
+          targetNodeNum = null
+          for node, nodeNum in @props.nodesInWorkspace
+            if nodeNum != tip.nodeNum && # node can't point to itself
+               e.clientX >= node.leftX &&
+               e.clientY >= node.topY &&
+               e.clientX < node.leftX + 140 &&
+               e.clientY < node.topY + 200
+              targetNodeNum = nodeNum
+          if targetNodeNum
+            @props.dispatch
+              type: 'MOVE_TIP'
+              nodeNum: tip.nodeNum
+              tipNodeNum: targetNodeNum
           @setState draggingTip: null
       rect
         x: 0.5

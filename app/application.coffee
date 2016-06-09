@@ -56,12 +56,11 @@ document.addEventListener 'DOMContentLoaded', ->
           topY: $set: action.topY
       when 'MOVE_TIP'
         update nodesInWorkspace: "#{action.nodeNum}":
-          tipX: $set: action.tipX
-          tipY: $set: action.tipY
+          tipNodeNum: $set: action.tipNodeNum
       else throw new Error("Unknown action type #{action.type}")
   store = Redux.createStore reducer,
     nodesInWorkspace: [
-      { leftX: 10,  topY: 0, type: '+', tipNodeNum: 1 },
+      { leftX: 10,  topY: 0, type: '+', tipNodeNum: null },
       { leftX: 40, topY: 100, type: '-', tipNodeNum: null }]
 
   router = new Router(service, store)
