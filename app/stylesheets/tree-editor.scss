@@ -1,0 +1,28 @@
+.tool {
+  width: 102px;
+  height: 44px;
+}
+.tool-input {
+  width: 30;
+  height: 40;
+  fill: #fcc;
+  stroke-width: 4;
+  stroke: red;
+}
+.tool-syntax {
+  width: 30;
+  height: 40;
+  fill: black;
+  stroke-width: 4;
+  stroke: black;
+  cursor: text;
+}
+.tool-syntax-text {
+  fill: white;
+  font-family: monospace;
+  font-size: 30pt;
+  cursor: text;
+}
+.draggable {
+  cursor: move;
+}

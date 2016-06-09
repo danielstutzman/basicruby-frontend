@@ -9,7 +9,10 @@ class TreeEditorController
     @render()
 
   render: (callback) ->
-    props = {}
+    toolsInWorkspace = []
+    toolsInWorkspace.push type: '+', leftX: 30, topY: 20
+    props =
+      toolsInWorkspace: toolsInWorkspace
     @reactRender React.createElement(TreeEditorComponent, props), callback
 
 module.exports = TreeEditorController
