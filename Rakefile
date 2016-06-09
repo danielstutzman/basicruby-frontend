@@ -90,9 +90,9 @@ file 'build/javascripts/vendor.js' => %w[
   end
 end
 
-desc 'Compile app/*.coffee to build/javascripts/browserified.js with inline source'
+desc 'Compile app/*.coffee and app/*.js to build/javascripts/browserified.js with inline source'
 file 'build/javascripts/browserified.js' =>
-    ['build/javascripts'] + Dir.glob('app/*.coffee') do |task|
+    ['build/javascripts'] + Dir.glob('app/*.coffee') + Dir.glob('app/*.js') do |task|
   create_with_sh "node_modules/.bin/browserify \
     -t coffeeify app/application.coffee -d --extension=.coffee \
     -x react -x react-dom -x underscore -x bluebird -x react-addons-update -x redux -x opal \
