@@ -19,6 +19,7 @@ TreeEditorComponent = React.createClass
       width: 400
       height: 200
       onMouseMove: (e) =>
+        e.preventDefault()
         if node = @state.draggingNode
           @setState draggingNode:
             nodeNum: node.nodeNum
@@ -32,6 +33,7 @@ TreeEditorComponent = React.createClass
             x: e.clientX
             y: e.clientY
       onMouseUp: (e) =>
+        e.preventDefault()
         if node = @state.draggingNode
           @props.dispatch
             type: 'MOVE_NODE'
@@ -75,6 +77,7 @@ TreeEditorComponent = React.createClass
               className: 'draggable'
               transform: "matrix(1 0 0 1 #{leftX} #{topY})"
               onMouseDown: (e) =>
+                e.preventDefault()
                 @setState draggingNode:
                   nodeNum: nodeNum
                   startX: e.clientX - node.leftX
