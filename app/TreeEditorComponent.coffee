@@ -55,9 +55,9 @@ TreeEditorComponent = React.createClass
               targetNodeNum = nodeNum
           if targetNodeNum
             @props.dispatch
-              type: 'MOVE_TIP'
+              type: 'MOVE_TARGET'
               nodeNum: tip.nodeNum
-              tipNodeNum: targetNodeNum
+              target: targetNodeNum
           @setState draggingTip: null
       rect
         x: 0.5
@@ -129,8 +129,8 @@ TreeEditorComponent = React.createClass
             if @state.draggingTip?.nodeNum == nodeNum
               tipX = @state.draggingTip.x
               tipY = @state.draggingTip.y
-            else if node.tipNodeNum
-              targetNode = @props.nodesInWorkspace[node.tipNodeNum]
+            else if node.target
+              targetNode = @props.nodesInWorkspace[node.target]
               tipX = targetNode.leftX + 10
               tipY = targetNode.topY + 10
             else
