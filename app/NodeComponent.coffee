@@ -3,7 +3,7 @@ React = require 'react'
 INPUT_WIDTH  = 30
 INPUT_HEIGHT = 40
 
-BinaryNodeComponent = React.createClass
+NodeComponent = React.createClass
   statics:
     relativeCoordsToInputNum: (x, y) ->
       if x >= 0 && y >= 0 && x < INPUT_WIDTH && y < INPUT_HEIGHT
@@ -18,7 +18,7 @@ BinaryNodeComponent = React.createClass
       else
         [95, 10]
 
-  displayName: 'BinaryNodeComponent'
+  displayName: 'NodeComponent'
 
   getInitialState: ->
     draggingNode: null
@@ -109,4 +109,4 @@ BinaryNodeComponent = React.createClass
           "#{@props.leftX + 68},#{@props.topY + 44} #{tipX},#{tipY}"
         style: fill: '#fcc'
 
-module.exports = BinaryNodeComponent
+module.exports = NodeComponent

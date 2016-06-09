@@ -1,6 +1,6 @@
-_                   = require 'underscore'
-BinaryNodeComponent = require './BinaryNodeComponent'
-React               = require 'react'
+_             = require 'underscore'
+NodeComponent = require './NodeComponent'
+React         = require 'react'
 
 TreeEditorComponent = React.createClass
   displayName: 'TreeEditorComponent'
@@ -44,7 +44,7 @@ TreeEditorComponent = React.createClass
           @setState draggingNode: null
         else if tip = @state.draggingTip
           for node, nodeNum in @props.nodesInWorkspace
-            hoveringInputNum = BinaryNodeComponent.relativeCoordsToInputNum(
+            hoveringInputNum = NodeComponent.relativeCoordsToInputNum(
                 e.clientX - node.leftX, e.clientY - node.topY)
             if hoveringInputNum isnt null
               @props.dispatch
@@ -74,7 +74,7 @@ TreeEditorComponent = React.createClass
               [@state.draggingTip.x, @state.draggingTip.y]
             else if node.target
               targetNode = @props.nodesInWorkspace[node.target.nodeNum]
-              [relativeX, relativeY] = BinaryNodeComponent.inputNumToRelativeCoords(
+              [relativeX, relativeY] = NodeComponent.inputNumToRelativeCoords(
                 node.target.inputNum)
               [relativeX + targetNode.leftX, relativeY + targetNode.topY]
             else
@@ -83,12 +83,12 @@ TreeEditorComponent = React.createClass
           draggingTip = @state.draggingTip
           hoveringInputNum =
             if draggingTip && nodeNum != draggingTip.nodeNum # can't point to itself
-              BinaryNodeComponent.relativeCoordsToInputNum(
+              NodeComponent.relativeCoordsToInputNum(
                 draggingTip.x - node.leftX, draggingTip.y - node.topY)
             else
               null
 
-          React.createElement BinaryNodeComponent,
+          React.createElement NodeComponent,
             key: nodeNum
             leftX: leftX
             topY: topY
