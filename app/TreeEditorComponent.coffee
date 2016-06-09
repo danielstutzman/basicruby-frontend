@@ -113,18 +113,20 @@ TreeEditorComponent = React.createClass
             else
               tipX = node.leftX + 50
               tipY = node.topY + 70
-            rect
-              className: 'tip-handle draggable'
-              x: tipX - 10
-              y: tipY - 10
-              width: 20
-              height: 20
-              fill: 'white'
-              onMouseDown: (e) =>
-                @setState draggingTip:
-                  nodeNum: nodeNum
-                  x: e.clientX
-                  y: e.clientY
+
+            unless @state.draggingTip?.nodeNum == nodeNum
+              rect
+                className: 'tip-handle draggable'
+                x: tipX - 10
+                y: tipY - 10
+                width: 20
+                height: 20
+                fill: 'white'
+                onMouseDown: (e) =>
+                  @setState draggingTip:
+                    nodeNum: nodeNum
+                    x: e.clientX
+                    y: e.clientY
             polygon
               points: "#{node.leftX + 34},#{node.topY + 44} " +
                 "#{node.leftX + 68},#{node.topY + 44} #{tipX},#{tipY}"
