@@ -8,8 +8,9 @@ Router               = require './Router'
 
 class Router
 
-  constructor: (service) ->
+  constructor: (service, store) ->
     @service = service
+    @store   = store
 
   render: (path, reactRender) ->
     if path == '/'
@@ -17,7 +18,7 @@ class Router
         reactRender React.createElement(MenuComponent, data), null
 
     else if path == '/tree.html'
-      controller = new TreeEditorController(reactRender)
+      controller = new TreeEditorController(reactRender, @store)
       controller.setup()
 
     else if match = /^\/([0-9]+)([PYBRGO])(\/([0-9]+))?$/.exec(path)

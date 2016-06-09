@@ -33,6 +33,8 @@
         else if (name === 'react-dom') { lib = window.ReactDOM; }
         else if (name === 'underscore') { lib = window._; }
         else if (name === 'opal') { lib = window.Opal; }
+        else if (name === 'redux') { lib = window.Redux; }
+        else if (name === 'react-addons-update') { lib = window.React.addons.update; }
         else {
           document.querySelector('#throbber').style.display = 'none';
           throw new Error("Unknown library '" + name + "'");

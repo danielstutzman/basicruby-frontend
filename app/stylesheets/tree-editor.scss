@@ -1,15 +1,15 @@
-.tool {
+.node {
   width: 102px;
   height: 44px;
 }
-.tool-input {
+.node-input {
   width: 30;
   height: 40;
   fill: #fcc;
   stroke-width: 4;
   stroke: red;
 }
-.tool-syntax {
+.node-syntax {
   width: 30;
   height: 40;
   fill: black;
@@ -17,7 +17,7 @@
   stroke: black;
   cursor: text;
 }
-.tool-syntax-text {
+.node-syntax-text {
   fill: white;
   font-family: monospace;
   font-size: 30pt;

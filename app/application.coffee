@@ -1,6 +1,8 @@
-ApiService            = require './ApiService.coffee'
-ReactDOM              = require 'react-dom'
-Router                = require './Router'
+ApiService        = require './ApiService.coffee'
+ReactAddonsUpdate = require 'react-addons-update'
+ReactDOM          = require 'react-dom'
+Redux             = require 'redux'
+Router            = require './Router'
 
 if window.location.hostname == 'localhost'
   window.onerror = (message, url, lineNumber) ->
@@ -26,14 +28,43 @@ service = new ApiService rpc, (showThrobber) ->
   document.querySelector('#throbber').style.display =
     (if showThrobber then 'block' else 'none')
 
-router = new Router(service)
-window.history.pathChanged = (path) ->
-  router.render path, (reactComponent, callMeAfterRender) ->
-    ReactDOM.render reactComponent,
-      document.querySelector('#screen'),
-      callMeAfterRender
+stringifyState = (object) ->
+  if object is null
+    'null'
+  else if typeof(object) is 'object'
+    keys = Object.keys(object).sort()
+    out = "{"
+    for key in keys
+      value = object[key]
+      if out != '{'
+        out += ' '
+      out += "#{key}:#{stringifyState(value)}"
+    out += "}"
+    out
+  else
+    "#{object}"
 
 document.addEventListener 'DOMContentLoaded', ->
+  reducer = (state, action) ->
+    console.log 'action', stringifyState(action)
+    update = (commands) -> ReactAddonsUpdate state, commands
+    switch action.type
+      when '@@redux/INIT' then state
+      when 'MOVE_NODE'
+        update nodesInWorkspace: "#{action.node_num}":
+          leftX: $set: 0
+          topY: $set: 10
+      else throw new Error("Unknown action type #{action.type}")
+  store = Redux.createStore reducer,
+    nodesInWorkspace: [{ leftX: 10, topY: 0, type: '+' }]
+
+  router = new Router(service, store)
+  window.history.pathChanged = (path) ->
+    router.render path, (reactComponent, callMeAfterRender) ->
+      ReactDOM.render reactComponent,
+        document.querySelector('#screen'),
+        callMeAfterRender
+
   window.onpopstate = (event) ->
     window.history.pathChanged window.location.pathname
   window.onpopstate null # handle current GET params

@@ -5,7 +5,9 @@
     "codemirror": "~4.4.0",
     "opal": "file:../opal-new",
     "react": "^15.1.0",
+    "react-addons-update": "^15.1.0",
     "react-dom": "^15.1.0",
+    "redux": "^3.5.2",
     "underscore": "~1.7.0"
   },
   "devDependencies": {

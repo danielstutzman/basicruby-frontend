@@ -66,22 +66,24 @@ end
 
 file 'build/javascripts/vendor.js' => %w[
   build/javascripts
-  node_modules/react/dist/react.js
+  node_modules/react/dist/react-with-addons.js
   node_modules/react-dom/dist/react-dom.js
   node_modules/underscore/underscore.js
   node_modules/opal/dist/opal.js
   node_modules/codemirror/lib/codemirror.js
   node_modules/codemirror/mode/ruby/ruby.js
+  node_modules/redux/dist/redux.js
 ] do |task|
   begin
     sh "rm -f #{task.name}"
-    sh "cat node_modules/react/dist/react.js >> #{task.name}"
+    sh "cat node_modules/react/dist/react-with-addons.js >> #{task.name}"
     sh "cat node_modules/react-dom/dist/react-dom.js >> #{task.name}"
     sh "cat node_modules/underscore/underscore.js >> #{task.name}"
     sh "echo >> #{task.name}" # needs a newline if anything follows
     sh "cat node_modules/opal/dist/opal.js >> #{task.name}"
     sh "cat node_modules/codemirror/lib/codemirror.js >> #{task.name}"
     sh "cat node_modules/codemirror/mode/ruby/ruby.js >> #{task.name}"
+    sh "cat node_modules/redux/dist/redux.js >> #{task.name}"
   rescue
     sh "rm -f #{task.name}"
     raise
