@@ -1,6 +1,9 @@
 _     = require 'underscore'
 React = require 'react'
 
+INPUT_WIDTH  = 30
+INPUT_HEIGHT = 40
+
 TreeEditorComponent = React.createClass
   displayName: 'TreeEditorComponent'
 
@@ -88,10 +91,19 @@ TreeEditorComponent = React.createClass
                 className: 'node'
                 x: 0
                 y: 0
+              (tip = @state.draggingTip) && null
               rect
                 className: 'node-input'
                 x: 2
                 y: 2
+                width: INPUT_WIDTH
+                height: INPUT_HEIGHT
+                style: if tip &&
+                  tip.x >= node.leftX + 2 &&
+                  tip.y >= node.topY + 2 &&
+                  tip.x < node.leftX + 2 + INPUT_WIDTH &&
+                  tip.y < node.topY + 2 + INPUT_HEIGHT
+                    stroke: 'blue'
               rect
                 className: 'node-syntax'
                 x: 36
@@ -105,6 +117,14 @@ TreeEditorComponent = React.createClass
                 className: 'node-input'
                 x: 70
                 y: 2
+                width: INPUT_WIDTH
+                height: INPUT_HEIGHT
+                style: if tip &&
+                  tip.x >= node.leftX + 70 &&
+                  tip.y >= node.topY + 2 &&
+                  tip.x < node.leftX + 70 + INPUT_WIDTH &&
+                  tip.y < node.topY + 2 + INPUT_HEIGHT
+                    stroke: 'blue'
 
             if @state.draggingTip?.nodeNum == nodeNum
               tipX = @state.draggingTip.x
