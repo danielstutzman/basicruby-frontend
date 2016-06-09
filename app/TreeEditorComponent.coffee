@@ -4,6 +4,9 @@ React = require 'react'
 TreeEditorComponent = React.createClass
   displayName: 'TreeEditorComponent'
 
+  getInitialState: ->
+    draggingNode: null
+
   propTypes:
     nodesInWorkspace: React.PropTypes.array.isRequired
     dispatch:         React.PropTypes.func.isRequired
@@ -14,6 +17,15 @@ TreeEditorComponent = React.createClass
       id: 'svg1'
       width: 400
       height: 200
+      onMouseMove: (e) =>
+        if draggingNode = @state.draggingNode
+          @props.dispatch
+            type: 'MOVE_NODE'
+            nodeNum: draggingNode.nodeNum
+            leftX: e.clientX - draggingNode.startX
+            topY: e.clientY - draggingNode.startY
+      onMouseUp: (e) =>
+        @setState draggingNode: null
       rect
         x: 0.5
         y: 0.5
@@ -27,8 +39,11 @@ TreeEditorComponent = React.createClass
             key: nodeNum
             className: 'draggable'
             transform: "matrix(1 0 0 1 #{node.leftX} #{node.topY})"
-            onMouseDown: =>
-              @props.dispatch type: 'MOVE_NODE', node_num: nodeNum
+            onMouseDown: (e) =>
+              @setState draggingNode:
+                nodeNum: nodeNum
+                startX: e.clientX - node.leftX
+                startY: e.clientY - node.topY
             rect
               className: 'node'
               x: 0
@@ -45,7 +60,7 @@ TreeEditorComponent = React.createClass
               className: 'node-syntax-text'
               x: 39
               y: 34
-              '+'
+              node.type
             rect
               className: 'node-input'
               x: 70

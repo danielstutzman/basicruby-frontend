@@ -51,12 +51,14 @@ document.addEventListener 'DOMContentLoaded', ->
     switch action.type
       when '@@redux/INIT' then state
       when 'MOVE_NODE'
-        update nodesInWorkspace: "#{action.node_num}":
-          leftX: $set: 0
-          topY: $set: 10
+        update nodesInWorkspace: "#{action.nodeNum}":
+          leftX: $set: action.leftX
+          topY: $set: action.topY
       else throw new Error("Unknown action type #{action.type}")
   store = Redux.createStore reducer,
-    nodesInWorkspace: [{ leftX: 10, topY: 0, type: '+' }]
+    nodesInWorkspace: [
+      { leftX: 10,  topY: 0, type: '+' },
+      { leftX: 140, topY: 0, type: '-' }]
 
   router = new Router(service, store)
   window.history.pathChanged = (path) ->
