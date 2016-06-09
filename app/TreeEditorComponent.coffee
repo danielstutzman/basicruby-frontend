@@ -45,19 +45,25 @@ TreeEditorComponent = React.createClass
             topY: e.clientY - node.startY
           @setState draggingNode: null
         else if tip = @state.draggingTip
-          targetNodeNum = null
+          target = null
           for node, nodeNum in @props.nodesInWorkspace
             if nodeNum != tip.nodeNum && # node can't point to itself
                e.clientX >= node.leftX &&
                e.clientY >= node.topY &&
-               e.clientX < node.leftX + 140 &&
-               e.clientY < node.topY + 200
-              targetNodeNum = nodeNum
-          if targetNodeNum
+               e.clientX < node.leftX + INPUT_WIDTH &&
+               e.clientY < node.topY + INPUT_HEIGHT
+              target = { nodeNum, inputNum: 0 }
+            else if nodeNum != tip.nodeNum &&
+               e.clientX >= node.leftX + 70 &&
+               e.clientY >= node.topY &&
+               e.clientX < node.leftX + 70 + INPUT_WIDTH &&
+               e.clientY < node.topY + INPUT_HEIGHT
+              target = { nodeNum, inputNum: 1 }
+          if target
             @props.dispatch
               type: 'MOVE_TARGET'
               nodeNum: tip.nodeNum
-              target: targetNodeNum
+              target: target
           @setState draggingTip: null
       rect
         x: 0.5
@@ -130,9 +136,13 @@ TreeEditorComponent = React.createClass
               tipX = @state.draggingTip.x
               tipY = @state.draggingTip.y
             else if node.target
-              targetNode = @props.nodesInWorkspace[node.target]
-              tipX = targetNode.leftX + 10
-              tipY = targetNode.topY + 10
+              targetNode = @props.nodesInWorkspace[node.target.nodeNum]
+              if node.target.inputNum == 0
+                tipX = targetNode.leftX + 10
+                tipY = targetNode.topY + 10
+              else
+                tipX = targetNode.leftX + 95
+                tipY = targetNode.topY + 10
             else
               tipX = node.leftX + 50
               tipY = node.topY + 70
