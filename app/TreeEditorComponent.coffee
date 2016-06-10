@@ -45,7 +45,7 @@ TreeEditorComponent = React.createClass
         else if tip = @state.draggingTip
           for node, nodeNum in @props.nodesInWorkspace
             hoveringInputNum = NodeComponent.relativeCoordsToInputNum(
-                e.clientX - node.leftX, e.clientY - node.topY)
+              node.type, e.clientX - node.leftX, e.clientY - node.topY)
             if hoveringInputNum isnt null
               @props.dispatch
                 type: 'MOVE_TARGET'
@@ -62,7 +62,7 @@ TreeEditorComponent = React.createClass
         fill: 'none'
         stroke: 'black'
       _.map @props.nodesInWorkspace, (node, nodeNum) =>
-        do (nodeNum) =>
+        do (node, nodeNum) =>
           [leftX, topY] =
             if @state.draggingNode?.nodeNum == nodeNum
               [@state.draggingNode.x, @state.draggingNode.y]
@@ -75,7 +75,7 @@ TreeEditorComponent = React.createClass
             else if node.target
               targetNode = @props.nodesInWorkspace[node.target.nodeNum]
               [relativeX, relativeY] = NodeComponent.inputNumToRelativeCoords(
-                node.target.inputNum)
+                targetNode.type, node.target.inputNum)
               [relativeX + targetNode.leftX, relativeY + targetNode.topY]
             else
               [null, null]
@@ -84,7 +84,7 @@ TreeEditorComponent = React.createClass
           hoveringInputNum =
             if draggingTip && nodeNum != draggingTip.nodeNum # can't point to itself
               NodeComponent.relativeCoordsToInputNum(
-                draggingTip.x - node.leftX, draggingTip.y - node.topY)
+                node.type, draggingTip.x - node.leftX, draggingTip.y - node.topY)
             else
               null
 

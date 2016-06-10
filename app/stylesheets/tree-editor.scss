@@ -1,6 +1,5 @@
 .node {
   width: 102px;
-  height: 44px;
 }
 .node-input {
   fill: #fcc;
@@ -8,18 +7,17 @@
   stroke: red;
 }
 .node-syntax {
-  width: 30;
-  height: 40;
   fill: black;
-  stroke-width: 4;
-  stroke: black;
   cursor: text;
+  stroke-width: 0;
 }
 .node-syntax-text {
   fill: white;
   font-family: monospace;
   font-size: 30pt;
   cursor: text;
+  text-anchor: middle;
+  alignment-baseline: central;
 }
 .draggable {
   cursor: move;

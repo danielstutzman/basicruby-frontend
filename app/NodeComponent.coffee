@@ -1,22 +1,32 @@
 React = require 'react'
 
+INPUT_BORDER =  4
 INPUT_WIDTH  = 30
-INPUT_HEIGHT = 40
+SYNTAX_WIDTH = 30
+NODE_HEIGHT  = 40
+SHORT_TRIANGLE_HEIGHT = 20
 
 NodeComponent = React.createClass
   statics:
-    relativeCoordsToInputNum: (x, y) ->
-      if x >= 0 && y >= 0 && x < INPUT_WIDTH && y < INPUT_HEIGHT
-        0
-      else if x >= 70 && y >= 0 && x < 70 + INPUT_WIDTH && y < INPUT_HEIGHT
-        1
-      else
-        null
-    inputNumToRelativeCoords: (inputNum) ->
-      if inputNum == 0
-        [10, 10]
-      else
-        [95, 10]
+    relativeCoordsToInputNum: (type, x, y) ->
+      if type == '+'
+        if x >= 0 && y >= 0 && x < INPUT_WIDTH && y < NODE_HEIGHT then 0
+        else if x >= INPUT_WIDTH + SYNTAX_WIDTH && y >= 0 &&
+          x < INPUT_WIDTH + SYNTAX_WIDTH + INPUT_WIDTH && y < NODE_HEIGHT then 1
+        else null
+      else null
+    inputNumToRelativeCoords: (type, inputNum) ->
+      map =
+        if type == '+'
+          0: [INPUT_WIDTH/2, NODE_HEIGHT/2]
+          1: [INPUT_WIDTH + SYNTAX_WIDTH + INPUT_WIDTH/2, NODE_HEIGHT/2]
+        else if type == 'var'
+          {}
+        else
+          throw new Error("Don't know type #{type}")
+      if map[inputNum] == undefined
+        throw new Error("Can't find key #{inputNum} in map #{JSON.stringify(map)}")
+      map[inputNum]
 
   displayName: 'NodeComponent'
 
@@ -48,8 +58,77 @@ NodeComponent = React.createClass
   render: ->
     { g, polygon, rect, svg, text } = React.DOM
 
-    tipX = @props.overrideTipX || @props.leftX + 50
-    tipY = @props.overrideTipY || @props.topY + 70
+    parts = []
+    nextX = 0
+    if @props.type == '+'
+      # Remember: half of the border goes outside the width,
+      #       and half of the border goes inside.
+      # So x and y  have to be increased by INPUT_BORDER/2
+      # and w and h have to be decreased by INPUT_BORDER
+      parts.push rect
+        key: 1
+        className: 'node-input'
+        x: nextX + INPUT_BORDER/2
+        y: INPUT_BORDER/2
+        width: INPUT_WIDTH - INPUT_BORDER
+        height: NODE_HEIGHT - INPUT_BORDER
+        style: if @props.hoveringInputNum == 0
+          stroke: 'blue'
+      nextX += INPUT_WIDTH
+
+      parts.push rect
+        key: 2
+        className: 'node-syntax'
+        x: nextX
+        y: 0
+        width: SYNTAX_WIDTH
+        height: NODE_HEIGHT
+      parts.push text
+        key: 3
+        className: 'node-syntax-text'
+        x: nextX + SYNTAX_WIDTH / 2
+        y: NODE_HEIGHT / 2
+        width: SYNTAX_WIDTH
+        height: NODE_HEIGHT
+        @props.type
+      nextX += SYNTAX_WIDTH
+
+      parts.push rect
+        key: 4
+        className: 'node-input'
+        x: nextX + INPUT_BORDER/2
+        y: INPUT_BORDER/2
+        width: INPUT_WIDTH - INPUT_BORDER
+        height: NODE_HEIGHT - INPUT_BORDER
+        style: if @props.hoveringInputNum == 1
+          stroke: 'blue'
+      nextX += INPUT_WIDTH
+
+      triangleX0 = INPUT_WIDTH
+      triangleX1 = INPUT_WIDTH + SYNTAX_WIDTH
+    else if @props.type == 'var'
+      parts.push rect
+        key: 2
+        className: 'node-syntax'
+        x: nextX
+        y: 0
+        width: SYNTAX_WIDTH
+        height: NODE_HEIGHT
+      parts.push text
+        key: 3
+        className: 'node-syntax-text'
+        x: nextX + SYNTAX_WIDTH / 2
+        y: NODE_HEIGHT / 2
+        width: SYNTAX_WIDTH
+        height: NODE_HEIGHT
+        'x'
+      nextX += SYNTAX_WIDTH
+
+      triangleX0 = 0
+      triangleX1 = SYNTAX_WIDTH
+
+    tipX = @props.overrideTipX || (@props.leftX + (triangleX0 + triangleX1)/2)
+    tipY = @props.overrideTipY || (@props.topY + NODE_HEIGHT + SHORT_TRIANGLE_HEIGHT)
 
     g {},
       g
@@ -62,35 +141,7 @@ NodeComponent = React.createClass
             startY: e.clientY - @props.topY
             x: @props.leftX
             y: @props.topY
-        rect
-          className: 'node'
-          x: 0
-          y: 0
-        rect
-          className: 'node-input'
-          x: 2
-          y: 2
-          width: INPUT_WIDTH
-          height: INPUT_HEIGHT
-          style: if @props.hoveringInputNum == 0
-            stroke: 'blue'
-        rect
-          className: 'node-syntax'
-          x: 36
-          y: 2
-        text
-          className: 'node-syntax-text'
-          x: 39
-          y: 34
-          @props.type
-        rect
-          className: 'node-input'
-          x: 70
-          y: 2
-          width: INPUT_WIDTH
-          height: INPUT_HEIGHT
-          style: if @props.hoveringInputNum == 1
-            stroke: 'blue'
+        parts
 
       rect
         className: 'tip-handle draggable'
@@ -105,8 +156,9 @@ NodeComponent = React.createClass
             x: e.clientX
             y: e.clientY
       polygon
-        points: "#{@props.leftX + 34},#{@props.topY + 44} " +
-          "#{@props.leftX + 68},#{@props.topY + 44} #{tipX},#{tipY}"
+        points: "#{@props.leftX + triangleX0},#{@props.topY + NODE_HEIGHT} " +
+          "#{@props.leftX + triangleX1},#{@props.topY + NODE_HEIGHT} " +
+          "#{tipX},#{tipY}"
         style: fill: '#fcc'
 
 module.exports = NodeComponent
