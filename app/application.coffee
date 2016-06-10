@@ -61,7 +61,8 @@ document.addEventListener 'DOMContentLoaded', ->
   store = Redux.createStore reducer,
     nodesInWorkspace: [
       { leftX: 10,  topY: 0, type: '+', target: null },
-      { leftX: 40, topY: 100, type: 'var', target: null }]
+      { leftX: 40, topY: 100, type: 'var', target: null },
+      { leftX: 200, topY: 50, type: '.length', target: null }]
 
   router = new Router(service, store)
   window.history.pathChanged = (path) ->
